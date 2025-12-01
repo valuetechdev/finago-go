@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://24sevenoffice.com/webservices/economy/accounting/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://24sevenoffice.com/webservices/economy/accounting/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This webservice provides uploading and downloading of image files using the MTOM specification to W3C. The image files may be single page or multipaged. Supported image formats: tif, jpg, gif, png, bmp.</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://24sevenoffice.com/webservices/economy/accounting/">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="Create">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="type" type="tns:ImageType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="ImageType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Unknown" />
+          <s:enumeration value="Wmf" />
+          <s:enumeration value="Png" />
+          <s:enumeration value="Tiff" />
+          <s:enumeration value="Pdf" />
+          <s:enumeration value="Bmp" />
+          <s:enumeration value="Gif" />
+          <s:enumeration value="Jpeg" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="CreateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CreateResult" type="tns:ImageFile" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ImageFile">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Type" type="tns:ImageType" />
+          <s:element minOccurs="1" maxOccurs="1" name="StampNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="StampMeta" type="tns:ArrayOfKeyValuePair" />
+          <s:element minOccurs="0" maxOccurs="1" name="FrameInfo" type="tns:ArrayOfImageFrameInfo" />
+          <s:element minOccurs="0" maxOccurs="1" name="ContactId" type="tns:ArrayOfInt" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfKeyValuePair">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="KeyValuePair" type="tns:KeyValuePair" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="KeyValuePair">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Key" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfImageFrameInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ImageFrameInfo" nillable="true" type="tns:ImageFrameInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ImageFrameInfo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Uri" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="StampNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="MetaData" type="tns:ArrayOfKeyValuePair" />
+          <s:element minOccurs="1" maxOccurs="1" name="Status" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfInt">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="int" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AppendChunk">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="tns:ImageFile" />
+            <s:element minOccurs="0" maxOccurs="1" name="buffer" type="s:base64Binary" />
+            <s:element minOccurs="1" maxOccurs="1" name="offset" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AppendChunkResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="AppendChunkByLength">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="tns:ImageFile" />
+            <s:element minOccurs="0" maxOccurs="1" name="buffer" type="s:base64Binary" />
+            <s:element minOccurs="1" maxOccurs="1" name="bufferLength" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="offset" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AppendChunkByLengthResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="DownloadChunk">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="tns:ImageFile" />
+            <s:element minOccurs="1" maxOccurs="1" name="offset" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="bufferSize" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DownloadChunkResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="DownloadChunkResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFileInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="parameters" type="tns:FileSearchParameters" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="FileSearchParameters">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="StampNo" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" name="FileId" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="AttachmentRegisteredAfter" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="AttachmentChangedAfter" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="HasStampNo" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="FileApproved" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="AttachmentStatus" type="tns:ArrayOfFlagType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFlagType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FlagType" type="tns:FlagType" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="FlagType">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="Assigned" />
+          <s:enumeration value="Approved" />
+          <s:enumeration value="Declined" />
+          <s:enumeration value="Archived" />
+          <s:enumeration value="Distributed" />
+          <s:enumeration value="PrepostedInJournal" />
+          <s:enumeration value="PostedInJournal" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetFileInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetFileInfoResult" type="tns:ArrayOfImageFile" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfImageFile">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ImageFile" nillable="true" type="tns:ImageFile" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetSize">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="tns:ImageFile" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSizeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetSizeResult" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Save">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="tns:ImageFile" />
+            <s:element minOccurs="1" maxOccurs="1" name="location" type="tns:AttachmentLocation" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="AttachmentLocation">
+        <s:restriction base="s:string">
+          <s:enumeration value="Retrieval" />
+          <s:enumeration value="Scanning" />
+          <s:enumeration value="Journal" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="SaveResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetChecksum">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="tns:ImageFile" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetChecksumResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetChecksumResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMaxRequestLength">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetMaxRequestLengthResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetMaxRequestLengthResult" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetApproverList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetApproverListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetApproverListResult" type="tns:ArrayOfKeyValuePair" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetStampNo">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetStampNoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetStampNoResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSeriesStampNo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SeriesId" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSeriesStampNoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetSeriesStampNoResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSeries">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetSeriesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSeriesResult" type="tns:ArrayOfStampSeries" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfStampSeries">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="StampSeries" nillable="true" type="tns:StampSeries" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="StampSeries">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Start" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="End" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="CreateSoapIn">
+    <wsdl:part name="parameters" element="tns:Create" />
+  </wsdl:message>
+  <wsdl:message name="CreateSoapOut">
+    <wsdl:part name="parameters" element="tns:CreateResponse" />
+  </wsdl:message>
+  <wsdl:message name="AppendChunkSoapIn">
+    <wsdl:part name="parameters" element="tns:AppendChunk" />
+  </wsdl:message>
+  <wsdl:message name="AppendChunkSoapOut">
+    <wsdl:part name="parameters" element="tns:AppendChunkResponse" />
+  </wsdl:message>
+  <wsdl:message name="AppendChunkByLengthSoapIn">
+    <wsdl:part name="parameters" element="tns:AppendChunkByLength" />
+  </wsdl:message>
+  <wsdl:message name="AppendChunkByLengthSoapOut">
+    <wsdl:part name="parameters" element="tns:AppendChunkByLengthResponse" />
+  </wsdl:message>
+  <wsdl:message name="DownloadChunkSoapIn">
+    <wsdl:part name="parameters" element="tns:DownloadChunk" />
+  </wsdl:message>
+  <wsdl:message name="DownloadChunkSoapOut">
+    <wsdl:part name="parameters" element="tns:DownloadChunkResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetFileInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetFileInfo" />
+  </wsdl:message>
+  <wsdl:message name="GetFileInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetFileInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSizeSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSize" />
+  </wsdl:message>
+  <wsdl:message name="GetSizeSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSizeResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveSoapIn">
+    <wsdl:part name="parameters" element="tns:Save" />
+  </wsdl:message>
+  <wsdl:message name="SaveSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetChecksumSoapIn">
+    <wsdl:part name="parameters" element="tns:GetChecksum" />
+  </wsdl:message>
+  <wsdl:message name="GetChecksumSoapOut">
+    <wsdl:part name="parameters" element="tns:GetChecksumResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMaxRequestLengthSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMaxRequestLength" />
+  </wsdl:message>
+  <wsdl:message name="GetMaxRequestLengthSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMaxRequestLengthResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetApproverListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetApproverList" />
+  </wsdl:message>
+  <wsdl:message name="GetApproverListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetApproverListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetStampNoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetStampNo" />
+  </wsdl:message>
+  <wsdl:message name="GetStampNoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetStampNoResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSeriesStampNoSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSeriesStampNo" />
+  </wsdl:message>
+  <wsdl:message name="GetSeriesStampNoSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSeriesStampNoResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSeriesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSeries" />
+  </wsdl:message>
+  <wsdl:message name="GetSeriesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSeriesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="AttachmentServiceSoap">
+    <wsdl:operation name="Create">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Creates a new ghost file that may be uploaded with UploadChunk. This file will only be a valid image in the client after using the 'Save' method.</wsdl:documentation>
+      <wsdl:input message="tns:CreateSoapIn" />
+      <wsdl:output message="tns:CreateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AppendChunk">
+      <wsdl:input message="tns:AppendChunkSoapIn" />
+      <wsdl:output message="tns:AppendChunkSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AppendChunkByLength">
+      <wsdl:input message="tns:AppendChunkByLengthSoapIn" />
+      <wsdl:output message="tns:AppendChunkByLengthSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DownloadChunk">
+      <wsdl:input message="tns:DownloadChunkSoapIn" />
+      <wsdl:output message="tns:DownloadChunkSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of fileIds from the given parameters</wsdl:documentation>
+      <wsdl:input message="tns:GetFileInfoSoapIn" />
+      <wsdl:output message="tns:GetFileInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSize">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the size of the given file in bytes.</wsdl:documentation>
+      <wsdl:input message="tns:GetSizeSoapIn" />
+      <wsdl:output message="tns:GetSizeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Save">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Saving the ghost file making it a valid image file.</wsdl:documentation>
+      <wsdl:input message="tns:SaveSoapIn" />
+      <wsdl:output message="tns:SaveSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetChecksum">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Calculates the md5 hash of the content to the given file. This may be used as a checksum to compare local and server file to see if they are equal and complete.</wsdl:documentation>
+      <wsdl:input message="tns:GetChecksumSoapIn" />
+      <wsdl:output message="tns:GetChecksumSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMaxRequestLength">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">The max size of chunk in kB (with overhead) the server will accept. Do not exceed this limit when using the methods AppendChunk or DownloadChunk.</wsdl:documentation>
+      <wsdl:input message="tns:GetMaxRequestLengthSoapIn" />
+      <wsdl:output message="tns:GetMaxRequestLengthSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetApproverList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of approvers</wsdl:documentation>
+      <wsdl:input message="tns:GetApproverListSoapIn" />
+      <wsdl:output message="tns:GetApproverListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetStampNo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get next StampNo</wsdl:documentation>
+      <wsdl:input message="tns:GetStampNoSoapIn" />
+      <wsdl:output message="tns:GetStampNoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSeriesStampNo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get next StampNo for a specified series</wsdl:documentation>
+      <wsdl:input message="tns:GetSeriesStampNoSoapIn" />
+      <wsdl:output message="tns:GetSeriesStampNoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSeries">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get Stamp number series</wsdl:documentation>
+      <wsdl:input message="tns:GetSeriesSoapIn" />
+      <wsdl:output message="tns:GetSeriesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AttachmentServiceSoap" type="tns:AttachmentServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Create">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/Create" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AppendChunk">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/AppendChunk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AppendChunkByLength">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/AppendChunkByLength" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadChunk">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/DownloadChunk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileInfo">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetFileInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSize">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetSize" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Save">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/Save" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChecksum">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetChecksum" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMaxRequestLength">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetMaxRequestLength" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetApproverList">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetApproverList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStampNo">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetStampNo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSeriesStampNo">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetSeriesStampNo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSeries">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetSeries" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="AttachmentServiceSoap12" type="tns:AttachmentServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Create">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/Create" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AppendChunk">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/AppendChunk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AppendChunkByLength">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/AppendChunkByLength" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadChunk">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/DownloadChunk" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileInfo">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetFileInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSize">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetSize" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Save">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/Save" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChecksum">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetChecksum" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMaxRequestLength">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetMaxRequestLength" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetApproverList">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetApproverList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetStampNo">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetStampNo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSeriesStampNo">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetSeriesStampNo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSeries">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetSeries" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AttachmentService">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This webservice provides uploading and downloading of image files using the MTOM specification to W3C. The image files may be single page or multipaged. Supported image formats: tif, jpg, gif, png, bmp.</wsdl:documentation>
+    <wsdl:port name="AttachmentServiceSoap" binding="tns:AttachmentServiceSoap">
+      <soap:address location="https://webservices.24sevenoffice.com/Economy/Accounting/Accounting_V001/AttachmentService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="AttachmentServiceSoap12" binding="tns:AttachmentServiceSoap12">
+      <soap12:address location="https://webservices.24sevenoffice.com/Economy/Accounting/Accounting_V001/AttachmentService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,1010 @@
+overlay: 1.0.0
+info:
+  title: Schema Type Corrections Overlay
+  version: 1.0.0
+actions:
+  - target: "$.components"
+    description: Add all missing DTOs based on payroll.json examples
+    update:
+      schemas:
+        # Custom types for numeric strings
+        StringInt:
+          type: "string"
+          description: "Integer value sent as string"
+          x-go-type: "StringInt"
+
+        StringFloat:
+          type: "string"
+          description: "Float value sent as string"
+          x-go-type: "StringFloat"
+
+        StringBool:
+          type: "string"
+          description: "Boolean value sent as string (0/1)"
+          x-go-type: "StringBool"
+
+        # International ID nested object
+        InternationalIDDTO:
+          type: "object"
+          properties:
+            countryCode:
+              type: "string"
+              description: "Country code"
+            ID:
+              type: "string"
+              description: "ID value"
+            type:
+              type: "string"
+              description: "Type of identifier"
+              enum:
+                [
+                  "passnummer",
+                  "socialSecurityNumber",
+                  "taxIdentificationNumber",
+                  "valueAddedTaxNumber",
+                ]
+
+        # Tax exemption nested object
+        TaxExemptionDTO:
+          type: "object"
+          properties:
+            percentage:
+              type: "string"
+              description: "Exemption percentage"
+              x-go-type: "StringFloat"
+            amount:
+              type: "string"
+              description: "Exemption amount"
+              x-go-type: "StringFloat"
+
+        # Dimension nested object for accounting
+        DimensionDTO:
+          type: "object"
+          properties:
+            dimid:
+              type: "string"
+              description: "Dimension ID"
+              x-go-type: "StringInt"
+            value:
+              type: "string"
+              description: "Dimension value"
+
+        # Accounting nested object
+        AccountingDTO:
+          type: "object"
+          properties:
+            percentage:
+              type: "string"
+              description: "Percentage"
+              x-go-type: "StringFloat"
+            dimensions:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/DimensionDTO"
+
+        # Main Employee DTO
+        EmployeeDTO:
+          type: "object"
+          properties:
+            empId:
+              type: "string"
+              description: "Employee number"
+              x-go-type: "StringInt"
+            email:
+              type: "string"
+              description: "Email address"
+            email_copy:
+              type: "string"
+              description: "Copy email address"
+            firstname:
+              type: "string"
+              description: "First name"
+            lastname:
+              type: "string"
+              description: "Last name"
+            address:
+              type: "string"
+              description: "Address"
+            postaddress:
+              type: "string"
+              description: "Post address"
+            zipcode:
+              type: "string"
+              description: "Zip code"
+            postalcode:
+              type: "string"
+              description: "Postal code"
+            city:
+              type: "string"
+              description: "City"
+            countryCode:
+              type: "string"
+              description: "Country code"
+            clearingno:
+              type: "string"
+              description: "Bank clearing number"
+            account:
+              type: "string"
+              description: "Bank account number"
+            bic:
+              type: "string"
+              description: "BIC/SWIFT code"
+            employee_date:
+              type: "string"
+              description: "Employment start date"
+              format: "date"
+              x-go-type: StringDate
+            telefon:
+              type: "string"
+              description: "Phone number"
+            personnr:
+              type: "string"
+              description: "Personal number"
+            internationalID:
+              $ref: "#/components/schemas/InternationalIDDTO"
+            salary_type:
+              type: "string"
+              enum: ["monthly", "hourly"]
+            salary:
+              type: "string"
+              description: "Salary amount"
+              x-go-type: "StringFloat"
+            salary_valid_from:
+              type: "string"
+              description: "Salary valid from date"
+            taxtable:
+              type: "string"
+              description: "Tax table"
+            employment_rate:
+              type: "string"
+              description: "Employment rate percentage"
+              x-go-type: "StringFloat"
+            employment_rate_valid_from:
+              type: "string"
+              description: "Employment rate valid from date"
+            hours_per_week:
+              type: "string"
+              description: "Hours per week"
+              x-go-type: "StringFloat"
+            hours_per_week_valid_from:
+              type: "string"
+              description: "Hours per week valid from date"
+            vacation_percent:
+              type: "string"
+              description: "Vacation percentage"
+              x-go-type: "StringFloat"
+            vacation_percent_valid_from:
+              type: "string"
+              description: "Vacation percentage valid from date"
+            vacation_days:
+              type: "string"
+              description: "Vacation days"
+              x-go-type: "StringInt"
+            hidden:
+              type: "string"
+              description: "Hidden status"
+              x-go-type: "StringBool"
+            percentage_tax_main_employer:
+              type: "string"
+              description: "Percentage tax main employer"
+              x-go-type: "StringFloat"
+            percentage_tax_bi_employer:
+              type: "string"
+              description: "Percentage tax bi employer"
+              x-go-type: "StringFloat"
+            tax_resident_country:
+              type: "string"
+              description: "Tax resident country"
+            continental_shelf:
+              type: "string"
+              description: "Continental shelf"
+              x-go-type: "StringBool"
+            taxexemption:
+              $ref: "#/components/schemas/TaxExemptionDTO"
+            accounting:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/AccountingDTO"
+          additionalProperties: true
+
+        # Employment DTO
+        EmploymentDTO:
+          type: "object"
+          properties:
+            employment_id:
+              type: "string"
+              description: "Employment ID"
+              x-go-type: StringInt
+            primary_employment:
+              type: "string"
+              description: "Primary employment flag"
+              x-go-type: "StringBool"
+            startdate:
+              type: "string"
+              description: "Start date"
+              format: date
+            enddate:
+              type: "string"
+              description: "End date"
+              format: date
+            enddate_reason:
+              type: "string"
+              description: "End date reason"
+            employment_form:
+              type: "string"
+              description: "Employment form"
+            profession_code:
+              type: "string"
+              description: "Profession code"
+            employment_rate:
+              type: "string"
+              description: "Employment rate"
+              x-go-type: "StringFloat"
+            employment_type:
+              type: "string"
+              description: "Employment type"
+            enterprise_number:
+              type: "string"
+              description: "Enterprise number"
+            working_times:
+              type: "string"
+              description: "Working times"
+          additionalProperties: true
+
+        # Payroll Run DTO
+        PayrollRunDTO:
+          type: "object"
+          properties:
+            payrollrunId:
+              type: "string"
+              description: "Payroll run ID"
+              x-go-type: "StringInt"
+            startDate:
+              type: "string"
+              description: "Start date"
+              format: "date"
+              x-go-type: StringDate
+            endDate:
+              type: "string"
+              description: "End date"
+              format: "date"
+              x-go-type: StringDate
+            paymentDate:
+              type: "string"
+              description: "Payment date"
+              format: "date"
+              x-go-type: StringDate
+            name:
+              type: "string"
+              description: "Name"
+            created:
+              type: "string"
+              description: "Created date"
+              format: "date"
+              x-go-type: StringDate
+            locked:
+              type: "string"
+              description: "Locked status"
+            type:
+              type: "string"
+              enum: ["Ordinary", "Until now", "Extra", "Vacation"]
+            limitDate:
+              type: "string"
+              description: "Limit date"
+              format: "date"
+              x-go-type: StringDate
+            payrollGroup:
+              type: "string"
+              description: "Payroll group"
+            payslips:
+              type: "string"
+              description: "Number of payslips"
+              x-go-type: StringInt
+
+        # Payslip DTO (basic)
+        PayslipDTO:
+          type: "object"
+          properties:
+            text:
+              type: "string"
+              description: "Text representation of period"
+            payrollrunId:
+              type: "string"
+              description: "Payroll run ID"
+              x-go-type: StringInt
+            startDate:
+              type: "string"
+              description: "Start date"
+              format: "date"
+              x-go-type: StringDate
+            endDate:
+              type: "string"
+              description: "End date"
+              format: "date"
+              x-go-type: StringDate
+
+        # Payline DTO for detailed payslips
+        PaylineDTO:
+          type: "object"
+          properties:
+            sumrow:
+              type: "boolean"
+              description: "Whether this is a sum row"
+            code:
+              type: "string"
+              description: "Payroll code"
+            text:
+              type: "string"
+              description: "Text description"
+            quantity:
+              type: "string"
+              description: "Quantity"
+              x-go-type: StringFloat
+            unitPrice:
+              type: "string"
+              description: "Unit price"
+              x-go-type: StringFloat
+            extent:
+              type: "string"
+              description: "Extent"
+              x-go-type: StringFloat
+            tax:
+              type: "string"
+              description: "Tax type"
+            amount:
+              type: "string"
+              description: "Amount"
+              x-go-type: StringFloat
+
+        # Payslip JSON DTO (detailed)
+        PayslipJSONDTO:
+          type: "object"
+          properties:
+            payrollrunId:
+              type: "string"
+              description: "Payroll run ID"
+              x-go-type: StringInt
+            netPay:
+              type: "string"
+              description: "Net pay amount"
+              x-go-type: StringFloat
+            paymentDate:
+              type: "string"
+              description: "Payment date"
+              format: "date"
+              x-go-type: StringDate
+            paylines:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/PaylineDTO"
+
+        # Dimension Info DTO
+        DimensionInfoDTO:
+          type: "object"
+          properties:
+            dimid:
+              type: "string"
+              description: "Dimension ID"
+              x-go-type: StringInt
+            name:
+              type: "string"
+              description: "Dimension name"
+
+        # Dimension Value DTO
+        DimensionValueDTO:
+          type: "object"
+          properties:
+            value:
+              type: "string"
+              description: "Dimension value"
+            name:
+              type: "string"
+              description: "Dimension value name"
+            active:
+              type: "string"
+              description: "Active status"
+              x-go-type: StringBool
+
+        # Absence DTO
+        AbsenceDTO:
+          type: "object"
+          properties:
+            empId:
+              type: "int"
+              description: "Employee ID"
+              x-go-type: "int"
+            serialNo:
+              type: "string"
+              description: "Serial number"
+            startDate:
+              type: "string"
+              description: "Start date"
+              format: "date"
+              x-go-type: StringDate
+            endDate:
+              type: "string"
+              description: "End date"
+              format: "date"
+              x-go-type: StringDate
+            comment:
+              type: "string"
+              description: "Comment"
+            requestDate:
+              type: "string"
+              description: "Request date"
+              format: "date"
+              x-go-type: StringDate
+            requestMotivation:
+              type: "string"
+              description: "Request motivation"
+            approved:
+              type: "string"
+              description: "Approved status"
+            percent:
+              type: "string"
+              description: "Absence percentage"
+              x-go-type: StringFloat
+            absenceType:
+              type: "string"
+              description: "Absence type code"
+            description:
+              type: "string"
+              description: "Absence type description"
+            childId:
+              type: "string"
+              description: "Child ID"
+              x-go-type: StringInt
+            numberOfDays:
+              type: "string"
+              description: "Number of days"
+              x-go-type: StringInt
+            permisjonId:
+              type: "string"
+              description: "Permission ID"
+              x-go-type: StringInt
+            startdateParental:
+              type: "string"
+              description: "Parental leave start date"
+              format: "date"
+              x-go-type: StringDate
+            lastChanged:
+              type: "string"
+              description: "Last changed date"
+              format: "date"
+              x-go-type: StringDate
+            externalId:
+              type: "string"
+              description: "External ID"
+              x-go-type: string
+
+        # Absence Type DTO
+        AbsenceTypeDTO:
+          type: "object"
+          properties:
+            description:
+              type: "string"
+              description: "Description"
+            code:
+              type: "string"
+              description: "Absence type code"
+            inntektsmelding_type:
+              type: "string"
+              description: "Income report type"
+            permisjonId:
+              type: "string"
+              description: "Permission ID required"
+            leave_of_absence_type:
+              type: "string"
+              description: "Leave of absence type"
+            percentage:
+              type: "string"
+              description: "Percentage supported"
+              x-go-type: StringFloat
+            comment_mandatory:
+              type: "string"
+              description: "Comment mandatory"
+            category:
+              type: "string"
+              enum:
+                [
+                  "sickness",
+                  "sick_child",
+                  "self_report",
+                  "vacation",
+                  "leave_of_absence",
+                ]
+
+        # Child DTO
+        ChildDTO:
+          type: "object"
+          properties:
+            firstnamn:
+              type: "string"
+              description: "First name"
+            surname:
+              type: "string"
+              description: "Surname"
+            childId:
+              type: "string"
+              description: "Child ID"
+              x-go-type: StringInt
+            birthdate:
+              type: "string"
+              description: "Birth date"
+              format: "date"
+              x-go-type: StringDate
+
+        # Transaction DTO
+        TransactionDTO:
+          type: "object"
+          properties:
+            empId:
+              type: "string"
+              description: "Employee ID"
+              x-go-type: "StringInt"
+            serialNo:
+              type: "string"
+              description: "Serial number"
+              x-go-type: StringInt
+            payrollcode:
+              type: "string"
+              description: "Payroll code"
+              x-go-type: StringInt
+            description:
+              type: "string"
+              description: "Description"
+            payrollrunIds:
+              type: "array"
+              items:
+                type: "integer"
+              description: "Payroll run IDs"
+            datefrom:
+              type: "string"
+              description: "Date from"
+              format: "date"
+              x-go-type: StringDate
+            dateto:
+              type: "string"
+              description: "Date to"
+              format: "date"
+              x-go-type: StringDate
+            counts:
+              type: "string"
+              description: "Counts"
+              x-go-type: StringFloat
+            unitprice:
+              type: "string"
+              description: "Unit price"
+              x-go-type: StringFloat
+            text:
+              type: "string"
+              description: "Text"
+            note:
+              type: "string"
+              description: "Note"
+            extent:
+              type: "string"
+              description: "Extent"
+              x-go-type: StringFloat
+            department:
+              type: "string"
+              description: "Department"
+              x-go-type: StringInt
+              x-go-name: DepartmentId
+            project:
+              type: "string"
+              description: "Project"
+              x-go-type: StringInt
+              x-go-name: ProjectId
+            tax:
+              type: "string"
+              description: "Tax"
+            social_security:
+              type: "string"
+              description: "Social security"
+            benefit:
+              type: "string"
+              description: "Benefit"
+            is_paid:
+              type: "string"
+              description: "Is paid"
+              x-go-type: StringBool
+            vacation:
+              type: "string"
+              description: "Vacation"
+            wage_description:
+              type: "string"
+              description: "Wage description"
+            earning_country:
+              type: "string"
+              description: "Earning country"
+            tax_rule:
+              type: "string"
+              description: "Tax rule"
+            repeating:
+              type: "string"
+              description: "Repeating"
+            first_60_days:
+              type: "string"
+              description: "First 60 days"
+              x-go-type: StringBool
+            dimensions:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/DimensionDTO"
+              description: "Dimension values for accounting"
+
+        # Wage Type DTO
+        WageTypeDTO:
+          type: "object"
+          properties:
+            payrollcode:
+              type: "string"
+              description: "Payroll code"
+              x-go-type: StringInt
+            description:
+              type: "string"
+              description: "Description"
+            unitprice:
+              type: "string"
+              description: "Unit price"
+              x-go-type: StringFloat
+            account:
+              type: "string"
+              description: "Account"
+            counteraccount:
+              type: "string"
+              description: "Counter account"
+            hidden:
+              type: "string"
+              description: "Hidden"
+              x-go-type: StringBool
+            selfservice:
+              type: "string"
+              description: "Self service"
+            tax:
+              type: "string"
+              description: "Tax"
+            employers_fee:
+              type: "string"
+              description: "Employers fee"
+            is_paid:
+              type: "string"
+              description: "Is paid"
+              x-go-type: StringBool
+            vacation:
+              type: "string"
+              description: "Vacation"
+            benefit:
+              type: "string"
+              description: "Benefit"
+            wage_description:
+              type: "string"
+              description: "Wage description"
+            loneart:
+              type: "string"
+              description: "Wage type"
+            beskrivning:
+              type: "string"
+              description: "Description (Swedish)"
+            kalender:
+              type: "string"
+              description: "Calendar"
+            antalstyp:
+              type: "string"
+              description: "Amount type"
+            gruppid:
+              type: "string"
+              description: "Group ID"
+              x-go-type: StringInt
+            manadsavlonade:
+              type: "string"
+              description: "Monthly salaried"
+            timavlonade:
+              type: "string"
+              description: "Hourly salaried"
+
+        # Site DTO
+        SiteDTO:
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "Site ID"
+              x-go-type: StringInt
+            name:
+              type: "string"
+              description: "Site name"
+            enterprise_number:
+              type: "string"
+              description: "Enterprise number"
+            tax_zone:
+              type: "string"
+              description: "Tax zone"
+
+        # Organization DTO
+        OrganizationDTO:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+              description: "Company name"
+            orgno:
+              type: "string"
+              description: "Organization number"
+            enterprise_number:
+              type: "string"
+              description: "Enterprise number"
+            address:
+              type: "string"
+              description: "Address"
+            zipcode:
+              type: "string"
+              description: "Zip code"
+            tax_zone:
+              type: "string"
+              description: "Tax zone"
+            bank_account:
+              type: "string"
+              description: "Bank account"
+            tax_account:
+              type: "string"
+              description: "Tax account"
+            industry:
+              type: "string"
+              enum: ["ordinarie", "godstransport", "lantbruk", "sektorunntatt"]
+            tax_rule:
+              type: "string"
+              enum: ["standard", "skattefriOrganisasjon"]
+            retirement_age:
+              type: "string"
+              description: "Retirement age"
+            country_code:
+              type: "string"
+              enum: ["NO", "SE"]
+            sites:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/SiteDTO"
+
+        # Employee Field DTO
+        EmployeeFieldDTO:
+          type: "object"
+          properties:
+            id:
+              type: "string"
+              description: "Employee field ID"
+              x-go-type: StringInt
+            name:
+              type: "string"
+              description: "Field name"
+            type:
+              type: "string"
+              description: "Field type (0=free text, 1=enum)"
+              x-go-type: StringInt
+            export:
+              type: "string"
+              description: "Export flag"
+              x-go-type: StringBool
+            available_values:
+              type: "array"
+              items:
+                type: "string"
+              description: "Available values for enum fields"
+
+  # Update response schemas to use proper DTOs
+  - target: "$.paths['/employee/v2'].get.responses['200']"
+    description: Update employee list response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/EmployeeDTO"
+
+  - target: "$.paths['/employee/v2/{empId}'].get.responses['200']"
+    description: Update single employee response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/EmployeeDTO"
+
+  - target: "$.paths['/employment/v2/{empId}'].get.responses['200']"
+    description: Update employment response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/EmploymentDTO"
+
+  - target: "$.paths['/payrollrun/v2/'].get.responses['200']"
+    description: Update payroll run list response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/PayrollRunDTO"
+
+  - target: "$.paths['/payrollrun/v2/{payrollrunId}'].get.responses['200']"
+    description: Update single payroll run response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/PayrollRunDTO"
+
+  - target: "$.paths['/payslips/v2/{empId}'].get.responses['200']"
+    description: Update payslips response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/PayslipDTO"
+
+  - target: "$.paths['/payslipJSON/v2/{empId}'].get.responses['200']"
+    description: Update payslip JSON response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/PayslipJSONDTO"
+
+  - target: "$.paths['/payslipJSON/v2/{empId}/{payrollrunId}'].get.responses['200']"
+    description: Update single payslip JSON response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/PayslipJSONDTO"
+
+  - target: "$.paths['/dimension/v2'].get.responses['200']"
+    description: Update dimension list response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/DimensionInfoDTO"
+
+  - target: "$.paths['/dimension/v2/{dimid}'].get.responses['200']"
+    description: Update dimension values response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/DimensionValueDTO"
+
+  - target: "$.paths['/dimension/v2/{dimid}/{value}'].get.responses['200']"
+    description: Update single dimension value response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/DimensionValueDTO"
+
+  - target: "$.paths['/absence/v2'].get.responses['200']"
+    description: Update absence list response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/AbsenceDTO"
+
+  - target: "$.paths['/absence/v2/{empId}'].get.responses['200']"
+    description: Update employee absence response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/AbsenceDTO"
+
+  - target: "$.paths['/absencetypes/v2'].get.responses['200']"
+    description: Update absence types response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/AbsenceTypeDTO"
+
+  - target: "$.paths['/absencetypes/v2/{code}'].get.responses['200']"
+    description: Update single absence type response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/AbsenceTypeDTO"
+
+  - target: "$.paths['/child/v2/{empId}'].get.responses['200']"
+    description: Update children response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/ChildDTO"
+
+  - target: "$.paths['/transaction/v2'].get.responses['200']"
+    description: Update transaction list response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/TransactionDTO"
+
+  - target: "$.paths['/wagetypes/v2'].get.responses['200']"
+    description: Update wage types response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/WageTypeDTO"
+
+  - target: "$.paths['/wagetypes/v2/{payrollcode}'].get.responses['200']"
+    description: Update single wage type response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/WageTypeDTO"
+
+  - target: "$.paths['/organization/v2'].get.responses['200']"
+    description: Update organization response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/OrganizationDTO"
+
+  - target: "$.paths['/employee_field/v2/'].get.responses['200']"
+    description: Update employee field list response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/EmployeeFieldDTO"
+
+  - target: "$.paths['/employee_field/v2/{id}'].get.responses['200']"
+    description: Update single employee field response schema
+    update:
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/EmployeeFieldDTO"

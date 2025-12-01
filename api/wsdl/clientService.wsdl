@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://24sevenOffice.com/webservices" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://24sevenOffice.com/webservices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://24sevenOffice.com/webservices">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="GetUsers">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetUsersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUsersResult" type="tns:ArrayOfUser" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfUser">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="User" nillable="true" type="tns:User" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="User">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ContactId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="00000000-0000-0000-0000-000000000000" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="EmployeeId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetClientInformation">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetClientInformationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetClientInformationResult" type="tns:Client" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Client">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="AddressList" type="tns:Addresses" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EmailAddressList" type="tns:EmailAddresses" />
+          <s:element minOccurs="0" maxOccurs="1" name="FactoringClientNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FactoringText" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FaxNumberList" type="tns:ArrayOfFaxNumber" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsUsingFactoring" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PhoneNumberList" type="tns:PhoneNumbers" />
+          <s:element minOccurs="1" maxOccurs="1" name="ReminderDays" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="ReminderDays2" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="ReminderDays3" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="UserId" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" name="BankAccount" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IBAN" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrganizationNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Swift" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-9223372036854775808" name="ResellerId" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="ResellerName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="DefaultCurrency" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Addresses">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Post" type="tns:Address" />
+          <s:element minOccurs="0" maxOccurs="1" name="Delivery" type="tns:Address" />
+          <s:element minOccurs="0" maxOccurs="1" name="Visit" type="tns:Address" />
+          <s:element minOccurs="0" maxOccurs="1" name="Invoice" type="tns:Address" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Address">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Street" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostalCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostalArea" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="EmailAddresses">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Home" type="tns:EmailAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="Invoice" type="tns:EmailAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="Primary" type="tns:EmailAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="Work" type="tns:EmailAddress" />
+          <s:element minOccurs="0" maxOccurs="1" name="Alternative" type="tns:EmailAddress" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="EmailAddress">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFaxNumber">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FaxNumber" nillable="true" type="tns:FaxNumber" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FaxNumber">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Type" type="tns:FaxNumberType" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="FaxNumberType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Unknown" />
+          <s:enumeration value="Work" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="PhoneNumbers">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Home" type="tns:PhoneNumber" />
+          <s:element minOccurs="0" maxOccurs="1" name="Fax" type="tns:PhoneNumber" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mobile" type="tns:PhoneNumber" />
+          <s:element minOccurs="0" maxOccurs="1" name="Primary" type="tns:PhoneNumber" />
+          <s:element minOccurs="0" maxOccurs="1" name="Work" type="tns:PhoneNumber" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PhoneNumber">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetDepartmentList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetDepartmentListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDepartmentListResult" type="tns:ArrayOfDepartment" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfDepartment">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Department" nillable="true" type="tns:Department" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Department">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Addresses" type="tns:Addresses" />
+          <s:element minOccurs="0" maxOccurs="1" name="Phone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Fax" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetCurrencyList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetCurrencyListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrencyListResult" type="tns:ArrayOfCurrency" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfCurrency">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Currency" nillable="true" type="tns:Currency" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Currency">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Symbol" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Rate" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="Unit" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetTypeGroupList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="module" type="tns:TypeGroupModule" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="TypeGroupModule">
+        <s:restriction base="s:string">
+          <s:enumeration value="All" />
+          <s:enumeration value="Sale" />
+          <s:enumeration value="Purchase" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetTypeGroupListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTypeGroupListResult" type="tns:ArrayOfAccountingGroup" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAccountingGroup">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="AccountingGroup" nillable="true" type="tns:AccountingGroup" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="AccountingGroup">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="AccountId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetVatTypeList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetVatTypeListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVatTypeListResult" type="tns:ArrayOfVatType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfVatType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="VatType" nillable="true" type="tns:VatType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="VatType">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="No" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Rate" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetUsersSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUsers" />
+  </wsdl:message>
+  <wsdl:message name="GetUsersSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUsersResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetClientInformationSoapIn">
+    <wsdl:part name="parameters" element="tns:GetClientInformation" />
+  </wsdl:message>
+  <wsdl:message name="GetClientInformationSoapOut">
+    <wsdl:part name="parameters" element="tns:GetClientInformationResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDepartmentListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDepartmentList" />
+  </wsdl:message>
+  <wsdl:message name="GetDepartmentListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDepartmentListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrencyListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrencyList" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrencyListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrencyListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTypeGroupListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTypeGroupList" />
+  </wsdl:message>
+  <wsdl:message name="GetTypeGroupListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTypeGroupListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVatTypeListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVatTypeList" />
+  </wsdl:message>
+  <wsdl:message name="GetVatTypeListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVatTypeListResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ClientServiceSoap">
+    <wsdl:operation name="GetUsers">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns a list of users of the currently logged in client.</wsdl:documentation>
+      <wsdl:input message="tns:GetUsersSoapIn" />
+      <wsdl:output message="tns:GetUsersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetClientInformation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get 24SevenOffice's client data for the client logged in</wsdl:documentation>
+      <wsdl:input message="tns:GetClientInformationSoapIn" />
+      <wsdl:output message="tns:GetClientInformationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDepartmentList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns the list of departments</wsdl:documentation>
+      <wsdl:input message="tns:GetDepartmentListSoapIn" />
+      <wsdl:output message="tns:GetDepartmentListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrencyList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of the client's currencies</wsdl:documentation>
+      <wsdl:input message="tns:GetCurrencyListSoapIn" />
+      <wsdl:output message="tns:GetCurrencyListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTypeGroupList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of the client's typegroups</wsdl:documentation>
+      <wsdl:input message="tns:GetTypeGroupListSoapIn" />
+      <wsdl:output message="tns:GetTypeGroupListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVatTypeList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of the client's VAT Types</wsdl:documentation>
+      <wsdl:input message="tns:GetVatTypeListSoapIn" />
+      <wsdl:output message="tns:GetVatTypeListSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ClientServiceSoap" type="tns:ClientServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetUsers">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetUsers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClientInformation">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetClientInformation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDepartmentList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetDepartmentList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrencyList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetCurrencyList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTypeGroupList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetTypeGroupList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVatTypeList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetVatTypeList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ClientServiceSoap12" type="tns:ClientServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetUsers">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetUsers" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClientInformation">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetClientInformation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDepartmentList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetDepartmentList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrencyList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetCurrencyList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTypeGroupList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetTypeGroupList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVatTypeList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetVatTypeList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ClientService">
+    <wsdl:port name="ClientServiceSoap" binding="tns:ClientServiceSoap">
+      <soap:address location="https://api.24sevenoffice.com/Client/V001/ClientService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ClientServiceSoap12" binding="tns:ClientServiceSoap12">
+      <soap12:address location="https://api.24sevenoffice.com/Client/V001/ClientService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

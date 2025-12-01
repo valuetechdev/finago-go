@@ -1,0 +1,2483 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Payroll API documentation",
+    "description": "<br>This is Finago Payday's API documentation. Before testing on server:<br><br><p><ul> <li>  Generate Access Token from https://payroll.24sevenoffice.com/index.php?page=register/installningar24.php&tab=7</li><li>Run GET request manually with Access token to receive Auth token /api/auth?token={Access token}</li><li> Use Auth token in future requests using \"Authorization: Bearer {Auth token}\" </li></ul><br/>",
+    "contact": {
+      "name": "Help Center",
+      "url": "https://support.24sevenoffice.com/hc/no/"
+    },
+    "version": "2.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://payroll.24sevenoffice.com/api"
+    }
+  ],
+  "security": [
+    {
+      "APIKeyHeader": []
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Obtain auth token",
+        "description": "Use a persistent token generated in settings page to obtain a temporary authentication token which will be used in future request for authorization",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "description": "persistent token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success!",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/employee/v2": {
+      "get": {
+        "tags": [
+          "Employee (ansatt)"
+        ],
+        "summary": "Get all employee information",
+        "description": "Get all employee information for the company.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "responses": {
+          "200": {
+            "description": "Array of all employee information for the company.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "1",
+                      "email": "person@maxpa.se",
+                      "email_copy": "",
+                      "firstname": "Pers",
+                      "lastname": "Person",
+                      "postaddress": "Oslogatan 32",
+                      "zipcode": "4805",
+                      "city": "OSLO",
+                      "countryCode": "NO",
+                      "clearingno": "",
+                      "account": "89974064871181",
+                      "bic": "",
+                      "employee_date": "2021-01-01",
+                      "telefon": "555-123412",
+                      "personnr": "16024301269",
+                      "internationalID": {
+                        "countryCode": "",
+                        "ID": "",
+                        "type": "passnummer"
+                      },
+                      "salary_type": "monthly",
+                      "salary": "100000.00",
+                      "salary_valid_from": "2023-04-01",
+                      "taxtable": "7150",
+                      "employment_rate": "100.00",
+                      "employment_rate_valid_from": "2024-10-16",
+                      "hours_per_week": "37.50",
+                      "hours_per_week_valid_from": "2023-09-01",
+                      "vacation_percent": "12.00",
+                      "vacation_percent_valid_from": "2022-10-01",
+                      "vacation_days": "30",
+                      "hidden": "0",
+                      "percentage_tax_main_employer": "31.00",
+                      "percentage_tax_bi_employer": "",
+                      "tax_resident_country": "",
+                      "continental_shelf": "1",
+                      "taxexemption": {
+                        "percentage": "",
+                        "amount": ""
+                      },
+                      "accounting": [
+                        {
+                          "percentage": "50.00",
+                          "dimensions": [
+                            {
+                              "dimid": "1",
+                              "value": "1"
+                            },
+                            {
+                              "dimid": "2",
+                              "value": "10"
+                            }
+                          ]
+                        },
+                        {
+                          "percentage": "50.00",
+                          "dimensions": [
+                            {
+                              "dimid": "1",
+                              "value": "11"
+                            }
+                          ]
+                        }
+                      ],
+                      "employee_field_1": "",
+                      "employee_field_2": "Value"
+                    },
+                    {
+                      "empId": "2",
+                      "email": "test@test.se",
+                      "email_copy": "",
+                      "firstname": "Test",
+                      "lastname": "Testsson",
+                      "postaddress": "Kopenhavnveien 23",
+                      "zipcode": "3520",
+                      "city": "Köpenhamn",
+                      "countryCode": "DK",
+                      "clearingno": "",
+                      "account": "SE728000081034000978324",
+                      "bic": "",
+                      "employee_date": "2021-02-10",
+                      "telefon": "0767641908",
+                      "personnr": "01049042287",
+                      "internationalID": {
+                        "countryCode": "",
+                        "ID": "",
+                        "type": "passnummer"
+                      },
+                      "salary_type": "monthly",
+                      "salary": "36000.00",
+                      "salary_valid_from": "2024-01-01",
+                      "taxtable": "6300",
+                      "employment_rate": "50.00",
+                      "employment_rate_valid_from": "2021-12-01",
+                      "hours_per_week": "37.5",
+                      "hours_per_week_valid_from": "",
+                      "vacation_percent": "12.00",
+                      "vacation_percent_valid_from": "2024-05-01",
+                      "vacation_days": "25",
+                      "hidden": "0",
+                      "percentage_tax_main_employer": "35.00",
+                      "percentage_tax_bi_employer": "",
+                      "tax_resident_country": "",
+                      "continental_shelf": "",
+                      "taxexemption": {
+                        "percentage": "",
+                        "amount": ""
+                      },
+                      "accounting": [],
+                      "employee_field_1": "",
+                      "employee_field_2": ""
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Employee (ansatt)"
+        ],
+        "summary": "Add new employee",
+        "description": "Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{empId=26, email=test55vcccx@gmail.com, email_copy=, firstname=Kalle, lastname=Anka, postaddress=Storgatan 1, zipcode=1701, city=, countryCode=NO, clearingno=, account=, bic=NDEANOKK, employee_date=2023-01-01, telefon=782193784, personnr=191010101010, internationalID={countryCode=SE, ID=12312as, type=passnummer}, salary_type=monthly, salary=25000, salary_valid_from=2023-01-01, taxtable=6300, employment_rate=90, employment_rate_valid_from=2023-07-01, hours_per_week=37.50, hours_per_week_valid_from=2020-09-01, vacation_percent=12, vacation_percent_valid_from=2023-06-01, vacation_days=25, hidden=0, percentage_tax_main_employer=31.00, percentage_tax_bi_employer=, taxexemption={percentage=20, amount=1000}, accounting=[{percentage=50.00, dimensions=[{dimid=1, value=1}, {dimid=2, value=10}]}, {percentage=50.00, dimensions=[{dimid=1, value=11}]}], employee_field_1=, employee_field_2=Value}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid input, object invalid",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "409": {
+            "description": "An existing item already exists",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/employee/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Employee (ansatt)"
+        ],
+        "summary": "Get employee information for an employee",
+        "description": "Get all employee information for a specific employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment Id (ansattnr) of the person to get info for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success list of employee JSON",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "9",
+                      "email": "feriepengtest@test.se",
+                      "email_copy": "",
+                      "firstname": "Test",
+                      "lastname": "Feriepeng",
+                      "postaddress": "",
+                      "zipcode": "",
+                      "city": "",
+                      "countryCode": "NO",
+                      "clearingno": "1234",
+                      "account": "SE1212121212111",
+                      "bic": "SWEDSESS",
+                      "employee_date": "",
+                      "telefon": "0767641908",
+                      "personnr": "04024400951",
+                      "internationalID": {
+                        "countryCode": "",
+                        "ID": "",
+                        "type": "passnummer"
+                      },
+                      "salary_type": "hourly",
+                      "salary": "160.00",
+                      "salary_valid_from": "2024-09-01",
+                      "taxtable": "",
+                      "employment_rate": "80.00",
+                      "employment_rate_valid_from": "2023-05-01",
+                      "hours_per_week": "37.50",
+                      "hours_per_week_valid_from": "2023-05-01",
+                      "vacation_percent": "12.00",
+                      "vacation_percent_valid_from": "2023-04-01",
+                      "vacation_days": "30",
+                      "hidden": "0",
+                      "percentage_tax_main_employer": "50.00",
+                      "percentage_tax_bi_employer": "",
+                      "tax_resident_country": "SE",
+                      "continental_shelf": "1",
+                      "taxexemption": {
+                        "percentage": "",
+                        "amount": ""
+                      },
+                      "accounting": [
+                        {
+                          "percentage": "50.00",
+                          "dimensions": [
+                            {
+                              "dimid": "1",
+                              "value": "1"
+                            },
+                            {
+                              "dimid": "2",
+                              "value": "10"
+                            }
+                          ]
+                        },
+                        {
+                          "percentage": "50.00",
+                          "dimensions": [
+                            {
+                              "dimid": "1",
+                              "value": "11"
+                            }
+                          ]
+                        }
+                      ],
+                      "employee_field_1": "",
+                      "employee_field_2": "Value"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Employee (ansatt)"
+        ],
+        "summary": "Update existing employee in the company.",
+        "description": "Update an existing employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employee Id of the employee to edit.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{empId=23, email=test@gmail.com, email_copy=test_copy@gmail.com, firstname=Kalle, lastname=Anka, postaddress=Storgatan 1, zipcode=1054, city=Copenhagen, countryCode=DK, clearingno=, account=, bic=NDEANOKK, employee_date=2023-01-01, salary_type=monthly, salary=25000, salary_valid_from=2023-01-01, taxtable=32, employment_rate=100.00, employment_rate_valid_from=2023-07-01, hours_per_week=37.50, hours_per_week_valid_from=2020-09-01, vacation_percent=12.80, vacation_percent_valid_from=2023-06-01, vacation_days=28, hidden=0, percentage_tax_main_employer=31.00, percentage_tax_bi_employer=, taxexemption={percentage=20, amount=1000}, accounting=[{percentage=50.00, dimensions=[{dimid=1, value=1}, {dimid=2, value=10}]}, {percentage=50.00, dimensions=[{dimid=1, value=11}]}], employee_field_1=, employee_field_2=Value}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid input, object invalid",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/employee_field/v2/": {
+      "get": {
+        "tags": [
+          "Employee field (egendefinert ansatt felt)"
+        ],
+        "summary": "Get list of custom employee fields",
+        "description": "Get a JSON-encoded list of all custom employee fields for the client.\n\nDescription of fields:<ul><li><b>id</b></li><li><b>name</b></li><li><b>type</b> type of input. Available values:<ul><li><b>0</b> free text. Values of the employee field can be anything</li><li><b>1</b> enum field. Available values is given in 'available_values'</li></ul></li><li><b>export</b> determines if the field is exported in employee lists and can be used for import.</li></ul>",
+        "responses": {
+          "200": {
+            "description": "Array of all custom employee fields for the client.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "id": "1",
+                      "name": "Field 1",
+                      "type": "1",
+                      "export": "1",
+                      "available_values": [
+                        "Value 1",
+                        "Value 2",
+                        "Value 3"
+                      ]
+                    },
+                    {
+                      "id": "2",
+                      "name": "Field 2",
+                      "type": "0",
+                      "export": "0",
+                      "available_values": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Employee field (egendefinert ansatt felt)"
+        ],
+        "summary": "Post a new custom employee field",
+        "description": "Add a new custom employee field.\n\nDescription of fields:<ul><li><b>id</b></li><li><b>name</b></li><li><b>type</b> type of input. Available values:<ul><li><b>0</b> free text. Values of the employee field can be anything</li><li><b>1</b> enum field. Available values is given in 'available_values'</li></ul></li><li><b>export</b> determines if the field is exported in employee lists and can be used for import.</li></ul>",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{name=Field 1, type=1, export=1, available_values=[Value 1, Value 2, Value 3]}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "JSON object of the employee field created",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/employee_field/v2/{id}": {
+      "get": {
+        "tags": [
+          "Employee field (egendefinert ansatt felt)"
+        ],
+        "summary": "Get a specific custom employee fields",
+        "description": "Get a JSON object of the custom employee fields with the specified ID.\n\nDescription of fields:<ul><li><b>id</b></li><li><b>name</b></li><li><b>type</b> type of input. Available values:<ul><li><b>0</b> free text. Values of the employee field can be anything</li><li><b>1</b> enum field. Available values is given in 'available_values'</li></ul></li><li><b>export</b> determines if the field is exported in employee lists and can be used for import.</li></ul>",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Employee field ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Custom employee fields with the specified ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "id": "1",
+                    "name": "Field 1",
+                    "type": "1",
+                    "export": "1",
+                    "available_values": [
+                      "Value 1",
+                      "Value 2",
+                      "Value 3"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Employee field (egendefinert ansatt felt)"
+        ],
+        "summary": "Update an existing custom employee field",
+        "description": "Update an existing custom employee field with the specified ID.\n\nDescription of fields:<ul><li><b>id</b></li><li><b>name</b></li><li><b>type</b> type of input. Available values:<ul><li><b>0</b> free text. Values of the employee field can be anything</li><li><b>1</b> enum field. Available values is given in 'available_values'</li></ul></li><li><b>export</b> determines if the field is exported in employee lists and can be used for import.</li></ul>",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Employee field ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{name=Field 1, type=1, export=1, available_values=[Value 1, Value 2, Value 3]}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "JSON object of the employee field created",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/employment/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Employment (arbeidsforhold)"
+        ],
+        "summary": "Get list of employments for employee",
+        "description": "Get a JSON-encoded list of all employments for the employee with the specified employee ID (ansattnr). \n\nDescription of fields:<ul><li><b>employment_id</b> (arbeidsforhold ID) identifier of the employment.</li><li><b>primary_employment</b> (primært) specifies the primary employment</li><li><b>startdate</b> start date of the employment. Required for new employments. Format YYYY-MM-DD</li><li><b>enddate</b> end date of employment. enddate_reason is required if enddate is specified. Format YYYY-MM-DD</li><li><b>enddate_reason</b> (oppsigelse type) reason for terminating the employment. Available values are:<br><b>(norwegian clients)</b><ul><b><li>arbeidsforholdetSkulleAldriVaertRapportert</li><li>arbeidsgiverHarSagtOppArbeidstaker</li><li>arbeidstakerHarSagtOppSelv</li><li>byttetLoenssystemEllerRegnskapsfoerer</li><li>endringIOrganisasjonsstrukturEllerByttetJobbInternt</li><li>kontraktEngasjementEllerVikariatErUtloept</li></b></ul><b>(swedish clients)</b><ul><li><b>Ingen</b></li><li><b>UppsagdArbetsbrist</b></li><li><b>TidsbegransadAnstallning</b></li><li><b>EgenBegaran</b></li><li><b>SlutProvanstallningAnstalldBeslut</b></li><li><b>SlutProvanstallningArbetsgivareBeslut</b></li><li><b>Konkurs</b></li><li><b>AnnanOrsak</b></li></ul><li><b>employment_form</b> (ansatt type) available values are:<br><b>(norwegian clients)</b><ul><b><li>fast</li><li>fastAnsattUtleid</li><li>midlertidig</li><li>midlertidigAnsattUtleid</li><li>midlertidigAnsattSomTilkallingsvikar</li></b></ul><b>(swedish clients)</b><ul><b><li>Ingen</li><li>Tillsvidare</li><li>Provanstallning</li><li>Behovsanstalld</li><li>Tidsbegransad</li></b></ul></li><li><b>profession_code</b> (yrkeskode) code of the employee's profession</li><li><b>employment_rate</b> (stillingsprosent) employement rate in this employment</li><li><b>employment_type</b> (arbeidsforhold) available values are:<ul><b><li>ordinaertArbeidsforhold</li><li>maritimtArbeidsforhold</li><li>frilanserOppdragstakerHonorarPersonerMm</li><li>pensjonOgAndreTyperYtelserUtenAnsettelsesforhold</li></b></ul></li><li><b>enterprise_number</b> (virksomhetsnummer) enterprise number of the organization which this employment is tied to</li><li><b>working_times</b> (arbeidstidsordning) available values are:<ul><b><li>ikkeSkift</li><li>offshore336</li><li>doegnkontinuerligSkiftOgTurnus355</li><li>helkontinuerligSkiftOgAndreOrdninger336</li><li>skift365</li><li>andreSkift</li></b></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment ID (ansattnr) of the person to get employments for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all employments for the employee.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "employment_id": "32553-1",
+                      "primary_employment": "1",
+                      "startdate": "2020-11-01",
+                      "enddate": "",
+                      "enddate_reason": "",
+                      "employment_form": "fast",
+                      "profession_code": "2130102",
+                      "employment_rate": "90.00",
+                      "employment_type": "ordinaertArbeidsforhold",
+                      "enterprise_number": "811010472",
+                      "working_times": "ikkeSkift"
+                    },
+                    {
+                      "employment_id": "32553-3",
+                      "primary_employment": "0",
+                      "startdate": "2022-06-23",
+                      "enddate": "",
+                      "enddate_reason": "",
+                      "employment_form": "fast",
+                      "profession_code": "1142102",
+                      "employment_rate": "50.00",
+                      "employment_type": "ordinaertArbeidsforhold",
+                      "enterprise_number": "811010472",
+                      "working_times": "ikkeSkift"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Employment (arbeidsforhold)"
+        ],
+        "summary": "Post a new employment, or update an existing",
+        "description": "Update an existing or add a new employment.\n\nIf employment_id is provided and an existing employment has the specified employment_id, that employment will be updated. If employment_id is not provided or no employment exists on current employee with the specified employment_id, a new employment will be created. employment_id will be automatically generated on a new employment if it is not provided.\n\nDescription of fields:<ul><li><b>employment_id</b> (arbeidsforhold ID) identifier of the employment.</li><li><b>primary_employment</b> (primært) specifies the primary employment</li><li><b>startdate</b> start date of the employment. Required for new employments. Format YYYY-MM-DD</li><li><b>enddate</b> end date of employment. enddate_reason is required if enddate is specified. Format YYYY-MM-DD</li><li><b>enddate_reason</b> (oppsigelse type) reason for terminating the employment. Available values are:<br><b>(norwegian clients)</b><ul><b><li>arbeidsforholdetSkulleAldriVaertRapportert</li><li>arbeidsgiverHarSagtOppArbeidstaker</li><li>arbeidstakerHarSagtOppSelv</li><li>byttetLoenssystemEllerRegnskapsfoerer</li><li>endringIOrganisasjonsstrukturEllerByttetJobbInternt</li><li>kontraktEngasjementEllerVikariatErUtloept</li></b></ul><b>(swedish clients)</b><ul><li><b>Ingen</b></li><li><b>UppsagdArbetsbrist</b></li><li><b>TidsbegransadAnstallning</b></li><li><b>EgenBegaran</b></li><li><b>SlutProvanstallningAnstalldBeslut</b></li><li><b>SlutProvanstallningArbetsgivareBeslut</b></li><li><b>Konkurs</b></li><li><b>AnnanOrsak</b></li></ul><li><b>employment_form</b> (ansatt type) available values are:<br><b>(norwegian clients)</b><ul><b><li>fast</li><li>fastAnsattUtleid</li><li>midlertidig</li><li>midlertidigAnsattUtleid</li><li>midlertidigAnsattSomTilkallingsvikar</li></b></ul><b>(swedish clients)</b><ul><b><li>Ingen</li><li>Tillsvidare</li><li>Provanstallning</li><li>Behovsanstalld</li><li>Tidsbegransad</li></b></ul></li><li><b>profession_code</b> (yrkeskode) code of the employee's profession</li><li><b>employment_rate</b> (stillingsprosent) employement rate in this employment</li><li><b>employment_type</b> (arbeidsforhold) available values are:<ul><b><li>ordinaertArbeidsforhold</li><li>maritimtArbeidsforhold</li><li>frilanserOppdragstakerHonorarPersonerMm</li><li>pensjonOgAndreTyperYtelserUtenAnsettelsesforhold</li></b></ul></li><li><b>enterprise_number</b> (virksomhetsnummer) enterprise number of the organization which this employment is tied to</li><li><b>working_times</b> (arbeidstidsordning) available values are:<ul><b><li>ikkeSkift</li><li>offshore336</li><li>doegnkontinuerligSkiftOgTurnus355</li><li>helkontinuerligSkiftOgAndreOrdninger336</li><li>skift365</li><li>andreSkift</li></b></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment ID (ansattnr) of the person to post employments for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "[{employment_id=32553-1, primary_employment=1, startdate=2020-11-01, enddate=, enddate_reason=, employment_form=fast, profession_code=2130102, employment_rate=90.00, employment_type=ordinaertArbeidsforhold, enterprise_number=811010472, working_times=ikkeSkift}, {employment_id=32553-3, primary_employment=0, startdate=2022-06-23, enddate=, enddate_reason=, employment_form=fast, profession_code=1142102, employment_rate=50.00, employment_type=ordinaertArbeidsforhold, enterprise_number=811010472, working_times=ikkeSkift}]"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Array of all employments for the employee.",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/payrollrun/v2/": {
+      "get": {
+        "tags": [
+          "Payroll run (lønnskjøring)"
+        ],
+        "summary": "Get list of payroll runs for the company",
+        "description": "Get a JSON-encoded list of payroll runs for the company.\n\nDescription of fields:<ul><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run</li><li><b>startDate</b> (periode fra) start date of the payroll run. Format YYYY-MM-DD</li><li><b>endDate</b> (periode til) end date of the payroll run. Format YYYY-MM-DD</li><li><b>paymentDate</b> (betalingsdato) payment date of the payroll run. Format YYYY-MM-DD</li><li><b>name</b> user-defined name of the payroll run</li><li><b>created</b> date when the payroll run was created. Format YYYY-MM-DD</li><li><b>locked</b> boolean value telling whether the payroll run is locked or not</li><li><b>type</b> type of payroll run. Available types are: <ul><li><b>Ordinary</b> (ordinær)</li><li><b>Until now</b> (hittilkjøring)</li><li><b>Extra</b> (ekstrakjøring)</li><li><b>Vacation</b> (feriekjøring)</li></ul></li><li><b>limitDate</b> (dato variable poster) limit date for included transactions. Format YYYY-MM-DD</li><li><b>payrollGroup</b> group that the payroll is connected to</li><li><b>payslips</b> number of payslips on the payroll run</li></ul>",
+        "responses": {
+          "200": {
+            "description": "Array of all available payroll runs for the company.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "payrollrunId": "44",
+                      "startDate": "2023-07-01 00:00:00",
+                      "endDate": "2023-08-01 00:00:00",
+                      "paymentDate": "2023-07-21 00:00:00",
+                      "name": "",
+                      "created": "2023-07-24 15:08:04",
+                      "locked": "0",
+                      "type": "Ordinary",
+                      "limitDate": "",
+                      "payrollGroup": "Grupp A",
+                      "payslips": "6"
+                    },
+                    {
+                      "payrollrunId": "43",
+                      "startDate": "2023-06-12 00:00:00",
+                      "endDate": "2023-06-13 00:00:00",
+                      "paymentDate": "2023-06-12 00:00:00",
+                      "name": "Extra run",
+                      "created": "2023-06-13 11:22:27",
+                      "locked": "1",
+                      "type": "Extra",
+                      "limitDate": "",
+                      "payrollGroup": "",
+                      "payslips": "1"
+                    },
+                    {
+                      "payrollrunId": "42",
+                      "startDate": "2023-06-01 00:00:00",
+                      "endDate": "2023-07-01 00:00:00",
+                      "paymentDate": "2023-06-23 00:00:00",
+                      "name": "",
+                      "created": "2023-06-12 15:54:46",
+                      "locked": "0",
+                      "type": "Ordinary",
+                      "limitDate": "",
+                      "payrollGroup": "",
+                      "payslips": "11"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/payrollrun/v2/{payrollrunId}": {
+      "get": {
+        "tags": [
+          "Payroll run (lønnskjøring)"
+        ],
+        "summary": "Get payroll run with the specified payrollrunId",
+        "description": "Get a JSON-encoded list of payroll runs for the company.\n\nDescription of fields:<ul><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run</li><li><b>startDate</b> (periode fra) start date of the payroll run. Format YYYY-MM-DD</li><li><b>endDate</b> (periode til) end date of the payroll run. Format YYYY-MM-DD</li><li><b>paymentDate</b> (betalingsdato) payment date of the payroll run. Format YYYY-MM-DD</li><li><b>name</b> user-defined name of the payroll run</li><li><b>created</b> date when the payroll run was created. Format YYYY-MM-DD</li><li><b>locked</b> boolean value telling whether the payroll run is locked or not</li><li><b>type</b> type of payroll run. Available types are: <ul><li><b>Ordinary</b> (ordinær)</li><li><b>Until now</b> (hittilkjøring)</li><li><b>Extra</b> (ekstrakjøring)</li><li><b>Vacation</b> (feriekjøring)</li></ul></li><li><b>limitDate</b> (dato variable poster) limit date for included transactions. Format YYYY-MM-DD</li><li><b>payrollGroup</b> group that the payroll is connected to</li><li><b>payslips</b> number of payslips on the payroll run</li></ul>",
+        "parameters": [
+          {
+            "name": "payrollrunId",
+            "in": "path",
+            "description": "Payrollrun Id of the payrollrun to get.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns info about the specific payrollrun",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "payrollrunId": "43",
+                      "startDate": "2023-06-12 00:00:00",
+                      "endDate": "2023-06-13 00:00:00",
+                      "paymentDate": "2023-06-12 00:00:00",
+                      "name": "Extra run",
+                      "created": "2023-06-13 11:22:27",
+                      "locked": "1",
+                      "type": "Extra",
+                      "limitDate": "",
+                      "payrollGroup": "",
+                      "payslips": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/payslips/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Payslips (lønnsslipper)"
+        ],
+        "summary": "Get list of available payslips for employee",
+        "description": "Get a JSON-encoded list of available payslips for an employee.\n\nDescription of fields:<ul><li><b>text</b> text representation of the period of the payslip</li><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run which the payslip is connected to</li><li><b>startDate</b> (periode fra) start date of the period of the payslip</li><li><b>endDate</b> (periode til) end date of the period of the payslip</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment Id (ansattnr) of the person to get payslips for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all available payslips for the employee.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "text": "Mai  2023",
+                      "payrollrunId": "41",
+                      "startDate": "01.05.2023",
+                      "endDate": "31.05.2023"
+                    },
+                    {
+                      "text": "April  2023",
+                      "payrollrunId": "40",
+                      "startDate": "01.04.2023",
+                      "endDate": "30.04.2023"
+                    },
+                    {
+                      "text": "27.04.2023 - 27.04.2023",
+                      "payrollrunId": "39",
+                      "startDate": "27.04.2023",
+                      "endDate": "27.04.2023"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/payslip/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Payslip (lønnsslipp)"
+        ],
+        "summary": "Get payslips for an employee",
+        "description": "Get the 20 latest payslips for an employee. Payslips earlier than this need to be requested with payrollrunId specified.\n\nThe payslips returned are base64 encoded PDFs.",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment Id (ansattnr) of the person to get payslips for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Base64 encoded payslip PDF.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/payslip/v2/{empId}/{payrollrunId}": {
+      "get": {
+        "tags": [
+          "Payslip (lønnsslipp)"
+        ],
+        "summary": "Get a payslip for an employee",
+        "description": "Get a payslip for an employee specified via the ID of the payroll run.\n\nThe payslip returned is a base64 encoded PDF.",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment Id (ansattnr) of the person to get info for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "payrollrunId",
+            "in": "path",
+            "description": "ID of payroll run to get the payslip for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Base64 encoded payslip PDF.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/payslipJSON/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Payslip as JSON (lønnsslipp som JSON)"
+        ],
+        "summary": "Get payslips for an employee as JSON",
+        "description": "Get the 20 latest payslips for an employee. Payslips earlier than this need to be requested with payrollrunId specified.\n\nThe payslips returned are JSON-formatted.\n\nDescription of fields:<ul><li><b>payrollrunId</b> ID of the payroll which the payslip is connected to</li><li><b>netPay</b> net amount paid out</li><li><b>paymentDate</b></li><li><b>paylines</b> array of payment lines<ul><li><b>sumrow</b> boolean value whether the line is a sumrow or not</li><li><b>code</b> payrollcode of the wage type</li><li><b>text</b> text description of the payline</li><li><b>quantity</b> quantity of the payline</li><li><b>unitPrice</b> unit price of the payline</li><li><b>extent</b> extent of the payline</li><li><b>tax</b> tax calculation of the payline. Available values are:<ul><li><b>Table Tax</b></li><li><b>Percentage Tax</b></li><li><i>Empty (no tax)</i></li></ul></li><li><b>amount</b> total amount of the payline</li></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment Id (ansattnr) of the person to get payslips for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON encoded payslips.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "payrollrunId": "53",
+                      "netPay": "757310.00",
+                      "paymentDate": "2024-01-23",
+                      "paylines": [
+                        {
+                          "sumrow": false,
+                          "code": "100",
+                          "text": "Fast lønn",
+                          "quantity": "31.00",
+                          "unitPrice": "57996.25",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "1797883.75"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum lønn",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1797883.75"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "635",
+                          "text": "Fri bil - standardregelen",
+                          "quantity": "",
+                          "unitPrice": "5625.00",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "5625.00"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum naturalytelser",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "5625.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "90016",
+                          "text": "Busskort (Busskort)",
+                          "quantity": "1.00",
+                          "unitPrice": "1200.00",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1200.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "318",
+                          "text": "Bilgodtgjørelse Trekkpl.",
+                          "quantity": "100.00",
+                          "unitPrice": "0.63",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "63.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "117",
+                          "text": "Kilometergodtgjørelse Bil",
+                          "quantity": "100.00",
+                          "unitPrice": "3.50",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "350.00"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum Reise og utlegg",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1613.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "511",
+                          "text": "Fagforeningstrekk (Petter), trekkpliktig",
+                          "quantity": "1.00",
+                          "unitPrice": "-28257.68",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-28257.68"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "510",
+                          "text": "Fagforeningstrekk (Petter)",
+                          "quantity": "1.00",
+                          "unitPrice": "-7700.00",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "-7700.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "511",
+                          "text": "Fagforeningstrekk (Petter), trekkpliktig",
+                          "quantity": "1.00",
+                          "unitPrice": "-35957.68",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-35957.68"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "511",
+                          "text": "Fagforeningstrekk (Petter), forsikringsbeløp, trekkpliktig",
+                          "quantity": "1.00",
+                          "unitPrice": "-500.00",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-500.00"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum trekk",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-72415.36"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Trekkgrunnlag tabell",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1795871.75"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "881",
+                          "text": "Prosenttrekk, 54%",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-969771.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "999",
+                          "text": "Avrunding",
+                          "quantity": "",
+                          "unitPrice": "-0.39",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-0.39"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/payslipJSON/v2/{empId}/{payrollrunId}": {
+      "get": {
+        "tags": [
+          "Payslip as JSON (lønnsslipp som JSON)"
+        ],
+        "summary": "Get a payslip for an employee as JSON",
+        "description": "Get a payslip for an employee specified via the ID of the payroll run.\n\nThe payslip returned is JSON-formatted.\n\nDescription of fields:<ul><li><b>payrollrunId</b> ID of the payroll which the payslip is connected to</li><li><b>netPay</b> net amount paid out</li><li><b>paymentDate</b></li><li><b>paylines</b> array of payment lines<ul><li><b>sumrow</b> boolean value whether the line is a sumrow or not</li><li><b>code</b> payrollcode of the wage type</li><li><b>text</b> text description of the payline</li><li><b>quantity</b> quantity of the payline</li><li><b>unitPrice</b> unit price of the payline</li><li><b>extent</b> extent of the payline</li><li><b>tax</b> tax calculation of the payline. Available values are:<ul><li><b>Table Tax</b></li><li><b>Percentage Tax</b></li><li><i>Empty (no tax)</i></li></ul></li><li><b>amount</b> total amount of the payline</li></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employment Id (ansattnr) of the person to get info for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "payrollrunId",
+            "in": "path",
+            "description": "ID of payroll run to get the payslip for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON encoded payslip.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "payrollrunId": "53",
+                      "netPay": "757310.00",
+                      "paymentDate": "2024-01-23",
+                      "paylines": [
+                        {
+                          "sumrow": false,
+                          "code": "100",
+                          "text": "Fast lønn",
+                          "quantity": "31.00",
+                          "unitPrice": "57996.25",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "1797883.75"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum lønn",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1797883.75"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "635",
+                          "text": "Fri bil - standardregelen",
+                          "quantity": "",
+                          "unitPrice": "5625.00",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "5625.00"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum naturalytelser",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "5625.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "90016",
+                          "text": "Busskort (Busskort)",
+                          "quantity": "1.00",
+                          "unitPrice": "1200.00",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1200.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "318",
+                          "text": "Bilgodtgjørelse Trekkpl.",
+                          "quantity": "100.00",
+                          "unitPrice": "0.63",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "63.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "117",
+                          "text": "Kilometergodtgjørelse Bil",
+                          "quantity": "100.00",
+                          "unitPrice": "3.50",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "350.00"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum Reise og utlegg",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1613.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "511",
+                          "text": "Fagforeningstrekk (Petter), trekkpliktig",
+                          "quantity": "1.00",
+                          "unitPrice": "-28257.68",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-28257.68"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "510",
+                          "text": "Fagforeningstrekk (Petter)",
+                          "quantity": "1.00",
+                          "unitPrice": "-7700.00",
+                          "extent": "100.00",
+                          "tax": "Tabellskatt",
+                          "amount": "-7700.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "511",
+                          "text": "Fagforeningstrekk (Petter), trekkpliktig",
+                          "quantity": "1.00",
+                          "unitPrice": "-35957.68",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-35957.68"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "511",
+                          "text": "Fagforeningstrekk (Petter), forsikringsbeløp, trekkpliktig",
+                          "quantity": "1.00",
+                          "unitPrice": "-500.00",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-500.00"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Sum trekk",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-72415.36"
+                        },
+                        {
+                          "sumrow": true,
+                          "code": "",
+                          "text": "Trekkgrunnlag tabell",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "1795871.75"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "881",
+                          "text": "Prosenttrekk, 54%",
+                          "quantity": "",
+                          "unitPrice": "",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-969771.00"
+                        },
+                        {
+                          "sumrow": false,
+                          "code": "999",
+                          "text": "Avrunding",
+                          "quantity": "",
+                          "unitPrice": "-0.39",
+                          "extent": "100.00",
+                          "tax": "",
+                          "amount": "-0.39"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/dimension/v2": {
+      "get": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Get all dimensions",
+        "description": "Get all available dimensions in the company.\n\nDescription of fields:\n<ul><li><b>dimid</b> id of the dimension</li><li><b>name</b> name of the dimension</li></ul>",
+        "responses": {
+          "200": {
+            "description": "Array of all absence periods registered in the company.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "dimid": "1",
+                      "name": "Department"
+                    },
+                    {
+                      "dimid": "2",
+                      "name": "Project"
+                    },
+                    {
+                      "dimid": "3",
+                      "name": "Produkter"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/dimension/v2/{dimid}": {
+      "get": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Get all dimension values for the dimension with the specified dimid",
+        "description": "Get all dimension values for the dimension with the specified dimid.\n\nDescription of fields:\n<ul><li><b>value</b> dimension value</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not</li></ul>",
+        "parameters": [
+          {
+            "name": "dimid",
+            "in": "path",
+            "description": "Numeric id of the dimension to get values for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all dimension values for the dimension with the specified dimid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "value": "1",
+                      "name": "Dimension value 1",
+                      "active": "1"
+                    },
+                    {
+                      "value": "10",
+                      "name": "Dimension value 10",
+                      "active": "1"
+                    },
+                    {
+                      "value": "1000",
+                      "name": "Dimension value 1000",
+                      "active": "0"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Add a new dimension value or update an existing dimension value for the dimension with the specified dimid",
+        "description": "Add a new dimension value or update an existing dimension value for the dimension with the specified dimid. Value is mandatory and if the value exist the dimension value will be updated. Otherwise a new dimension value is created.\n\nPost fields:\n<ul><li><b>value</b> dimension value. Mandatory field.</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not. Available values:<ul><li><b>1</b> active</li><li><b>0</b> inactive</li></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "dimid",
+            "in": "path",
+            "description": "Numeric id of the dimension to get values for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "text/html": {
+              "schema": {
+                "type": "string",
+                "example": "{value=1002, name=New dimension value, active=1}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/dimension/v2/{dimid}/{value}": {
+      "get": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Get a specific dimension value",
+        "description": "Get a specific dimension value.\n\nDescription of fields:\n<ul><li><b>value</b> dimension value</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not</li></ul>",
+        "parameters": [
+          {
+            "name": "dimid",
+            "in": "path",
+            "description": "Numeric id of the dimension to get values for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "description": "Value of the dimension value to get.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array with the dimension value object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "value": "1",
+                      "name": "Dimension value 1",
+                      "active": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/absence/v2": {
+      "get": {
+        "tags": [
+          "Absence (fravær)"
+        ],
+        "summary": "Get all absence",
+        "description": "Get all registered absence data for all employees in the company. Result can be limited with the search filter criteria.\n\n<b>Filter</b>\nFilters can be added as query parameters by adding a question mark (?) at the end of the URL and then separate different filters with ampersands (&). Available filters can be found below in the Parameters-section.\n<u>Example</u>: payroll.24sevenoffice.com/api/absence/v2?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1\n\nDescription of fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
+        "parameters": [
+          {
+            "name": "serialNo",
+            "in": "query",
+            "description": "Internal ID of an absence",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "datefrom",
+            "in": "query",
+            "description": "Start date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateto",
+            "in": "query",
+            "description": "End date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all absence periods registered in the company.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "1",
+                      "serialNo": "161",
+                      "startDate": "2024-01-01 00:00:00",
+                      "endDate": "2024-01-03 00:00:00",
+                      "comment": "",
+                      "requestDate": "2024-01-03 15:39:31",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "02",
+                      "description": "Sykt barn",
+                      "childId": "102701",
+                      "numberOfDays": "",
+                      "permisjonId": "",
+                      "startdateParental": "",
+                      "lastChanged": "",
+                      "externalId": ""
+                    },
+                    {
+                      "empId": "1",
+                      "serialNo": "10",
+                      "startDate": "2023-05-01 00:00:00",
+                      "endDate": "2023-06-01 00:00:00",
+                      "comment": "",
+                      "requestDate": "",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "12",
+                      "description": "Andre permisjoner - lovfestet",
+                      "childId": "",
+                      "numberOfDays": "",
+                      "permisjonId": "10",
+                      "startdateParental": "",
+                      "lastChanged": "2024-03-08 11:29:11",
+                      "externalId": ""
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Absence (fravær)"
+        ],
+        "summary": "Add new absence or update existing",
+        "description": "empId is mandatory to include in the body. To update an existing absence you need to add the serialNo of the absence period.\n\nAn absence period must have an absenceType.\n\nPost fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for permission-type absence (alphabetical absence types). Format YYYY-MM-DD</li><li><b>comment</b> comment field</li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) code specifying type of absence. List of available absence types and corresponding code can be retrieved from the absencetypes-endpoint</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Mandatory with absencetype category 'sick_child'</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absencetype category vacation</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Mandatory with absencetype with leave_of_absence_type 'permisjonMedForeldrepenger'. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
+        "requestBody": {
+          "content": {
+            "text/html": {
+              "schema": {
+                "type": "string",
+                "example": "{empId=1, absenceType=04, startDate=2022-03-01, endDate=2022-03-15, numberOfDays=7, comment=Travel to Oslo, childId=, serialNo=73, percent=100, permisjonId=, startdateParental=, externalId=1a}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/absence/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Absence (fravær)"
+        ],
+        "summary": "Get all absence for an employee",
+        "description": "Get all registered absence data for an employee. Result can be limited with the search filter criteria.\n\n<b>Filter</b>\nFilters can be added as query parameters by adding a question mark (?) at the end of the URL and then separate different filters with ampersands (&). Available filters can be found below in the Parameters-section.\n<u>Example</u>: payroll.24sevenoffice.com/api/absence/v2/1?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1\n\nDescription of fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Numeric employee number of the person to get absence for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "serialNo",
+            "in": "query",
+            "description": "Internal ID of an absence",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "datefrom",
+            "in": "query",
+            "description": "Start date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateto",
+            "in": "query",
+            "description": "End date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all absence periods of the specified employee.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "1",
+                      "serialNo": "161",
+                      "startDate": "2024-01-01 00:00:00",
+                      "endDate": "2024-01-03 00:00:00",
+                      "comment": "",
+                      "requestDate": "2024-01-03 15:39:31",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "02",
+                      "description": "Sykt barn",
+                      "childId": "102701",
+                      "numberOfDays": "",
+                      "permisjonId": "",
+                      "startdateParental": "",
+                      "lastChanged": "",
+                      "externalId": ""
+                    },
+                    {
+                      "empId": "1",
+                      "serialNo": "10",
+                      "startDate": "2023-05-01 00:00:00",
+                      "endDate": "2023-06-01 00:00:00",
+                      "comment": "",
+                      "requestDate": "",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "12",
+                      "description": "Andre permisjoner - lovfestet",
+                      "childId": "",
+                      "numberOfDays": "",
+                      "permisjonId": "10",
+                      "startdateParental": "",
+                      "lastChanged": "2024-03-08 11:29:11",
+                      "externalId": ""
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/absencetypes/v2": {
+      "get": {
+        "tags": [
+          "Absencetypes (fraværstyper)"
+        ],
+        "summary": "Get all available absence types",
+        "description": "Returns an array with all available absence types for this company. The code is used to identify absence type in the absence-endpoint.\n\nDescription of fields:<ul><li><b>description</b> text description of absenceType</li><li><b>code</b></li><li><b>inntektsmelding_type</b> (Inntektsmelding ytelse) type reported in Digital Inntektsmelding</li><li><b>permisjonId</b> boolean value. Describes if absence periods with this absence type should be reported with permisjonId or not.</li><li><b>leave_of_absence_type</b> (permisjonstype)</li><li><b>percentage</b> boolean value. Describes if absence periods with this absence type can be reported with percentage or not.</li><li><b>comment_mandatory</b> boolean value. Describes if comment is mandatory for absence periods with this absence type.</li><li><b>category</b> absence type category. Available values are:<ul><li>sickness</li><li>sick_child</li><li>self_report</li><li>vacation</li><li>leave_of_absence</li></ul></li></ul>",
+        "responses": {
+          "200": {
+            "description": "List of absence types JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "description": "Sykt barn",
+                      "code": "02",
+                      "inntektsmelding_type": "",
+                      "permisjonId": "0",
+                      "leave_of_absence_type": "",
+                      "percentage": "1",
+                      "comment_mandatory": "0",
+                      "category": "sick_child"
+                    },
+                    {
+                      "description": "Egenmelding",
+                      "code": "03",
+                      "inntektsmelding_type": "",
+                      "permisjonId": "0",
+                      "leave_of_absence_type": "",
+                      "percentage": "1",
+                      "comment_mandatory": "0",
+                      "category": "self_report"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absencetypes/v2/{code}": {
+      "get": {
+        "tags": [
+          "Absencetypes (fraværstyper)"
+        ],
+        "summary": "Get a specific absence types",
+        "description": "Returns an object with the properties of the specified absence type. The code is used to identify absence type in the absence-endpoint.\n\nDescription of fields:<ul><li><b>description</b> text description of absenceType</li><li><b>code</b></li><li><b>inntektsmelding_type</b> (Inntektsmelding ytelse) type reported in Digital Inntektsmelding</li><li><b>permisjonId</b> boolean value. Describes if absence periods with this absence type should be reported with permisjonId or not.</li><li><b>leave_of_absence_type</b> (permisjonstype)</li><li><b>percentage</b> boolean value. Describes if absence periods with this absence type can be reported with percentage or not.</li><li><b>comment_mandatory</b> boolean value. Describes if comment is mandatory for absence periods with this absence type.</li><li><b>category</b> absence type category. Available values are:<ul><li>sickness</li><li>sick_child</li><li>self_report</li><li>vacation</li><li>leave_of_absence</li></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Code of the absence type to get properties for.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of absence types JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "description": "Sykt barn",
+                      "code": "02",
+                      "inntektsmelding_type": "",
+                      "permisjonId": "0",
+                      "leave_of_absence_type": "",
+                      "percentage": "1",
+                      "comment_mandatory": "0",
+                      "category": "sick_child"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/child/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Child (barn)"
+        ],
+        "summary": "Get children of employee",
+        "description": "Returns an array of all the children connected to an employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number of the parent of the child</li><li><b>childId</b> internal ID of a child. Mandatory if an existing child should be updated. Can be retrieved via get-method.</li><li><b>firstname</b> firstname of the child</li><li><b>lastname</b> lastname of the child</li><li><b>birthdate</b> (fødselsdato) birthdate of the child. Format YYYY-MM-DD</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employee Id of person to get the children for",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of children JSON",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "firstnamn": "Carl",
+                      "surname": "Eriksson",
+                      "childId": "102701",
+                      "birthdate": "1999-12-01"
+                    },
+                    {
+                      "firstnamn": "Peter",
+                      "surname": "Andersson",
+                      "childId": "102704",
+                      "birthdate": "2001-03-04"
+                    },
+                    {
+                      "firstnamn": "Erik",
+                      "surname": "Larsson",
+                      "childId": "102711",
+                      "birthdate": "2004-08-08"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/child/v2": {
+      "post": {
+        "tags": [
+          "Child (barn)"
+        ],
+        "summary": "Add new or update existing child",
+        "description": "Updates existing child or add a new one connected to employee specified in the body.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number of the parent of the child</li><li><b>childId</b> internal ID of a child. Mandatory if an existing child should be updated. Can be retrieved via get-method.</li><li><b>firstname</b> firstname of the child</li><li><b>lastname</b> lastname of the child</li><li><b>birthdate</b> (fødselsdato) birthdate of the child. Format YYYY-MM-DD</li></ul>",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{empId=23, childId=1, firstname=Kalle, lastname=Anka, birthdate=2021-03-12}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid input, object invalid",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/transaction/v2": {
+      "get": {
+        "tags": [
+          "Transaction (lønnspost)"
+        ],
+        "summary": "Get an array of transactions",
+        "description": "Get all transactions for a client. Result can be limited with the search filter criteria.\n\n<b>Filter</b>\nFilters can be added as query parameters by adding a question mark (?) at the end of the URL and then separate different filters with ampersands (&). Available filters can be found below in the Parameters-section.\n<u>Example</u>: payroll.24sevenoffice.com/api/transaction/v2?payrollrunId=1&empId=10&serialNo=1\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> internal ID of the transaction. Serial numbers are unique per employee. Can be empty if the transaction is generated by the system (for example tax calculation).</li><li><b>payrollcode</b> (lønnsartkode) code to identify the wage type of the transaction</li><li><b>description</b> (beskrivelse) transaction description</li><li><b>payrollrunIds</b> (lønnskjøringsnummer) array of IDs of the payroll runs the transaction is connected to. Can be empty if transaction has not been included on a payroll run and can be multiple IDs if it is a repeating transaction.</li><li><b>datefrom</b> start date of the transaction. Format YYYY-MM-DD</li><li><b>dateto</b> end date of the transaction. Can be empty if it is a repeating transaction. Format YYYY-MM-DD</li><li><b>counts</b> (antall) count used on the transaction</li><li><b>unitprice</b> (sats) unit price used on the transaction</li><li><b>text</b> (fritekst) custom text on the post</li><li><b>note</b> (notat) custom internal text on the transaction</li><li><b>extent</b> (prosent) extent of the transaction</li><li><b>department</b> (avdeling) which department this transaction will be connected to</li><li><b>project</b> (prosjekt) which project this transaction will be connected to</li><li><b>tax</b> (trekk) the tax basis of the transaction. Available values are:<ul><li><b>0</b> - no tax</li><li><b>1</b> - table tax</li><li><b>2</b> - percentage tax</li><li><b>3</b> - border tax (grensegjenger)</li><li><b>4</b> - not tax calculated, A02 tax</li></ul></li><li><b>social_security</b> (AGA) boolean value determining if social security is calculated for the transaction</li><li><b>benefit</b> (fordel) benefit of the transaction reported in A-melding (A02). Available values are:<ul><b><li>kontantytelse</li><li>naturalytelse</li><li>utgiftsgodtgjoerelse</li></b></ul><li><b>is_paid</b> (utbetales) boolean value if the transaction is paid out</li><li><b>vacation</b> (ferie) type of vacation calculation for the transaction. Available values are:<ul><li><b>-1</b> - vacation withdrawal</li><li><b>0</b> - not basis for vacation</li><li><b>1</b> - basis for vacation</li></ul></li><li><b>wage_description</b> (lønnbeskrivelse) wage description of transaction reported in A-melding (A02)</li><li><b>earning_country</b> (opptjeningsland) country code of where the transaction was earned</li><li><b>tax_rule</b> (skatte- og avgiftsregel) tax rule reported in A-melding</li><li><b>repeating</b> (fast lønnspost) boolean value if the transaction is a repeating transaction. A repeating transaction either has no end date or the difference between the start date and the end date is more than a month.</li><li><b>first_60_days</b> (lønn første 60 dager) boolean value. Reported in A-melding whether a transaction is earned within the first 60 days. Only relevant if the transaction is earned on the continental shelf in Norway and the employee is tax resident in the USA.</li></ul>",
+        "parameters": [
+          {
+            "name": "payrollrunId",
+            "in": "query",
+            "description": "(lønnskjøringsnummer) ID of a payroll run",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "empId",
+            "in": "query",
+            "description": "(ansattnr) employee number",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "serialNo",
+            "in": "query",
+            "description": "internal ID of a transaction. Serial numbers are unique per employee",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "datefrom",
+            "in": "query",
+            "description": "start date of the search interval. Format YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateto",
+            "in": "query",
+            "description": "end date of the search interval. Format YYYY-MM-DD",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "payrollcode",
+            "in": "query",
+            "description": "(lønnsartkode) code to filter on a specific wage type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "filter result based on employee tag",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "department",
+            "in": "query",
+            "description": "(avdeling) filter result based on employee department",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "siteId",
+            "in": "query",
+            "description": "(virksomhet) filter result based on employee site. Use /organization-endpoint to get siteId",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "repeating",
+            "in": "query",
+            "description": "(fast lønnspost) filter result based on repeating transactions",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "max number of result rows",
+            "schema": {
+              "type": "integer",
+              "default": 1000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success! List of transactions returned",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "1",
+                      "serialNo": "2014",
+                      "payrollcode": "100",
+                      "description": "Fast lønn",
+                      "payrollrunIds": [
+                        58,
+                        59
+                      ],
+                      "datefrom": "2024-04-01",
+                      "dateto": "",
+                      "counts": "1",
+                      "unitprice": "57996.25",
+                      "text": "",
+                      "note": "",
+                      "extent": "100.00",
+                      "department": "1",
+                      "project": "",
+                      "tax": "1",
+                      "social_security": "1",
+                      "benefit": "kontantytelse",
+                      "is_paid": "1",
+                      "vacation": "1",
+                      "wage_description": "fastloenn",
+                      "earning_country": "SE",
+                      "tax_rule": "skattefriOrganisasjon",
+                      "repeating": "1",
+                      "first_60_days": "0"
+                    },
+                    {
+                      "empId": "1",
+                      "serialNo": "2065",
+                      "payrollcode": "123",
+                      "description": "Honorar",
+                      "payrollrunIds": [
+                        64
+                      ],
+                      "datefrom": "2021-01-01",
+                      "dateto": "2021-01-01",
+                      "counts": "12",
+                      "unitprice": "215.00",
+                      "text": "",
+                      "note": "",
+                      "extent": "100.00",
+                      "department": "",
+                      "project": "",
+                      "tax": "2",
+                      "social_security": "1",
+                      "benefit": "kontantytelse",
+                      "is_paid": "1",
+                      "vacation": "0",
+                      "wage_description": "annet",
+                      "earning_country": "",
+                      "tax_rule": "",
+                      "repeating": "0",
+                      "first_60_days": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transaction (lønnspost)"
+        ],
+        "summary": "Post new transaction",
+        "description": "Creates a new transaction in the company. Every transaction is then calculated and may result in additional transactions, for example basis for vacation money and tax.\n\nTotal amount of the transaction is calculated with the formula: unitprice * counts * (extent / 100)\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number. <u>Mandatory</u>.</li><li><b>payrollcode</b> (lønnsartkode) code used to identify wage type. <u>Mandatory</u>.</li><li><b>payrollrunId</b> (lønnskjøringsnummer) can be used to connect a transaction to a specifik payroll run. Has to be an existing payroll run that is not locked.</li><li><b>datefrom</b> start date of the transaction. <u>Mandatory</u>. Format YYYY-MM-DD</li><li><b>dateto</b> end date of the transaction. Can be empty to create a repeating transaction. Format YYYY-MM-DD</li><li><b>counts</b> (antall) count used on the transaction. Will be set to 1 if empty.</li><li><b>unitprice</b> (sats) unit price used on the transaction</li><li><b>text</b> (fritekst) set a custom text on the post</li><li><b>note</b> (notat) set a custom internal text on the post</li><li><b>extent</b> (prosent) extent of the transaction. Will be set to 100 if empty.</li><li><b>department</b> (avdeling) which department this transaction will be connected to</li><li><b>project</b> (prosjekt) which project this transaction will be connected to</li><li><b>tax_rule</b> (skatte- og avgiftsregel) tax rule reported in A-melding. Available values are:<ul><li><b>nettoloenn</b></li><li><b>nettoloennForSjoefolk</b></li><li><b>svalbard</b></li><li><b>saerskiltFradragForSjoefolk</b></li><li><b>skattefriOrganisasjon</b></li><li><b>empty</b> - will force the transaction to be reported with no tax rule, even if the employee has a default tax rule</li></ul></li><li><b>earning_country</b> (opptjeningsland) country code of where the transaction was earned</li><li><b>first_60_days</b> (lønn første 60 dager) boolean value. Reported in A-melding whether a transaction is earned within the first 60 days. Only relevant if the transaction is earned on the continental shelf in Norway and the employee is tax resident in the USA.</li><li><b>dimensions</b> array of dimensions for the transaction. Dimension model:<ul><li><b>dimid</b> ID of the dimensions. Can GET from /dimensions. Dimension will be skipped if dimid doesn't exist</li><li><b>value</b> dimension value</li></ul></li></ul>",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "[{empId=7, payrollcode=101, payrollrunId=1, datefrom=2025-01-01, dateto=2025-01-31, counts=1, unitprice=31000, extent=, text=, note=, earning_country=, department=1, project=, tax_rule=, first_60_days=, dimensions=[{dimid=2, value=1}]}]"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Transaction objects as JSON",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid input, object invalid",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/wagetypes/v2": {
+      "get": {
+        "tags": [
+          "Wage types (lønnsarter)"
+        ],
+        "summary": "Get all wage types",
+        "description": "Get all available wage types for the company.\n\nDescription of fields:<ul><li><b>payrollcode</b> (lønnsartkode) code to identify the wage type</li><li><b>description</b> name of the wage type</li><li><b>unitprice</b> (sats) default unit price of the wage type</li><li><b>account</b> (konto) account number used when bookkeeping the wage type</li><li><b>counteraccount</b> (motkonto) counter account number used when bookkeeping the wage type</li><li><b>hidden</b> (skjul) boolean value determining if the wage type is hidden or not when reporting</li><li><b>selfservice</b> boolean value determining if the wage type is available in selfservice</li><li><b>tax</b> (trekk) the tax basis of the wage type. Available values are:<ul><li><b>0</b> - no tax</li><li><b>1</b> - table tax</li><li><b>2</b> - percentage tax</li><li><b>3</b> - border tax (grensegjenger)</li><li><b>4</b> - not tax calculated, A02 tax</li></ul></li><li><b>social_security</b> (AGA) boolean value determining if social security is calculated for the wage type</li><li><b>is_paid</b> (utbetales) boolean value determining if the wage type is paid out</li><li><b>vacation</b> (ferie) type of vacation calculation for the wage type. Available values are:<ul><li><b>-1</b> - vacation withdrawal</li><li><b>0</b> - not basis for vacation</li><li><b>1</b> - basis for vacation</li></ul></li><li><b>benefit</b> (fordel) benefit of wage type reported in A-melding (A02). Available values are:<ul><b><li>kontantytelse</li><li>naturalytelse</li><li>utgiftsgodtgjoerelse</li></b></ul></li><li><b>wage_description</b> (lønnbeskrivelse) wage description of wage type reported in A-melding (A02)</li></ul>",
+        "responses": {
+          "200": {
+            "description": "Success! List of wage types returned",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "payrollcode": "100",
+                      "description": "Fast lønn",
+                      "unitprice": "",
+                      "account": "5100",
+                      "counteraccount": "",
+                      "hidden": "0",
+                      "selfservice": "0",
+                      "tax": "1",
+                      "employers_fee": "1",
+                      "is_paid": "1",
+                      "vacation": "1",
+                      "benefit": "kontantytelse",
+                      "wage_description": "fastloenn",
+                      "loneart": "100",
+                      "beskrivning": "Fast lønn",
+                      "kalender": "0",
+                      "antalstyp": "3",
+                      "gruppid": "",
+                      "manadsavlonade": "1",
+                      "timavlonade": "0"
+                    },
+                    {
+                      "payrollcode": "101",
+                      "description": "Timelønn",
+                      "unitprice": "",
+                      "account": "5100",
+                      "counteraccount": "",
+                      "hidden": "0",
+                      "selfservice": "1",
+                      "tax": "1",
+                      "employers_fee": "1",
+                      "is_paid": "1",
+                      "vacation": "4",
+                      "benefit": "kontantytelse",
+                      "wage_description": "timeloenn",
+                      "loneart": "101",
+                      "beskrivning": "Timelønn",
+                      "kalender": "1",
+                      "antalstyp": "2",
+                      "gruppid": "",
+                      "manadsavlonade": "1",
+                      "timavlonade": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/wagetypes/v2/{payrollcode}": {
+      "get": {
+        "tags": [
+          "Wage types (lønnsarter)"
+        ],
+        "summary": "Get a specific wage type",
+        "description": "Get the wage type with the specified payrollcode.\n\nDescription of fields:<ul><li><b>payrollcode</b> (lønnsartkode) code to identify the wage type</li><li><b>description</b> name of the wage type</li><li><b>unitprice</b> (sats) default unit price of the wage type</li><li><b>account</b> (konto) account number used when bookkeeping the wage type</li><li><b>counteraccount</b> (motkonto) counter account number used when bookkeeping the wage type</li><li><b>hidden</b> (skjul) boolean value determining if the wage type is hidden or not when reporting</li><li><b>selfservice</b> boolean value determining if the wage type is available in selfservice</li><li><b>tax</b> (trekk) the tax basis of the wage type. Available values are:<ul><li><b>0</b> - no tax</li><li><b>1</b> - table tax</li><li><b>2</b> - percentage tax</li><li><b>3</b> - border tax (grensegjenger)</li><li><b>4</b> - not tax calculated, A02 tax</li></ul></li><li><b>social_security</b> (AGA) boolean value determining if social security is calculated for the wage type</li><li><b>is_paid</b> (utbetales) boolean value determining if the wage type is paid out</li><li><b>vacation</b> (ferie) type of vacation calculation for the wage type. Available values are:<ul><li><b>-1</b> - vacation withdrawal</li><li><b>0</b> - not basis for vacation</li><li><b>1</b> - basis for vacation</li></ul></li><li><b>benefit</b> (fordel) benefit of wage type reported in A-melding (A02). Available values are:<ul><b><li>kontantytelse</li><li>naturalytelse</li><li>utgiftsgodtgjoerelse</li></b></ul></li><li><b>wage_description</b> (lønnbeskrivelse) wage description of wage type reported in A-melding (A02)</li></ul>",
+        "parameters": [
+          {
+            "name": "payrollcode",
+            "in": "path",
+            "description": "Payrollcode of the wage type to be returned",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success! List of wage types returned",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "payrollcode": "100",
+                      "description": "Fast lønn",
+                      "unitprice": "",
+                      "account": "5100",
+                      "counteraccount": "",
+                      "hidden": "0",
+                      "selfservice": "0",
+                      "tax": "1",
+                      "employers_fee": "1",
+                      "is_paid": "1",
+                      "vacation": "1",
+                      "benefit": "kontantytelse",
+                      "wage_description": "fastloenn",
+                      "loneart": "100",
+                      "beskrivning": "Fast lønn",
+                      "kalender": "0",
+                      "antalstyp": "3",
+                      "gruppid": "",
+                      "manadsavlonade": "1",
+                      "timavlonade": "0"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/organization/v2": {
+      "get": {
+        "tags": [
+          "Organization and sites (selskap og virksomheter)"
+        ],
+        "summary": "Get company and company sites details",
+        "description": "Returns details about the company and the company sites.\n\nDescription of fields:<ul><li><b>name</b> company name</li><li><b>orgno</b> organization number</li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>address</b> company address</li><li><b>zipcode</b> company zipcode</li><li><b>tax_zone</b> (avgiftssone) available values are:<ul><li><b>1</b> &nbsp;&nbsp;&nbsp;(14,1 %)</li><li><b>1a</b> &nbsp;(14,1 %)</li><li><b>2</b> &nbsp;&nbsp;&nbsp;(10,6 %)</li><li><b>3</b> &nbsp;&nbsp;&nbsp;(6,4 %)</li><li><b>4</b> &nbsp;&nbsp;&nbsp;(5,1 %)</li><li><b>4a</b> &nbsp;(7,9 %)</li><li><b>5</b> &nbsp;&nbsp;&nbsp;(0 %)</li></ul></li><li><b>bank_account</b> company bank account number</li><li><b>tax_account</b> (skattetrekkskonto) company tax account number</li><li><b>industry</b> (næring) type of industry of the company. Available values are:<ul><b><li>ordinarie</li><li>godstransport</li><li>lantbruk</li><li>sektorunntatt</li></b></ul></li><li><b>tax_rule</b> (skatte- og avgiftsregel) available values are:<ul><b><li>standard</li><li>skattefriOrganisasjon</li></b></ul></li><li><b>retirement_age</b> (pensjonsalder) default is 67</li><li><b>country_code</b> (landkode) country code of the client. Available values are:<ul><li><b>NO</b></li><li><b>SE</b></li></ul></li><li><b>sites</b> (virksomheter / underenheter) array of sites connected to this organization. Site model:<ul><li><b>id</b> internal id of site</li><li><b>name</b></li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>tax_zone</b> (avgiftssone) tax zone can be empty for sites</li></ul></li></ul>",
+        "responses": {
+          "200": {
+            "description": "Company details JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "name": "Herand",
+                    "orgno": "911010441",
+                    "enterprise_number": "911010445",
+                    "address": "Inkognitogata 33",
+                    "zipcode": "54142",
+                    "tax_zone": "1a",
+                    "bank_account": "12345678909",
+                    "tax_account": "11993123299",
+                    "industry": "ordinarie",
+                    "tax_rule": "standard",
+                    "retirement_age": "67",
+                    "sites": [
+                      {
+                        "id": "3",
+                        "name": "Virksomhet A",
+                        "enterprise_number": "811010472",
+                        "tax_zone": "1"
+                      },
+                      {
+                        "id": "4",
+                        "name": "Virksomhet B",
+                        "enterprise_number": "217733234",
+                        "tax_zone": "3"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Organization and sites (selskap og virksomheter)"
+        ],
+        "summary": "Updates company and company sites",
+        "description": "Update details about the company and the company sites. Add a site object without ID to create a new site. If ID is provided in the site object, the existing site corresponding to that ID will be updated. \n\nDescription of fields:<ul><li><b>name</b> company name</li><li><b>orgno</b> organization number</li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>address</b> company address</li><li><b>zipcode</b> company zipcode</li><li><b>tax_zone</b> (avgiftssone) available values are:<ul><li><b>1</b> &nbsp;&nbsp;&nbsp;(14,1 %)</li><li><b>1a</b> &nbsp;(14,1 %)</li><li><b>2</b> &nbsp;&nbsp;&nbsp;(10,6 %)</li><li><b>3</b> &nbsp;&nbsp;&nbsp;(6,4 %)</li><li><b>4</b> &nbsp;&nbsp;&nbsp;(5,1 %)</li><li><b>4a</b> &nbsp;(7,9 %)</li><li><b>5</b> &nbsp;&nbsp;&nbsp;(0 %)</li></ul></li><li><b>bank_account</b> company bank account number</li><li><b>tax_account</b> (skattetrekkskonto) company tax account number</li><li><b>industry</b> (næring) type of industry of the company. Available values are:<ul><b><li>ordinarie</li><li>godstransport</li><li>lantbruk</li><li>sektorunntatt</li></b></ul></li><li><b>tax_rule</b> (skatte- og avgiftsregel) available values are:<ul><b><li>standard</li><li>skattefriOrganisasjon</li></b></ul></li><li><b>retirement_age</b> (pensjonsalder) default is 67</li><li><b>sites</b> (virksomheter / underenheter) array of sites connected to this organization. Site model:<ul><li><b>id</b> internal id of site</li><li><b>name</b></li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>tax_zone</b> (avgiftssone) tax zone can be empty for sites</li></ul></li></ul>",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "Herand",
+                  "orgno": "911010441",
+                  "enterprise_number": "911010445",
+                  "address": "Inkognitogata 33",
+                  "zipcode": "54142",
+                  "tax_zone": "1a",
+                  "bank_account": "12345678909",
+                  "tax_account": "11993123299",
+                  "industry": "ordinarie",
+                  "tax_rule": "standard",
+                  "retirement_age": "67",
+                  "sites": [
+                    {
+                      "name": "Virksomhet C",
+                      "enterprise_number": "311010472",
+                      "tax_zone": "1"
+                    },
+                    {
+                      "id": "3",
+                      "name": "Virksomhet A",
+                      "enterprise_number": "811010472",
+                      "tax_zone": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Company object as JSON",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "name": "authorization2",
+        "in": "header"
+      }
+    }
+  },
+  "x-original-swagger-version": "2.0"
+}

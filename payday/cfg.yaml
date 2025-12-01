@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
+package: payday
+output: payday.gen.go
+generate:
+  models: true
+  client: true
+output-options:
+  client-type-name: WriteClient
+  overlay:
+    path: overlay.yaml

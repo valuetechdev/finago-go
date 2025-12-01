@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://24sevenoffice.com/webservices/economy/accounting/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://24sevenoffice.com/webservices/economy/accounting/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://24sevenoffice.com/webservices/economy/accounting/">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="GetTransactionTypes">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetTransactionTypesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTransactionTypesResult" type="tns:ArrayOfTransactionType" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfTransactionType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="TransactionType" nillable="true" type="tns:TransactionType" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TransactionType">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Turnover" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="No" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetUserDefinedDimensions">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetUserDefinedDimensionsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUserDefinedDimensionsResult" type="tns:ArrayOfDimension" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfDimension">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Dimension" nillable="true" type="tns:Dimension" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Dimension">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="None" name="Type" type="tns:DimensionType" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Value" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Percent" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TypeId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="DimensionType">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="Project" />
+          <s:enumeration value="Department" />
+          <s:enumeration value="Employee" />
+          <s:enumeration value="Product" />
+          <s:enumeration value="Customer" />
+          <s:enumeration value="CustomerOrderSlip" />
+          <s:enumeration value="SupplierOrderSlip" />
+          <s:enumeration value="UserDefined" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetUserDefinedDimensionValues">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DimensionType" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetUserDefinedDimensionValuesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetUserDefinedDimensionValuesResult" type="tns:ArrayOfDimension" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFiscalYears">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetFiscalYearsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetFiscalYearsResult" type="tns:ArrayOfFiscalYear" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfFiscalYear">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FiscalYear" nillable="true" type="tns:FiscalYear" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FiscalYear">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+          <s:element minOccurs="1" maxOccurs="1" name="StartingDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="EndingDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsLocked" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetTransactions">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="searchParams" type="tns:TransactionSearchParameters" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="TransactionSearchParameters">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="EntryDate" name="DateSearchParameters" type="tns:DateSearchParameters" />
+          <s:element minOccurs="0" maxOccurs="1" name="ShowOpenEntries" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="LinkId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateStart" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateEnd" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ProjectId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="CustomerId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="DepartmentId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="AccountNoStart" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="AccountNoEnd" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TransactionNoStart" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TransactionNoEnd" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TransactionTypeId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="SystemType" nillable="true" type="tns:TransactionSystemType" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="RegisteredAfter" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="HasInvoiceId" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="InvoiceNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="VatCode" nillable="true" type="s:short" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="DateSearchParameters">
+        <s:restriction base="s:string">
+          <s:enumeration value="EntryDate" />
+          <s:enumeration value="DateChangedUTC" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="TransactionSystemType">
+        <s:restriction base="s:string">
+          <s:enumeration value="InvoiceCustomer" />
+          <s:enumeration value="CreditnoteCustomer" />
+          <s:enumeration value="DifferenceOutbound" />
+          <s:enumeration value="Disbursment" />
+          <s:enumeration value="InvoiceSupplier" />
+          <s:enumeration value="CreditnoteSupplier" />
+          <s:enumeration value="Payment" />
+          <s:enumeration value="DifferenceInbound" />
+          <s:enumeration value="Miscellaneous" />
+          <s:enumeration value="CashSale" />
+          <s:enumeration value="ReminderFee" />
+          <s:enumeration value="ReminderNote" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetTransactionsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTransactionsResult" type="tns:ArrayOfTransaction" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfTransaction">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Transaction" nillable="true" type="tns:Transaction" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Transaction">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Date" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="AccountNo" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Currency" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="CurrencyRate" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="CurrencyUnit" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Amount" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="StampNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="0" name="Period" type="s:unsignedByte" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TransactionTypeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Comment" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TransactionNo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="VatCode" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="00000000-0000-0000-0000-000000000000" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="LinkId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="InvoiceNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="SequenceNo" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="Miscellaneous" name="SystemType" type="tns:TransactionSystemType" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DueDate" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Dimensions" type="tns:ArrayOfDimension" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="RegistrationDate" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateChanged" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="Hidden" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="Open" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="OCR" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="VatDividend" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="HasVatDividend" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01" name="PeriodDate" type="s:date" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetAggregated">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="startDate" type="s:dateTime" />
+            <s:element minOccurs="0" maxOccurs="1" name="dimensions" type="tns:ArrayOfDimension" />
+            <s:element minOccurs="0" maxOccurs="1" name="accountNos" type="tns:ArrayOfShort" />
+            <s:element minOccurs="1" maxOccurs="1" name="periodType" type="tns:PeriodType" />
+            <s:element minOccurs="1" maxOccurs="1" name="returnIB" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfShort">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="short" type="s:short" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="PeriodType">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="Month" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetAggregatedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAggregatedResult" type="tns:ArrayOfAggregatedData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfAggregatedData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="AggregatedData" nillable="true" type="tns:AggregatedData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="AggregatedData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IncomingBalance" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="TotalBalance" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Periods" type="tns:ArrayOfKeyValuePair" />
+          <s:element minOccurs="0" maxOccurs="1" name="Dimension" type="tns:Dimension" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="AccountNo" type="s:short" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfKeyValuePair">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="KeyValuePair" type="tns:KeyValuePair" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="KeyValuePair">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Key" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetTransactionTypesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTransactionTypes" />
+  </wsdl:message>
+  <wsdl:message name="GetTransactionTypesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTransactionTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUserDefinedDimensionsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUserDefinedDimensions" />
+  </wsdl:message>
+  <wsdl:message name="GetUserDefinedDimensionsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUserDefinedDimensionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUserDefinedDimensionValuesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetUserDefinedDimensionValues" />
+  </wsdl:message>
+  <wsdl:message name="GetUserDefinedDimensionValuesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetUserDefinedDimensionValuesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetFiscalYearsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetFiscalYears" />
+  </wsdl:message>
+  <wsdl:message name="GetFiscalYearsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetFiscalYearsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTransactionsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTransactions" />
+  </wsdl:message>
+  <wsdl:message name="GetTransactionsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTransactionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAggregatedSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAggregated" />
+  </wsdl:message>
+  <wsdl:message name="GetAggregatedSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAggregatedResponse" />
+  </wsdl:message>
+  <wsdl:portType name="TransactionServiceSoap">
+    <wsdl:operation name="GetTransactionTypes">
+      <wsdl:input message="tns:GetTransactionTypesSoapIn" />
+      <wsdl:output message="tns:GetTransactionTypesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDefinedDimensions">
+      <wsdl:input message="tns:GetUserDefinedDimensionsSoapIn" />
+      <wsdl:output message="tns:GetUserDefinedDimensionsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDefinedDimensionValues">
+      <wsdl:input message="tns:GetUserDefinedDimensionValuesSoapIn" />
+      <wsdl:output message="tns:GetUserDefinedDimensionValuesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFiscalYears">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">A list of fiscal years and their boundaries. A fiscal year is starting at 'StartingDate' up to 'EndingDate', do not include the ending date (eg.: StartingDate &gt;= [FiscalYear] &lt; EndingDate)</wsdl:documentation>
+      <wsdl:input message="tns:GetFiscalYearsSoapIn" />
+      <wsdl:output message="tns:GetFiscalYearsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTransactions">
+      <wsdl:input message="tns:GetTransactionsSoapIn" />
+      <wsdl:output message="tns:GetTransactionsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAggregated">
+      <wsdl:input message="tns:GetAggregatedSoapIn" />
+      <wsdl:output message="tns:GetAggregatedSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TransactionServiceSoap" type="tns:TransactionServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetTransactionTypes">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetTransactionTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDefinedDimensions">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetUserDefinedDimensions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDefinedDimensionValues">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetUserDefinedDimensionValues" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFiscalYears">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetFiscalYears" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTransactions">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetTransactions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAggregated">
+      <soap:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetAggregated" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="TransactionServiceSoap12" type="tns:TransactionServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetTransactionTypes">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetTransactionTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDefinedDimensions">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetUserDefinedDimensions" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUserDefinedDimensionValues">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetUserDefinedDimensionValues" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFiscalYears">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetFiscalYears" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTransactions">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetTransactions" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAggregated">
+      <soap12:operation soapAction="http://24sevenoffice.com/webservices/economy/accounting/GetAggregated" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TransactionService">
+    <wsdl:port name="TransactionServiceSoap" binding="tns:TransactionServiceSoap">
+      <soap:address location="https://api.24sevenoffice.com/Economy/Accounting/V001/TransactionService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="TransactionServiceSoap12" binding="tns:TransactionServiceSoap12">
+      <soap12:address location="https://api.24sevenoffice.com/Economy/Accounting/V001/TransactionService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

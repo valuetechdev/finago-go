@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://24sevenOffice.com/webservices" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://24sevenOffice.com/webservices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://24sevenOffice.com/webservices">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="GetOrderSyncList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="syncParams" type="tns:InvoiceSyncParameters" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InvoiceSyncParameters">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="ChangedAfter" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="RegisteredAfter" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetOrderSyncListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetOrderSyncListResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfInt">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="int" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetInvoices">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="searchParams" type="tns:InvoiceSearchParameters" />
+            <s:element minOccurs="0" maxOccurs="1" name="invoiceReturnProperties" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="rowReturnProperties" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InvoiceSearchParameters">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CustomerIds" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="ChangedAfter" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrderStates" type="tns:ArrayOfOrderSlipStateType" />
+          <s:element minOccurs="0" maxOccurs="1" name="InvoiceIds" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrderIds" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExternalStatus" type="tns:ArrayOfInt" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfOrderSlipStateType">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OrderSlipStateType" type="tns:OrderSlipStateType" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OrderSlipStateType">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="Offer" />
+          <s:enumeration value="Pack" />
+          <s:enumeration value="Invoiced" />
+          <s:enumeration value="Web" />
+          <s:enumeration value="Repeating" />
+          <s:enumeration value="CollectingOrder" />
+          <s:enumeration value="Return" />
+          <s:enumeration value="Distribution" />
+          <s:enumeration value="Rest" />
+          <s:enumeration value="ForInvoicing" />
+          <s:enumeration value="OvertimeRent" />
+          <s:enumeration value="Confirmed" />
+          <s:enumeration value="OrderState_Sent" />
+          <s:enumeration value="Production" />
+          <s:enumeration value="PaymentReminder" />
+          <s:enumeration value="OnAccount" />
+          <s:enumeration value="Lending" />
+          <s:enumeration value="InvoicedCashAccount" />
+          <s:enumeration value="InvoicedPack" />
+          <s:enumeration value="Inactive" />
+          <s:enumeration value="Hours" />
+          <s:enumeration value="OrderState_SuperStore" />
+          <s:enumeration value="Draft" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetInvoicesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetInvoicesResult" type="tns:ArrayOfInvoiceOrder" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfInvoiceOrder">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="InvoiceOrder" nillable="true" type="tns:InvoiceOrder" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="InvoiceOrder">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="OrderId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="CustomerId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="CustomerName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CustomerDeliveryName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="CustomerDeliveryPhone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Addresses" type="tns:Addresses" />
+          <s:element minOccurs="0" maxOccurs="1" default="Web" name="OrderStatus" type="tns:OrderSlipStateType" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="InvoiceId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateOrdered" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateInvoiced" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateChanged" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="PaymentTime" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="CustomerReferenceNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ProjectId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="OurReference" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="IncludeVAT" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="YourReference" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="OrderTotalIncVat" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="OrderTotalVat" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="InvoiceTitle" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="InvoiceText" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Paid" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="OCR" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="CustomerOrgNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Currency" type="tns:Currency" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="PaymentMethodId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="PaymentAmount" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ProductionManagerId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="SalesOpportunityId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TypeOfSaleId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="Default" name="Distributor" type="tns:Distributor" />
+          <s:element minOccurs="0" maxOccurs="1" default="Unchanged" name="DistributionMethod" type="tns:DistributionMethod" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="DepartmentId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ExternalStatus" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="InvoiceEmailAddress" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="InvoiceRows" type="tns:ArrayOfInvoiceRow" />
+          <s:element minOccurs="0" maxOccurs="1" name="APIException" type="tns:APIException" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="ProductionNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DeliveryDate" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ReferenceInvoiceId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ReferenceOrderId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="ReferenceNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="SkipStock" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="AccrualDate" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="AccrualLength" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="RoundFactor" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="00000000-0000-0000-0000-000000000000" name="InvoiceTemplateId" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="VippsNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DeliveryMethod" type="tns:DeliveryMethod" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="DeliveryAlternative" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SendToFactoring" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Commission" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="UserDefinedDimensions" type="tns:ArrayOfUserDefinedDimension" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="GLNNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="CustomerDeliveryId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Addresses">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Post" type="tns:Address" />
+          <s:element minOccurs="0" maxOccurs="1" name="Delivery" type="tns:Address" />
+          <s:element minOccurs="0" maxOccurs="1" name="Visit" type="tns:Address" />
+          <s:element minOccurs="0" maxOccurs="1" name="Invoice" type="tns:Address" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Address">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Street" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostalCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostalArea" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Currency">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="1" name="Rate" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="1" name="Unit" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Symbol" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="Distributor">
+        <s:restriction base="s:string">
+          <s:enumeration value="Default" />
+          <s:enumeration value="Manual" />
+          <s:enumeration value="Auto" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="DistributionMethod">
+        <s:restriction base="s:string">
+          <s:enumeration value="Unchanged" />
+          <s:enumeration value="Print" />
+          <s:enumeration value="EMail" />
+          <s:enumeration value="ElectronicInvoice" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfInvoiceRow">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="InvoiceRow" nillable="true" type="tns:InvoiceRow" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="InvoiceRow">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ProductId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="RowId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="VatRate" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Price" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="DiscountRate" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Quantity" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="QuantityDelivered" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="QuantityOrdered" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="QuantityRest" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Cost" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="None" name="ChangeState" type="tns:ChangeState" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TypeGroupId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="SequenceNumber" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="Hidden" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="Normal" name="Type" type="tns:RowType" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="InPrice" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="AccrualDate" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="AccrualLength" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="AccountProject" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ProjectId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="DepartmentId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="ProductNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TaxSettings" type="tns:TaxSettings" />
+          <s:element minOccurs="0" maxOccurs="1" name="UserDefinedDimensions" type="tns:ArrayOfUserDefinedDimension" />
+          <s:element minOccurs="0" maxOccurs="1" name="SerialNumber" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ChangeState">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="Add" />
+          <s:enumeration value="Edit" />
+          <s:enumeration value="Delete" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="RowType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Normal" />
+          <s:enumeration value="Text" />
+          <s:enumeration value="TextBold" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="TaxSettings">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TaxAccount" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TaxCode" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="TaxRate" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfUserDefinedDimension">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="UserDefinedDimension" nillable="true" type="tns:UserDefinedDimension" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="UserDefinedDimension">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TypeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="APIException">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Type" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="StackTrace" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DeliveryMethod">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Description" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="UpdateInvoices">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="invoices" type="tns:ArrayOfInvoiceOrder" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateInvoicesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="UpdateInvoicesResult" type="tns:ArrayOfInvoiceOrder" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveInvoices">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="invoices" type="tns:ArrayOfInvoiceOrder" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveInvoicesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SaveInvoicesResult" type="tns:ArrayOfInvoiceOrder" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetInvoiceDocument">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Parameters" type="tns:InvoiceDocumentSearchParameters" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InvoiceDocumentSearchParameters">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="InvoiceId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="00000000-0000-0000-0000-000000000000" name="TemplateId" type="s1:guid" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetInvoiceDocumentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetInvoiceDocumentResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDeliveryMethods">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetDeliveryMethodsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDeliveryMethodsResult" type="tns:ArrayOfDeliveryMethod" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfDeliveryMethod">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DeliveryMethod" nillable="true" type="tns:DeliveryMethod" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetInvoiceTemplates">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetInvoiceTemplatesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetInvoiceTemplatesResult" type="tns:ArrayOfTemplateModel" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfTemplateModel">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="TemplateModel" nillable="true" type="tns:TemplateModel" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="TemplateModel">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="FileName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="Language" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsSystemTemplate" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsDefault" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="Modified" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Customers" type="tns:ArrayOfInt" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetPaymentMethods">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetPaymentMethodsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPaymentMethodsResult" type="tns:ArrayOfPaymentMethod" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPaymentMethod">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PaymentMethod" nillable="true" type="tns:PaymentMethod" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PaymentMethod">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetOrderSyncListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetOrderSyncList" />
+  </wsdl:message>
+  <wsdl:message name="GetOrderSyncListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetOrderSyncListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetInvoicesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetInvoices" />
+  </wsdl:message>
+  <wsdl:message name="GetInvoicesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetInvoicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateInvoicesSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateInvoices" />
+  </wsdl:message>
+  <wsdl:message name="UpdateInvoicesSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateInvoicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveInvoicesSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveInvoices" />
+  </wsdl:message>
+  <wsdl:message name="SaveInvoicesSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveInvoicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetInvoiceDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:GetInvoiceDocument" />
+  </wsdl:message>
+  <wsdl:message name="GetInvoiceDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:GetInvoiceDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDeliveryMethodsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDeliveryMethods" />
+  </wsdl:message>
+  <wsdl:message name="GetDeliveryMethodsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDeliveryMethodsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetInvoiceTemplatesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetInvoiceTemplates" />
+  </wsdl:message>
+  <wsdl:message name="GetInvoiceTemplatesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetInvoiceTemplatesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPaymentMethodsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPaymentMethods" />
+  </wsdl:message>
+  <wsdl:message name="GetPaymentMethodsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPaymentMethodsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="InvoiceServiceSoap">
+    <wsdl:operation name="GetOrderSyncList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of OrderIds that can be used for syncing data with the GetInvoices method</wsdl:documentation>
+      <wsdl:input message="tns:GetOrderSyncListSoapIn" />
+      <wsdl:output message="tns:GetOrderSyncListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoices">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of invoices and orders based on search parameters. You have to specify which properties you want returned.</wsdl:documentation>
+      <wsdl:input message="tns:GetInvoicesSoapIn" />
+      <wsdl:output message="tns:GetInvoicesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateInvoices">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Updates an InvoiceOrder that has been Invoiced, valid update properties: InvoiceTitle, ReferenceNumber </wsdl:documentation>
+      <wsdl:input message="tns:UpdateInvoicesSoapIn" />
+      <wsdl:output message="tns:UpdateInvoicesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveInvoices">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Saves an array of invoices</wsdl:documentation>
+      <wsdl:input message="tns:SaveInvoicesSoapIn" />
+      <wsdl:output message="tns:SaveInvoicesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoiceDocument">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets an Invoice PDF. InvoiceDocumentSearchParameters: InvoiceId, TemplateId (optional)</wsdl:documentation>
+      <wsdl:input message="tns:GetInvoiceDocumentSoapIn" />
+      <wsdl:output message="tns:GetInvoiceDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeliveryMethods">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets all DeliveryMethods</wsdl:documentation>
+      <wsdl:input message="tns:GetDeliveryMethodsSoapIn" />
+      <wsdl:output message="tns:GetDeliveryMethodsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoiceTemplates">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets all InvoiceTemplates</wsdl:documentation>
+      <wsdl:input message="tns:GetInvoiceTemplatesSoapIn" />
+      <wsdl:output message="tns:GetInvoiceTemplatesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPaymentMethods">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets all PaymentMethods</wsdl:documentation>
+      <wsdl:input message="tns:GetPaymentMethodsSoapIn" />
+      <wsdl:output message="tns:GetPaymentMethodsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="InvoiceServiceSoap" type="tns:InvoiceServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetOrderSyncList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetOrderSyncList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoices">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetInvoices" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateInvoices">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/UpdateInvoices" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveInvoices">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/SaveInvoices" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoiceDocument">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetInvoiceDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeliveryMethods">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetDeliveryMethods" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoiceTemplates">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetInvoiceTemplates" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPaymentMethods">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPaymentMethods" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="InvoiceServiceSoap12" type="tns:InvoiceServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetOrderSyncList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetOrderSyncList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoices">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetInvoices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateInvoices">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/UpdateInvoices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveInvoices">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/SaveInvoices" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoiceDocument">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetInvoiceDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeliveryMethods">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetDeliveryMethods" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvoiceTemplates">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetInvoiceTemplates" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPaymentMethods">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPaymentMethods" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="InvoiceService">
+    <wsdl:port name="InvoiceServiceSoap" binding="tns:InvoiceServiceSoap">
+      <soap:address location="https://api.24sevenoffice.com/Economy/InvoiceOrder/V001/InvoiceService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="InvoiceServiceSoap12" binding="tns:InvoiceServiceSoap12">
+      <soap12:address location="https://api.24sevenoffice.com/Economy/InvoiceOrder/V001/InvoiceService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

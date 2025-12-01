@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://24sevenOffice.com/webservices" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://24sevenOffice.com/webservices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This webservice provides authentication of webservice users and community users of 24SevenOffice. After using the authentication method the header will contain a cookie parameter 'ASP.NET_SessionId' that should be used in future references with all Webservice method calls. This is done by using the property CookieContainer in .NET language.</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://24sevenOffice.com/webservices">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="AuthenticateByToken">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="token" type="tns:Token" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Token">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ApplicationId" type="s1:guid" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AuthenticateByTokenResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AuthenticateByTokenResult" type="tns:Passport" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Passport">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Identities" type="tns:ArrayOfIdentity" />
+          <s:element minOccurs="0" maxOccurs="1" name="SessionId" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfIdentity">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Identity" nillable="true" type="tns:Identity" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Identity">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="User" type="tns:User" />
+          <s:element minOccurs="0" maxOccurs="1" name="Client" type="tns:Client" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsCurrent" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsDefault" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="IsProtected" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Servers" type="tns:ArrayOfServer" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="IsDisabled" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="User">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ContactId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="00000000-0000-0000-0000-000000000000" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="EmployeeId" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Client">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfServer">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Server" nillable="true" type="tns:Server" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Server">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Type" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="credential" type="tns:Credential" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Credential">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ApplicationId" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" default="00000000-0000-0000-0000-000000000000" name="IdentityId" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Username" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LoginResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="HasSession">
+        <s:complexType />
+      </s:element>
+      <s:element name="HasSessionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="HasSessionResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetIdentity">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetIdentityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetIdentityResult" type="tns:Identity" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetIdentities">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetIdentitiesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetIdentitiesResult" type="tns:ArrayOfIdentity" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetIdentity">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="identity" type="tns:Identity" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetIdentityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SetIdentityResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetIdentityById">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="identityId" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetIdentityByIdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SetIdentityByIdResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetIdentitiesWithCredential">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="credential" type="tns:Credential" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetIdentitiesWithCredentialResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetIdentitiesWithCredentialResult" type="tns:ArrayOfIdentity" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetIdentitiesWithCredentialByService">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="credential" type="tns:Credential" />
+            <s:element minOccurs="1" maxOccurs="1" name="serviceId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetIdentitiesWithCredentialByServiceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetIdentitiesWithCredentialByServiceResult" type="tns:ArrayOfIdentity" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="AuthenticateByTokenSoapIn">
+    <wsdl:part name="parameters" element="tns:AuthenticateByToken" />
+  </wsdl:message>
+  <wsdl:message name="AuthenticateByTokenSoapOut">
+    <wsdl:part name="parameters" element="tns:AuthenticateByTokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:Login" />
+  </wsdl:message>
+  <wsdl:message name="LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="HasSessionSoapIn">
+    <wsdl:part name="parameters" element="tns:HasSession" />
+  </wsdl:message>
+  <wsdl:message name="HasSessionSoapOut">
+    <wsdl:part name="parameters" element="tns:HasSessionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitySoapIn">
+    <wsdl:part name="parameters" element="tns:GetIdentity" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitySoapOut">
+    <wsdl:part name="parameters" element="tns:GetIdentityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitiesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetIdentities" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitiesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetIdentitiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetIdentitySoapIn">
+    <wsdl:part name="parameters" element="tns:SetIdentity" />
+  </wsdl:message>
+  <wsdl:message name="SetIdentitySoapOut">
+    <wsdl:part name="parameters" element="tns:SetIdentityResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetIdentityByIdSoapIn">
+    <wsdl:part name="parameters" element="tns:SetIdentityById" />
+  </wsdl:message>
+  <wsdl:message name="SetIdentityByIdSoapOut">
+    <wsdl:part name="parameters" element="tns:SetIdentityByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitiesWithCredentialSoapIn">
+    <wsdl:part name="parameters" element="tns:GetIdentitiesWithCredential" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitiesWithCredentialSoapOut">
+    <wsdl:part name="parameters" element="tns:GetIdentitiesWithCredentialResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitiesWithCredentialByServiceSoapIn">
+    <wsdl:part name="parameters" element="tns:GetIdentitiesWithCredentialByService" />
+  </wsdl:message>
+  <wsdl:message name="GetIdentitiesWithCredentialByServiceSoapOut">
+    <wsdl:part name="parameters" element="tns:GetIdentitiesWithCredentialByServiceResponse" />
+  </wsdl:message>
+  <wsdl:portType name="AuthenticateSoap">
+    <wsdl:operation name="AuthenticateByToken">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Authenticate the passed credentials, if it is successful it will return the session id for the cookie parameter 'ASP.NET_SessionId', otherwise an empty string.</wsdl:documentation>
+      <wsdl:input message="tns:AuthenticateByTokenSoapIn" />
+      <wsdl:output message="tns:AuthenticateByTokenSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Authenticate the passed credentials, if it is successful it will return the session id for the cookie parameter 'ASP.NET_SessionId', otherwise an empty string.</wsdl:documentation>
+      <wsdl:input message="tns:LoginSoapIn" />
+      <wsdl:output message="tns:LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="HasSession">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Return whether your current session is authenticated or not.</wsdl:documentation>
+      <wsdl:input message="tns:HasSessionSoapIn" />
+      <wsdl:output message="tns:HasSessionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentity">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get the current identity</wsdl:documentation>
+      <wsdl:input message="tns:GetIdentitySoapIn" />
+      <wsdl:output message="tns:GetIdentitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentities">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of available identities for this session if authenticated as community.</wsdl:documentation>
+      <wsdl:input message="tns:GetIdentitiesSoapIn" />
+      <wsdl:output message="tns:GetIdentitiesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetIdentity">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Set the current map for the communitiy session. Returns whether it is successful or not.</wsdl:documentation>
+      <wsdl:input message="tns:SetIdentitySoapIn" />
+      <wsdl:output message="tns:SetIdentitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetIdentityById">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Set the current map by an identity for the communitiy session. Returns whether it is successful or not.</wsdl:documentation>
+      <wsdl:input message="tns:SetIdentityByIdSoapIn" />
+      <wsdl:output message="tns:SetIdentityByIdSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentitiesWithCredential">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of identities for the passed credentials.</wsdl:documentation>
+      <wsdl:input message="tns:GetIdentitiesWithCredentialSoapIn" />
+      <wsdl:output message="tns:GetIdentitiesWithCredentialSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentitiesWithCredentialByService">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of identities for the passed credentials and specified serviceId</wsdl:documentation>
+      <wsdl:input message="tns:GetIdentitiesWithCredentialByServiceSoapIn" />
+      <wsdl:output message="tns:GetIdentitiesWithCredentialByServiceSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AuthenticateSoap" type="tns:AuthenticateSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AuthenticateByToken">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/AuthenticateByToken" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HasSession">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/HasSession" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentity">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetIdentity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentities">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetIdentities" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetIdentity">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/SetIdentity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetIdentityById">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/SetIdentityById" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentitiesWithCredential">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetIdentitiesWithCredential" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentitiesWithCredentialByService">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetIdentitiesWithCredentialByService" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="AuthenticateSoap12" type="tns:AuthenticateSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AuthenticateByToken">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/AuthenticateByToken" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="HasSession">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/HasSession" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentity">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetIdentity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentities">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetIdentities" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetIdentity">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/SetIdentity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetIdentityById">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/SetIdentityById" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentitiesWithCredential">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetIdentitiesWithCredential" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetIdentitiesWithCredentialByService">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetIdentitiesWithCredentialByService" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Authenticate">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">This webservice provides authentication of webservice users and community users of 24SevenOffice. After using the authentication method the header will contain a cookie parameter 'ASP.NET_SessionId' that should be used in future references with all Webservice method calls. This is done by using the property CookieContainer in .NET language.</wsdl:documentation>
+    <wsdl:port name="AuthenticateSoap" binding="tns:AuthenticateSoap">
+      <soap:address location="https://api.24sevenoffice.com/authenticate/v001/authenticate.asmx" />
+    </wsdl:port>
+    <wsdl:port name="AuthenticateSoap12" binding="tns:AuthenticateSoap12">
+      <soap12:address location="https://api.24sevenoffice.com/authenticate/v001/authenticate.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

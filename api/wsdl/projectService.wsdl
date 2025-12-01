@@ -1,0 +1,877 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://24sevenOffice.com/webservices" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://24sevenOffice.com/webservices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://24sevenOffice.com/webservices">
+      <s:element name="GetProjectNameList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetProjectNameListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectNameListResult" type="tns:ArrayOfProjectShort" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfProjectShort">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectShort" nillable="true" type="tns:ProjectShort" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ProjectShort">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetDeactivatedProjectNameList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetDeactivatedProjectNameListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDeactivatedProjectNameListResult" type="tns:ArrayOfProjectShort" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Ps" type="tns:ProjectSearch" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProjectSearch">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ProjectIds" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="MyProjects" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="AllOpenProjects" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="CustomerId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Search" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="ChangedAfter" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="StartedAfter" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="StartedBefore" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfInt">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="int" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetProjectListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectListResult" type="tns:ArrayOfProject" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfProject">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Project" nillable="true" type="tns:Project" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Project">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="Enabled" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="RawName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="NameDisplay" type="tns:ProjectNameType" />
+          <s:element minOccurs="0" maxOccurs="1" default="true" name="QuickListed" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateChanged" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateStart" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateStop" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateRegistered" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="CustomerId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="CustomerName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="InvoiceTemplateId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="OrderReferenceNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DepartmentId" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="CustomerReference" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Owner" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Pipeline" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="TypeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="TypeName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="StatusId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="StatusName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="none" name="NeedApproval" type="tns:TriState" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="MultiCustomer" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="WorkTypeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="WorkTypeName" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TimeReg" type="tns:TimeRegType" />
+          <s:element minOccurs="0" maxOccurs="1" default="-32768" name="Version" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" default="none" name="IsFoldersAdded" type="tns:TriState" />
+          <s:element minOccurs="0" maxOccurs="1" default="none" name="OverrideWorkTypeTask" type="tns:TriState" />
+          <s:element minOccurs="0" maxOccurs="1" name="Participants" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" name="BudgetHourCost" nillable="true" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="BudgetHour" nillable="true" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="FixedPrice" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Budget" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="UseProjectOwnerAsOurReference" nillable="true" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ProjectNameType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Plain" />
+          <s:enumeration value="Company_Project" />
+          <s:enumeration value="Project_Company" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="TriState">
+        <s:restriction base="s:string">
+          <s:enumeration value="none" />
+          <s:enumeration value="True" />
+          <s:enumeration value="False" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="TimeRegType">
+        <s:restriction base="s:string">
+          <s:enumeration value="WorkType" />
+          <s:enumeration value="Task" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetProjectsDetailed">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Ps" type="tns:ProjectSearch" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectsDetailedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectsDetailedResult" type="tns:ArrayOfProject" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSingleProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="projectId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSingleProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSingleProjectResult" type="tns:Project" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectTasks">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="projectId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectTasksResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectTasksResult" type="tns:ArrayOfTask" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfTask">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Task" nillable="true" type="tns:Task" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Task">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateStart" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateStop" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Overtime" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Parent" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Priority" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Project" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="ProjectLink" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Status" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="WorkTypeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Estimate" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="-79228162514264337593543950335" name="Registered" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="Participants" type="tns:ArrayOfInt" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="ProjectName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="CategoryId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="SubStatus" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SaveProjectTask">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="task" type="tns:Task" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveProjectTaskResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SaveProjectTaskResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMyProjectTasks">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetMyProjectTasksResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMyProjectTasksResult" type="tns:ArrayOfTask" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectRoles">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetProjectRolesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectRolesResult" type="tns:ArrayOfRole" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfRole">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Role" nillable="true" type="tns:Role" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Role">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Parent" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetProjectTypes">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetProjectTypesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectTypesResult" type="tns:ArrayOfKeyValuePair" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfKeyValuePair">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="KeyValuePair" type="tns:KeyValuePair" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="KeyValuePair">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Key" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetProjectStatuses">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetProjectStatusesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectStatusesResult" type="tns:ArrayOfStatus" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfStatus">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Status" nillable="true" type="tns:Status" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Status">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="true" name="Active" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetPipeLines">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetPipeLinesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPipeLinesResult" type="tns:ArrayOfKeyValuePair" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCategories">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetCategoriesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCategoriesResult" type="tns:ArrayOfKeyValuePair" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="project" type="tns:Project" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SaveProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SaveProjectResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDeactivatedProjects">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ps" type="tns:ProjectSearch" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDeactivatedProjectsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDeactivatedProjectsResult" type="tns:ArrayOfProject" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectParticipants">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProjectIds" type="tns:ArrayOfInt" />
+            <s:element minOccurs="1" maxOccurs="1" name="ChangedAfter" nillable="true" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetProjectParticipantsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectParticipantsResult" type="tns:ArrayOfProjectParticipants" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfProjectParticipants">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectParticipants" nillable="true" type="tns:ProjectParticipants" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ProjectParticipants">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ProjectId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Participants" type="tns:ArrayOfParticipant" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfParticipant">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Participant" nillable="true" type="tns:Participant" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Participant">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ContactId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Role" type="tns:Role" />
+          <s:element minOccurs="1" maxOccurs="1" name="State" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="StateName" type="tns:ProjectParticipantState" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ProjectParticipantState">
+        <s:restriction base="s:string">
+          <s:enumeration value="Unknown" />
+          <s:enumeration value="InvitationSent" />
+          <s:enumeration value="Participating" />
+          <s:enumeration value="ProjectInitiater" />
+          <s:enumeration value="Removed" />
+          <s:enumeration value="RemovedBeforeAccept" />
+          <s:enumeration value="InvitationStoppedByReciever" />
+          <s:enumeration value="InvitationStoppedBySender" />
+          <s:enumeration value="InvitationExpired" />
+          <s:enumeration value="InvitationIsResent" />
+          <s:enumeration value="RemovedWhenOpeningProject" />
+          <s:enumeration value="NotInvited" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetProjectNameListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectNameList" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectNameListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectNameListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDeactivatedProjectNameListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDeactivatedProjectNameList" />
+  </wsdl:message>
+  <wsdl:message name="GetDeactivatedProjectNameListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDeactivatedProjectNameListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectList" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectsDetailedSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectsDetailed" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectsDetailedSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectsDetailedResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSingleProjectSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSingleProject" />
+  </wsdl:message>
+  <wsdl:message name="GetSingleProjectSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSingleProjectResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectTasksSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectTasks" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectTasksSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectTasksResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveProjectTaskSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveProjectTask" />
+  </wsdl:message>
+  <wsdl:message name="SaveProjectTaskSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveProjectTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMyProjectTasksSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMyProjectTasks" />
+  </wsdl:message>
+  <wsdl:message name="GetMyProjectTasksSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMyProjectTasksResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectRolesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectRoles" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectRolesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectRolesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectTypesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectTypes" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectTypesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectStatusesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectStatuses" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectStatusesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectStatusesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPipeLinesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPipeLines" />
+  </wsdl:message>
+  <wsdl:message name="GetPipeLinesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPipeLinesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCategoriesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCategories" />
+  </wsdl:message>
+  <wsdl:message name="GetCategoriesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCategoriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="SaveProjectSoapIn">
+    <wsdl:part name="parameters" element="tns:SaveProject" />
+  </wsdl:message>
+  <wsdl:message name="SaveProjectSoapOut">
+    <wsdl:part name="parameters" element="tns:SaveProjectResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDeactivatedProjectsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDeactivatedProjects" />
+  </wsdl:message>
+  <wsdl:message name="GetDeactivatedProjectsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDeactivatedProjectsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectParticipantsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectParticipants" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectParticipantsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectParticipantsResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ProjectServiceSoap">
+    <wsdl:operation name="GetProjectNameList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of projects with id and name</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectNameListSoapIn" />
+      <wsdl:output message="tns:GetProjectNameListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeactivatedProjectNameList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of all deactivated projects with id and name</wsdl:documentation>
+      <wsdl:input message="tns:GetDeactivatedProjectNameListSoapIn" />
+      <wsdl:output message="tns:GetDeactivatedProjectNameListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of Projects.</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectListSoapIn" />
+      <wsdl:output message="tns:GetProjectListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectsDetailed">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a detailed list of Projects.</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectsDetailedSoapIn" />
+      <wsdl:output message="tns:GetProjectsDetailedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleProject">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a single project.</wsdl:documentation>
+      <wsdl:input message="tns:GetSingleProjectSoapIn" />
+      <wsdl:output message="tns:GetSingleProjectSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectTasks">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of tasks for a specific project.</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectTasksSoapIn" />
+      <wsdl:output message="tns:GetProjectTasksSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveProjectTask">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Saves a task.</wsdl:documentation>
+      <wsdl:input message="tns:SaveProjectTaskSoapIn" />
+      <wsdl:output message="tns:SaveProjectTaskSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMyProjectTasks">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of the currently logged on user's tasks</wsdl:documentation>
+      <wsdl:input message="tns:GetMyProjectTasksSoapIn" />
+      <wsdl:output message="tns:GetMyProjectTasksSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectRoles">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of project roles</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectRolesSoapIn" />
+      <wsdl:output message="tns:GetProjectRolesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectTypes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of project types</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectTypesSoapIn" />
+      <wsdl:output message="tns:GetProjectTypesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectStatuses">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of project task statuses</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectStatusesSoapIn" />
+      <wsdl:output message="tns:GetProjectStatusesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPipeLines">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a key/value list of project pipelines (substatuses). Key = Id, Value = Name</wsdl:documentation>
+      <wsdl:input message="tns:GetPipeLinesSoapIn" />
+      <wsdl:output message="tns:GetPipeLinesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCategories">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a key/value list of categories. Key = Id, Value = Name</wsdl:documentation>
+      <wsdl:input message="tns:GetCategoriesSoapIn" />
+      <wsdl:output message="tns:GetCategoriesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveProject">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Saves a project and returns its ID</wsdl:documentation>
+      <wsdl:input message="tns:SaveProjectSoapIn" />
+      <wsdl:output message="tns:SaveProjectSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDeactivatedProjects">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">GetProjectsDetailed for deactivated projects, does not support freetext search</wsdl:documentation>
+      <wsdl:input message="tns:GetDeactivatedProjectsSoapIn" />
+      <wsdl:output message="tns:GetDeactivatedProjectsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectParticipants">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get all participants for a list of projects</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectParticipantsSoapIn" />
+      <wsdl:output message="tns:GetProjectParticipantsSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProjectServiceSoap" type="tns:ProjectServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetProjectNameList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectNameList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeactivatedProjectNameList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetDeactivatedProjectNameList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectsDetailed">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectsDetailed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleProject">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetSingleProject" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectTasks">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectTasks" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveProjectTask">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/SaveProjectTask" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMyProjectTasks">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetMyProjectTasks" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectRoles">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectRoles" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectTypes">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectStatuses">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectStatuses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPipeLines">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPipeLines" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCategories">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetCategories" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveProject">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/SaveProject" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeactivatedProjects">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetDeactivatedProjects" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectParticipants">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetProjectParticipants" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ProjectServiceSoap12" type="tns:ProjectServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetProjectNameList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectNameList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeactivatedProjectNameList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetDeactivatedProjectNameList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectsDetailed">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectsDetailed" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleProject">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetSingleProject" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectTasks">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectTasks" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveProjectTask">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/SaveProjectTask" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMyProjectTasks">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetMyProjectTasks" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectRoles">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectRoles" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectTypes">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectTypes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectStatuses">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectStatuses" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPipeLines">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPipeLines" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCategories">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetCategories" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SaveProject">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/SaveProject" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDeactivatedProjects">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetDeactivatedProjects" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProjectParticipants">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetProjectParticipants" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProjectService">
+    <wsdl:port name="ProjectServiceSoap" binding="tns:ProjectServiceSoap">
+      <soap:address location="https://webservices.24sevenoffice.com/Project/V001/ProjectService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ProjectServiceSoap12" binding="tns:ProjectServiceSoap12">
+      <soap12:address location="https://webservices.24sevenoffice.com/Project/V001/ProjectService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

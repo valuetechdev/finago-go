@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://24sevenOffice.com/webservices" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://24sevenOffice.com/webservices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://24sevenOffice.com/webservices">
+      <s:element name="GetPersonId">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="consumerPersonNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersonIdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetPersonIdResult" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Authentication" type="tns:Authentication" />
+      <s:complexType name="Authentication">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Username" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UserId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EmployeeId" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ConsumerId" type="s:long" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="SavePerson">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="personItem" type="tns:PersonItem" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PersonItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Comment" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ConsumerPersonNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="CustomerId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateRegistered" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateChanged" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateOfBirth" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Department" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EmailAddresses" type="tns:ArrayOfEmailAddress" />
+          <s:element minOccurs="0" maxOccurs="1" default="-2147483648" name="EmployeeNumber" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="FaxNumber" type="tns:FaxNumber" />
+          <s:element minOccurs="0" maxOccurs="1" name="FirstName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="NoChange" name="Gender" type="tns:Gender" />
+          <s:element minOccurs="0" maxOccurs="1" default="0" name="Id" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" name="LastName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Nickname" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PersonalStatus" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PhoneNumbers" type="tns:ArrayOfPhoneNumber" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostAddress" type="tns:Address" />
+          <s:element minOccurs="0" maxOccurs="1" name="RelationData" type="tns:ArrayOfRelationData" />
+          <s:element minOccurs="0" maxOccurs="1" name="Url" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="WebPassword" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="WebUserName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Workplace" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="WorkPosition" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="IsPrivate" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="HourCost" nillable="true" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="EmployeeId" nillable="true" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfEmailAddress">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="EmailAddress" nillable="true" type="tns:EmailAddress" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="EmailAddress">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Type" type="tns:EmailAddressType" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="EmailAddressType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Home" />
+          <s:enumeration value="Primary" />
+          <s:enumeration value="Alternative" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="FaxNumber">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Type" type="tns:FaxNumberType" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="FaxNumberType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Primary" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="Gender">
+        <s:restriction base="s:string">
+          <s:enumeration value="NoChange" />
+          <s:enumeration value="Unknown" />
+          <s:enumeration value="Female" />
+          <s:enumeration value="Male" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfPhoneNumber">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PhoneNumber" nillable="true" type="tns:PhoneNumber" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PhoneNumber">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Type" type="tns:PhoneNumberType" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="PhoneNumberType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Primary" />
+          <s:enumeration value="Mobile" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="Address">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="County" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostalArea" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PostalCode" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="State" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Street" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Type" type="tns:AddressType" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="AddressType">
+        <s:restriction base="s:string">
+          <s:enumeration value="Post" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfRelationData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="RelationData" nillable="true" type="tns:RelationData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RelationData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ContactId" type="s:long" />
+          <s:element minOccurs="1" maxOccurs="1" name="CustomerId" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mobile" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Phone" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SavePersonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="SavePersonResult" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersonIdsByUserName">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="username" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersonIdsByUserNameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPersonIdsByUserNameResult" type="tns:ArrayOfLong" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfLong">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="long" type="s:long" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetPersonIdByCompanyId">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="companyId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersonIdByCompanyIdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetPersonIdByCompanyIdResult" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersons">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="personSearch" type="tns:PersonSearchParameters" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="PersonSearchParameters">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="ChangedAfter" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="ConsumerPersonNo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="0" name="CustomerId" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" name="Email" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="0" name="EmployeeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="false" name="GetRelationData" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" default="0" name="Id" type="s:long" />
+          <s:element minOccurs="0" maxOccurs="1" default="none" name="IsEmployee" type="tns:TriState" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Role" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Phone" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TriState">
+        <s:restriction base="s:string">
+          <s:enumeration value="none" />
+          <s:enumeration value="True" />
+          <s:enumeration value="False" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetPersonsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPersonsResult" type="tns:ArrayOfPersonItem" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPersonItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PersonItem" nillable="true" type="tns:PersonItem" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetPersonsDetailed">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="personSearch" type="tns:PersonSearchParameters" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersonsDetailedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPersonsDetailedResult" type="tns:ArrayOfPersonItem" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MakeRelation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="relation" type="tns:RelationData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MakeRelationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="MakeRelationResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRelations">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="personId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRelationsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRelationsResult" type="tns:ArrayOfRelationData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRelationsChangedAfter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="changedAfter" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRelationsChangedAfterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRelationsChangedAfterResult" type="tns:ArrayOfRelationData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteRelation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="personId" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="companyId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteRelationResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetNotes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="personId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetNotesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetNotesResult" type="tns:ArrayOfNoteData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfNoteData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="NoteData" nillable="true" type="tns:NoteData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="NoteData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" default="0" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Subject" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" default="-1" name="EmployeeId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="DateAdded" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Date" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="PersonId" type="s:long" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetAllNotes">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetAllNotesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAllNotesResult" type="tns:ArrayOfNoteData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddNote">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="note" type="tns:NoteData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddNoteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AddNoteResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteNote">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="note" type="tns:NoteData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteNoteResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="DeleteNoteById">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="noteId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteNoteByIdResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetCategoryList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetCategoryListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCategoryListResult" type="tns:ArrayOfCategory" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfCategory">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Category" nillable="true" type="tns:Category" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Category">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Note" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetPersonCategoryList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="personId" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersonCategoryListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPersonCategoryListResult" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfInt">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="int" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetPersonArrayCategoryList">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="personIds" type="tns:ArrayOfInt" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPersonArrayCategoryListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPersonArrayCategoryListResult" type="tns:ArrayOfPersonCategories" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPersonCategories">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PersonCategories" nillable="true" type="tns:PersonCategories" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PersonCategories">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="personId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="categories" type="tns:ArrayOfInt" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AddCategoryToPerson">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="personId" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="categoryId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddCategoryToPersonResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="RemoveCategoryFromPerson">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="personId" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="categoryId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RemoveCategoryFromPersonResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetPersonIdSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPersonId" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonIdSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPersonIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonIdAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="SavePersonSoapIn">
+    <wsdl:part name="parameters" element="tns:SavePerson" />
+  </wsdl:message>
+  <wsdl:message name="SavePersonSoapOut">
+    <wsdl:part name="parameters" element="tns:SavePersonResponse" />
+  </wsdl:message>
+  <wsdl:message name="SavePersonAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonIdsByUserNameSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPersonIdsByUserName" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonIdsByUserNameSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPersonIdsByUserNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonIdsByUserNameAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonIdByCompanyIdSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPersonIdByCompanyId" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonIdByCompanyIdSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPersonIdByCompanyIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPersons" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPersonsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonsAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonsDetailedSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPersonsDetailed" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonsDetailedSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPersonsDetailedResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonsDetailedAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="MakeRelationSoapIn">
+    <wsdl:part name="parameters" element="tns:MakeRelation" />
+  </wsdl:message>
+  <wsdl:message name="MakeRelationSoapOut">
+    <wsdl:part name="parameters" element="tns:MakeRelationResponse" />
+  </wsdl:message>
+  <wsdl:message name="MakeRelationAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="GetRelationsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRelations" />
+  </wsdl:message>
+  <wsdl:message name="GetRelationsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRelationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRelationsChangedAfterSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRelationsChangedAfter" />
+  </wsdl:message>
+  <wsdl:message name="GetRelationsChangedAfterSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRelationsChangedAfterResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteRelationSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteRelation" />
+  </wsdl:message>
+  <wsdl:message name="DeleteRelationSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteRelationResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetNotesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetNotes" />
+  </wsdl:message>
+  <wsdl:message name="GetNotesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetNotesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAllNotesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAllNotes" />
+  </wsdl:message>
+  <wsdl:message name="GetAllNotesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAllNotesResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddNoteSoapIn">
+    <wsdl:part name="parameters" element="tns:AddNote" />
+  </wsdl:message>
+  <wsdl:message name="AddNoteSoapOut">
+    <wsdl:part name="parameters" element="tns:AddNoteResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteNoteSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteNote" />
+  </wsdl:message>
+  <wsdl:message name="DeleteNoteSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteNoteResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteNoteByIdSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteNoteById" />
+  </wsdl:message>
+  <wsdl:message name="DeleteNoteByIdSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteNoteByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCategoryListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCategoryList" />
+  </wsdl:message>
+  <wsdl:message name="GetCategoryListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCategoryListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCategoryListAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonCategoryListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPersonCategoryList" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonCategoryListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPersonCategoryListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonCategoryListAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonArrayCategoryListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPersonArrayCategoryList" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonArrayCategoryListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPersonArrayCategoryListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPersonArrayCategoryListAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="AddCategoryToPersonSoapIn">
+    <wsdl:part name="parameters" element="tns:AddCategoryToPerson" />
+  </wsdl:message>
+  <wsdl:message name="AddCategoryToPersonSoapOut">
+    <wsdl:part name="parameters" element="tns:AddCategoryToPersonResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddCategoryToPersonAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:message name="RemoveCategoryFromPersonSoapIn">
+    <wsdl:part name="parameters" element="tns:RemoveCategoryFromPerson" />
+  </wsdl:message>
+  <wsdl:message name="RemoveCategoryFromPersonSoapOut">
+    <wsdl:part name="parameters" element="tns:RemoveCategoryFromPersonResponse" />
+  </wsdl:message>
+  <wsdl:message name="RemoveCategoryFromPersonAuthentication">
+    <wsdl:part name="Authentication" element="tns:Authentication" />
+  </wsdl:message>
+  <wsdl:portType name="PersonServiceSoap">
+    <wsdl:operation name="GetPersonId">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets 24SevenOffice's Person Id that corresponds to the given Consumer Person Id</wsdl:documentation>
+      <wsdl:input message="tns:GetPersonIdSoapIn" />
+      <wsdl:output message="tns:GetPersonIdSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SavePerson">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Saves a new contact into 24SevenOffice system and returns the id assigned to the new contact</wsdl:documentation>
+      <wsdl:input message="tns:SavePersonSoapIn" />
+      <wsdl:output message="tns:SavePersonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonIdsByUserName">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of Person Ids from a username in 24SO's system</wsdl:documentation>
+      <wsdl:input message="tns:GetPersonIdsByUserNameSoapIn" />
+      <wsdl:output message="tns:GetPersonIdsByUserNameSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonIdByCompanyId">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets 24SevenOffice's Person Id that corresponds to the given Company Id</wsdl:documentation>
+      <wsdl:input message="tns:GetPersonIdByCompanyIdSoapIn" />
+      <wsdl:output message="tns:GetPersonIdByCompanyIdSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPersons">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of Persons registered as contacts in 24SO's system</wsdl:documentation>
+      <wsdl:input message="tns:GetPersonsSoapIn" />
+      <wsdl:output message="tns:GetPersonsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonsDetailed">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of Persons registered as contacts in 24SO's system</wsdl:documentation>
+      <wsdl:input message="tns:GetPersonsDetailedSoapIn" />
+      <wsdl:output message="tns:GetPersonsDetailedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="MakeRelation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Makes a relation between a contact and a customer</wsdl:documentation>
+      <wsdl:input message="tns:MakeRelationSoapIn" />
+      <wsdl:output message="tns:MakeRelationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRelations">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of all relations for a person by PersonId. Notice: Only new authentication method </wsdl:documentation>
+      <wsdl:input message="tns:GetRelationsSoapIn" />
+      <wsdl:output message="tns:GetRelationsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRelationsChangedAfter">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of all relations for a person by PersonId. Notice: Only new authentication method </wsdl:documentation>
+      <wsdl:input message="tns:GetRelationsChangedAfterSoapIn" />
+      <wsdl:output message="tns:GetRelationsChangedAfterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteRelation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Deletes a relation. Notice: Only new authentication method </wsdl:documentation>
+      <wsdl:input message="tns:DeleteRelationSoapIn" />
+      <wsdl:output message="tns:DeleteRelationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNotes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of all notes for a Person. Notice: Only new authentication method allowed</wsdl:documentation>
+      <wsdl:input message="tns:GetNotesSoapIn" />
+      <wsdl:output message="tns:GetNotesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllNotes">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of all notes for all contact. Notice: Only new authentication method allowed</wsdl:documentation>
+      <wsdl:input message="tns:GetAllNotesSoapIn" />
+      <wsdl:output message="tns:GetAllNotesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddNote">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Adds a note. Notice: Only new authentication method allowed</wsdl:documentation>
+      <wsdl:input message="tns:AddNoteSoapIn" />
+      <wsdl:output message="tns:AddNoteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteNote">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Deletes a note. Notice: Only new authentication method allowed</wsdl:documentation>
+      <wsdl:input message="tns:DeleteNoteSoapIn" />
+      <wsdl:output message="tns:DeleteNoteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteNoteById">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Deletes a note by NoteId. Notice: Only new authentication method allowed</wsdl:documentation>
+      <wsdl:input message="tns:DeleteNoteByIdSoapIn" />
+      <wsdl:output message="tns:DeleteNoteByIdSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCategoryList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets the complete list of CRM Categories</wsdl:documentation>
+      <wsdl:input message="tns:GetCategoryListSoapIn" />
+      <wsdl:output message="tns:GetCategoryListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonCategoryList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of Categories for a Person</wsdl:documentation>
+      <wsdl:input message="tns:GetPersonCategoryListSoapIn" />
+      <wsdl:output message="tns:GetPersonCategoryListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonArrayCategoryList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Gets a list of Categories for an array of Persons</wsdl:documentation>
+      <wsdl:input message="tns:GetPersonArrayCategoryListSoapIn" />
+      <wsdl:output message="tns:GetPersonArrayCategoryListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddCategoryToPerson">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Adds a category to a Person</wsdl:documentation>
+      <wsdl:input message="tns:AddCategoryToPersonSoapIn" />
+      <wsdl:output message="tns:AddCategoryToPersonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RemoveCategoryFromPerson">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Removes a category from a Person</wsdl:documentation>
+      <wsdl:input message="tns:RemoveCategoryFromPersonSoapIn" />
+      <wsdl:output message="tns:RemoveCategoryFromPersonSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PersonServiceSoap" type="tns:PersonServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPersonId">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPersonId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPersonIdAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SavePerson">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/SavePerson" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:SavePersonAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonIdsByUserName">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPersonIdsByUserName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPersonIdsByUserNameAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonIdByCompanyId">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPersonIdByCompanyId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersons">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPersons" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPersonsAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonsDetailed">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPersonsDetailed" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPersonsDetailedAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MakeRelation">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/MakeRelation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:MakeRelationAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRelations">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetRelations" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRelationsChangedAfter">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetRelationsChangedAfter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteRelation">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/DeleteRelation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNotes">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetNotes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllNotes">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetAllNotes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddNote">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/AddNote" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteNote">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/DeleteNote" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteNoteById">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/DeleteNoteById" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCategoryList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetCategoryList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetCategoryListAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonCategoryList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPersonCategoryList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPersonCategoryListAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonArrayCategoryList">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/GetPersonArrayCategoryList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetPersonArrayCategoryListAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddCategoryToPerson">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/AddCategoryToPerson" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:AddCategoryToPersonAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveCategoryFromPerson">
+      <soap:operation soapAction="http://24sevenOffice.com/webservices/RemoveCategoryFromPerson" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:RemoveCategoryFromPersonAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PersonServiceSoap12" type="tns:PersonServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPersonId">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPersonId" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPersonIdAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SavePerson">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/SavePerson" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:SavePersonAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonIdsByUserName">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPersonIdsByUserName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPersonIdsByUserNameAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonIdByCompanyId">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPersonIdByCompanyId" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersons">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPersons" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPersonsAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonsDetailed">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPersonsDetailed" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPersonsDetailedAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MakeRelation">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/MakeRelation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:MakeRelationAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRelations">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetRelations" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRelationsChangedAfter">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetRelationsChangedAfter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteRelation">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/DeleteRelation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNotes">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetNotes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllNotes">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetAllNotes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddNote">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/AddNote" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteNote">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/DeleteNote" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteNoteById">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/DeleteNoteById" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCategoryList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetCategoryList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetCategoryListAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonCategoryList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPersonCategoryList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPersonCategoryListAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPersonArrayCategoryList">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/GetPersonArrayCategoryList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetPersonArrayCategoryListAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddCategoryToPerson">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/AddCategoryToPerson" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:AddCategoryToPersonAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveCategoryFromPerson">
+      <soap12:operation soapAction="http://24sevenOffice.com/webservices/RemoveCategoryFromPerson" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:RemoveCategoryFromPersonAuthentication" part="Authentication" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PersonService">
+    <wsdl:port name="PersonServiceSoap" binding="tns:PersonServiceSoap">
+      <soap:address location="https://webservices.24sevenoffice.com/CRM/Contact/PersonService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="PersonServiceSoap12" binding="tns:PersonServiceSoap12">
+      <soap12:address location="https://webservices.24sevenoffice.com/CRM/Contact/PersonService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

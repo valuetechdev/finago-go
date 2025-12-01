@@ -1,0 +1,682 @@
+overlay: 1.0.0
+info:
+  title: Schema Type Corrections Overlay
+  version: 1.0.0
+actions:
+  - target: "$.paths['/customers'].get.parameters[0].schema"
+    description: Fix customers limit parameter - change maxLength to maximum and type to integer
+    update:
+      default: 25
+      maximum: 100
+      type: integer
+      format: int32
+
+  - target: "$.paths['/customers'].get.parameters"
+    description: Add page parameter to customer query params
+    update:
+      - name: "page"
+        in: "query"
+        description: "Page number for pagination"
+        schema:
+          type: integer
+          format: int32
+
+  - target: "$.paths['/salesorders'].get.parameters[0].schema"
+    description: Fix salesorders limit parameter - change to integer type
+    update:
+      type: integer
+      format: int32
+
+  - target: "$.paths.*.*.parameters[?(@.name == 'Authorization')]"
+    description: Remove Authorization header parameter from all endpoints
+    remove: true
+
+  - target: "$.components.schemas.Transaction.properties.id"
+    description: Fix Transaction id field - change from number to string since it's a GUID
+    update:
+      type: string
+      format: uuid
+
+  - target: "$.components.schemas.Transaction.properties"
+    description: Use default Currency
+    update:
+      currency:
+        $ref: "#/components/schemas/Currency"
+
+  - target: "$.components.schemas.Voucher.properties.id"
+    description: Fix Voucher id field - change from number to string since it's a GUID
+    update:
+      type: string
+      format: uuid
+
+  - target: "$.components.schemas.Customer1.properties.street"
+    description: Use MultilineString type for street
+    update:
+      type: string
+      x-go-type: MultilineString
+
+  - target: "$.components.schemas.DeliveryCustomer.properties.street"
+    description: Use MultilineString type for street
+    update:
+      type: string
+      x-go-type: MultilineString
+
+  - target: "$.paths['/organization/information'].get"
+    description: Rename cryptic GetClient to GetOrganization
+    update:
+      operationId: GetOrganization
+
+  - target: "$.components.schemas.ProductRequestPost.allOf[1].properties.units"
+    description: Unwarp units
+    update:
+      $ref: "#/components/schemas/UnitsRequest"
+
+  - target: "$.components.schemas.ProductRequestPatch.allOf[1].properties.units"
+    description: Unwarp units
+    update:
+      $ref: "#/components/schemas/UnitsRequest"
+
+  - target: "$.components.schemas.ProductResponse.allOf[2].properties.units"
+    description: Unwarp units
+    update:
+      $ref: "#/components/schemas/UnitsRequest"
+
+  - target: "$.components.schemas.ProductRequestPost.allOf[1].properties.category"
+    description: Unwarp category
+    update:
+      $ref: "#/components/schemas/CategoryRequest"
+
+  - target: "$.components.schemas"
+    description: Add Stock DTO
+    update:
+      StockDto:
+        type: "object"
+        description: "Stock information for the product."
+        properties:
+          isManaged:
+            type: "boolean"
+            description: "A flag variable indicating whether a product should handle adjusting product quantity."
+            nullable: false
+            default: false
+            example: true
+          quantity:
+            type: "number"
+            description: "The quantity of products that are in stock."
+            nullable: false
+            example: 146
+            default: 0
+          location:
+            type: "string"
+            description: "The location identifier for the product like a shelf or a facility number for inventory management."
+            nullable: true
+            example: "A-313"
+
+  - target: "$.components.schemas.ProductBase.properties.stock"
+    description: Use StockDto
+    update:
+      $ref: "#/components/schemas/StockDto"
+
+  - target: "$.components.schemas"
+    description: Add SupplierProduct DTO
+    update:
+      SupplierProductDto:
+        type: "object"
+        description: "Collection of properties related to the supplier's product."
+        properties:
+          itemCode:
+            type: "string"
+            maxLength: 50
+            description: "The item code of the supplier product."
+            nullable: true
+            example: "T1234"
+          number:
+            type: "string"
+            maxLength: 50
+            description: "The item number of the supplier product."
+            nullable: true
+            example: "1234"
+          name:
+            type: "string"
+            maxLength: 250
+            description: "The name of the supplier product."
+            nullable: true
+            example: "Shoe laces white 1m"
+          price:
+            type: "number"
+            description: "The price of the supplier product."
+            nullable: true
+            example: 10.5
+
+  - target: "$.components.schemas.ProductBase.properties.supplierProduct"
+    description: Use SupplierProductDto
+    update:
+      $ref: "#/components/schemas/SupplierProductDto"
+
+  - target: "$.components.schemas"
+    description: Add LineWithoutIdTax DTO
+    update:
+      LineWithoutIdTaxDto:
+        type: "object"
+        description: "Details for the tax applied to the line item."
+        properties:
+          id:
+            type: "integer"
+            description: "A unique identifier for the tax code within Finago Office's ERP modules associated with the line item."
+            example: 1
+          number:
+            type: "integer"
+            format: "int32"
+            description: "The tax code reference number visible for users."
+            example: 1
+          rate:
+            type: "number"
+            minimum: 0
+            maximum: 100
+            description: "The tax rate percentage expressed as a whole number. For example a tax rate of 25% is represented as 25."
+            example: 25
+
+  - target: "$.components.schemas.LineWithoutId.properties.tax"
+    description: Use LineWithoutIdTaxDto
+    update:
+      $ref: "#/components/schemas/LineWithoutIdTaxDto"
+
+  - target: "$.components.schemas.LineWithoutId.properties.account"
+    description: Use Account1
+    update:
+      $ref: "#/components/schemas/Account1"
+
+  - target: "$.components.schemas"
+    description: Add Addresses DTO
+    update:
+      AddressesDto:
+        type: "object"
+        description: "Addresses for the customer."
+        properties:
+          visit:
+            $ref: "#/components/schemas/VisitAddress"
+          postal:
+            $ref: "#/components/schemas/PostalAddress"
+          billing:
+            $ref: "#/components/schemas/BillingAddress"
+          delivery:
+            $ref: "#/components/schemas/DeliveryAddress"
+
+  - target: "$.components.schemas.CustomerPatchRequest.properties.address"
+    description: Use AddressesDto
+    update:
+      $ref: "#/components/schemas/AddressesDto"
+
+  - target: "$.components.schemas"
+    description: Add Emails DTO
+    update:
+      EmailsDto:
+        description: "Email addresses for the customer."
+        type: "object"
+        properties:
+          contact:
+            type: "string"
+            nullable: true
+            description: "The email address for contacting the customer."
+            example: "contact@example.com"
+
+          billing:
+            type: "string"
+            nullable: true
+            description: "The billing email address for the customer."
+            example: "billing@example.com"
+
+  - target: "$.components.schemas.CustomerPatchRequest.properties.email"
+    description: Use EmailsDto
+    update:
+      $ref: "#/components/schemas/EmailsDto"
+
+  - target: "$.components.schemas"
+    description: Add FirstnameLastname DTO
+    update:
+      FirstnameLastnameDto:
+        description: "Email addresses for the customer."
+        type: "object"
+        properties:
+          firstName:
+            type: "string"
+            nullable: true
+            description: "The first name of a person if the customer is a person."
+            example: "John"
+          lastName:
+            type: "string"
+            nullable: true
+            description: "The last name of a person if the customer is a person."
+            example: "Doe"
+
+  - target: "$.components.schemas.CustomerPatchRequest.properties.person"
+    description: Use FirstnameLastnameDto
+    update:
+      $ref: "#/components/schemas/FirstnameLastnameDto"
+
+  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[0].properties.person"
+    description: Remove person from company customer
+    remove: true
+
+  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[1].properties.organizationNumber"
+    description: Remove organizationNumber from private customer
+    remove: true
+
+  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[1].properties.name"
+    description: Remove name from private customer
+    remove: true
+
+  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[1].properties.person"
+    description: Use FirstnameLastnameDto
+    update:
+      $ref: "#/components/schemas/FirstnameLastnameDto"
+
+  - target: "$.components.schemas.CustomerProperties.properties.person"
+    description: Use FirstnameLastnameDto
+    update:
+      $ref: "#/components/schemas/FirstnameLastnameDto"
+
+  - target: "$.components.schemas.CustomerProperties.properties.email"
+    description: Use EmailsDto
+    update:
+      $ref: "#/components/schemas/EmailsDto"
+
+  - target: "$.components.schemas.CustomerProperties.properties.address"
+    description: Use AddressesDto
+    update:
+      $ref: "#/components/schemas/AddressesDto"
+
+  - target: "$.components.schemas"
+    description: Add SalesTypeDto
+    update:
+      SalesTypeDto:
+        type: "object"
+        description: "The sales type for the sales order."
+        properties:
+          id:
+            type: "integer"
+            description: "The unique identifier for the sales type. A negative value stands for a system-defined ID."
+            example: -100
+
+  - target: "$.components.schemas.SalesOrderBasic.properties.salesType"
+    description: Use SalesTypeDto for SalesOrderBasic
+    update:
+      $ref: "#/components/schemas/SalesTypeDto"
+
+  - target: "$.components.schemas"
+    description: Add InvoiceTransactionDto
+    update:
+      InvoiceTransactionDto:
+        type: "object"
+        description: "Details of the transaction associated with the invoice."
+        properties:
+          id:
+            type: "string"
+            format: "guid"
+            description: "A unique identifier for the transaction within Finago Office ERP."
+            example: "63293496-884f-4358-b489-f641fe51cdaa"
+
+  - target: "$.components.schemas.Invoice1.properties.transaction"
+    description: Use InvoiceTransactionDto
+    update:
+      $ref: "#/components/schemas/InvoiceTransactionDto"
+
+  - target: "$.components.schemas.Invoice1"
+    description: Use better name
+    update:
+      x-go-name: "InvoiceWithTransaction"
+
+  - target: "$.components.schemas.Customer"
+    description: Use better name
+    update:
+      x-go-name: "CustomerIdOnly"
+  - target: "$.components.schemas.Customer1"
+    description: Use better name
+    update:
+      x-go-name: "Customer"
+
+  - target: "$.components.schemas.TransactionType"
+    description: Use better name
+    update:
+      x-go-name: "TransactionTypeIdOnly"
+  - target: "$.components.schemas.TransactionType1"
+    description: Use better name
+    update:
+      x-go-name: "TransactionType"
+
+  - target: "$.components.schemas.CategoryResponse1"
+    description: Use better name
+    update:
+      x-go-name: "CategoryResponseIdAndName"
+
+  - target: "$.components.schemas.OrganizationModel"
+    description: Use better name
+    update:
+      x-go-name: "OrganizationModelShortend"
+  - target: "$.components.schemas.OrganizationModel1"
+    description: Use better name
+    update:
+      x-go-name: "OrganizationModel"
+
+  - target: "$.components.schemas"
+    description: Add BankTransactionAmountCurrencyResponse
+    update:
+      BankTransactionAmountCurrencyResponse:
+        type: "object"
+        description: "The currency of the balance.\n"
+        required:
+          - "code"
+        properties:
+          code:
+            type: "string"
+            description: "The currency code of the balance."
+            example: "NOK"
+
+  - target: "$.components.schemas"
+    description: Add BankTransactionAmountResponse
+    update:
+      BankTransactionAmountResponse:
+        type: "object"
+        description: "Amount of the bank transaction."
+        required:
+          - "value"
+          - "currency"
+        properties:
+          value:
+            type: "number"
+            description: "The amount in the currency specified. Must be a positive number."
+            example: 1200
+            nullable: false
+          currency:
+            $ref: "#/components/schemas/BankTransactionAmountCurrencyResponse"
+
+  - target: "$.components.schemas.BankTransactionBase.properties.amount"
+    description: Use BankTransactionAmountResponse
+    update:
+      $ref: "#/components/schemas/BankTransactionAmountResponse"
+
+  - target: "$.components.schemas"
+    description: Add BankTransactionBankAccountResponse
+    update:
+      BankTransactionBankAccountResponse:
+        type: "object"
+        description: "Details of the bank account involved in the transaction."
+        nullable: false
+        required:
+          - "id"
+        properties:
+          id:
+            type: "string"
+            description: "A unique identifier for the bank account within Finago Office."
+            example: "123-456-789"
+            nullable: false
+
+  - target: "$.components.schemas.BankTransactionBase.properties.bankAccount"
+    description: Use BankTransactionBankAccountResponse
+    update:
+      $ref: "#/components/schemas/BankTransactionBankAccountResponse"
+
+  - target: "$.components.schemas"
+    description: Add BankTransactionBankAccountResponse
+    update:
+      BankTransactionCodesResponse:
+        type: "object"
+        description: "The bank transaction code is a structured code that identifies the type of a transaction. The code is structured in three levels: domain family and subfamily.\n* The domain code is the highest level and is used to group the transaction codes into different domains.\n* The family code is used to group the transaction codes within a domain. \n* The subfamily code is used to group the transaction codes within a family.\n"
+        properties:
+          domainCode:
+            type: "string"
+            description: "Domain code of the bank transaction."
+            nullable: true
+            example: "D001"
+          familyCode:
+            type: "string"
+            description: "Family code of the bank transaction."
+            nullable: true
+            example: "F002"
+          subFamilyCode:
+            type: "string"
+            description: "Subfamily code of the bank transaction."
+            nullable: true
+            example: "SF003"
+
+  - target: "$.components.schemas.BankTransactionBase.properties.bankTransactionCode"
+    description: Use BankTransactionBankAccountResponse
+    update:
+      $ref: "#/components/schemas/BankTransactionCodesResponse"
+
+  - target: "$.components.schemas"
+    description: Add BankAccountTypeEnum
+    update:
+      BankAccountTypeEnum:
+        type: "string"
+        enum:
+          - "bban"
+          - "iban"
+        default: "bban"
+        description: "Type of the originating bank account for outbound transactions."
+        example: "bban"
+        nullable: true
+  - target: "$.components.schemas.BankAccountBase.properties.type"
+    description: Use BankAccountTypeEnum
+    update:
+      $ref: "#/components/schemas/BankAccountTypeEnum"
+
+  - target: "$.components.schemas"
+    description: Add BankAccountExternal
+    update:
+      BankAccountExternal:
+        type: "object"
+        description: "The originating bank account for transactions. This is automatically set for outbound transactions i.e. the property is always returned in the API responses for outbound transactions."
+        properties:
+          number:
+            type: "string"
+            example: "123456789"
+            description: "Number of the originating bank account for outbound transactions."
+            nullable: true
+          type:
+            $ref: "#/components/schemas/BankAccountTypeEnum"
+
+  - target: "$.components.schemas.BankTransactionBase.properties.fromBankAccount"
+    description: Use BankAccountExternal
+    update:
+      $ref: "#/components/schemas/BankAccountExternal"
+  - target: "$.components.schemas.BankTransactionBase.properties.toBankAccount"
+    description: Use BankAccountExternal
+    update:
+      $ref: "#/components/schemas/BankAccountExternal"
+
+  - target: "$.components.schemas"
+    description: Add ProductTypeEnum
+    update:
+      ProductTypeEnum:
+        type: "string"
+        "enum":
+          - "default"
+          - "structure"
+        description: "Specifies whether the product is defined as a regular or structure product."
+        example: "default"
+        default: "default"
+  - target: "$.components.schemas.ProductBase.properties.type"
+    description: Use ProductTypeEnum
+    update:
+      $ref: "#/components/schemas/ProductTypeEnum"
+
+  - target: "$.components.schemas"
+    description: Add ProductStatusEnum
+    update:
+      ProductStatusEnum:
+        type: "string"
+        enum:
+          - "active"
+          - "inactive"
+        description: "Specifies whether the product's status is active or inactive (expired)."
+        example: "active"
+        default: "active"
+  - target: "$.components.schemas.ProductBase.properties.status"
+    description: Use ProductStatusEnum
+    update:
+      $ref: "#/components/schemas/ProductStatusEnum"
+
+  - target: "$.components.schemas"
+    description: Add LineTypeEnum
+    update:
+      LineTypeEnum:
+        type: "string"
+        enum:
+          - "product"
+          - "text"
+        description: "A specification for the type of the line item, whether this is a product or a text entry."
+        example: "product"
+  - target: "$.components.schemas.LineWithoutId.properties.type"
+    description: Use LineTypeEnum
+    update:
+      $ref: "#/components/schemas/LineTypeEnum"
+
+  - target: "$.components.schemas"
+    description: Add BankTransactionTypeEnum
+    update:
+      BankTransactionTypeEnum:
+        type: "string"
+        enum:
+          - "inbound"
+          - "outbound"
+        description: 'Direction of the payment. "Inbound" stands for an incoming payment. E.g. a payment of an invoice by a customer. "Outbound" is a payment originating from this bank account. E.g a debet card transaction, when paid for goods and services.'
+        example: "outbound"
+        nullable: false
+  - target: "$.components.schemas.BankTransactionBase.properties.type"
+    description: Use BankTransactionTypeEnum
+    update:
+      $ref: "#/components/schemas/BankTransactionTypeEnum"
+
+  - target: "$.components.schemas"
+    description: Add PaymenReferenceTypeEnum
+    update:
+      PaymenReferenceTypeEnum:
+        type: "string"
+        enum:
+          - "text"
+          - "ocr"
+          - "invoiceRef"
+        example: "text"
+
+  - target: "$.components.schemas"
+    description: Add PaymenReferenceDto
+    update:
+      PaymenReferenceDto:
+        type: "object"
+        description: "The payment reference must be one of the following types: text ocr invoiceRef.\n* `text`: The value is a free text reference.\n* `ocr`: The value is an structured OCR reference. KID number in Norway.\n* `invoiceRef`: The value is an invoice number.\n\nThe actual value of the reference is set in the `value` property.\n"
+        required:
+          - "type"
+          - "value"
+        properties:
+          type:
+            $ref: "#/components/schemas/PaymenReferenceTypeEnum"
+          value:
+            type: "string"
+            description: "This must be a string of max 1000 characters."
+            example: "Payment for shipment AA-001."
+            nullable: false
+            maxLength: 1000
+  - target: "$.components.schemas.BankTransactionBase.properties.paymentReference"
+    description: Use PaymenReferenceDto
+    update:
+      $ref: "#/components/schemas/PaymenReferenceDto"
+
+  - target: "$.paths['/accounts'].get.responses['200'].content['application/json'].schema.items"
+    description: Replace Account1 with Account
+    update:
+      $ref: "#/components/schemas/Account"
+  - target: "$.paths['/accounts/{id}'].get.responses['200'].content['application/json'].schema"
+    description: Replace Account1 with Account
+    update:
+      $ref: "#/components/schemas/Account"
+  - target: "$.components.schemas.LineWithoutId.properties.account"
+    description: Use Account instead of Account1
+    update:
+      $ref: "#/components/schemas/Account"
+  - target: "$.components.schemas.Transaction.properties.account"
+    description: Use Account instead of Account2
+    update:
+      $ref: "#/components/schemas/Account"
+
+  - target: "$.paths['/transactionlines'].get.responses['200'].content.*.schema['$ref']"
+    description: Replace Transactions with []Transaction
+    remove: true
+  - target: "$.paths['/transactionlines'].get.responses['200'].content.*.schema"
+    description: Replace Transactions with []Transaction
+    update:
+      type: array
+      items:
+        $ref: "#/components/schemas/Transaction"
+
+  - target: "$.components.schemas.SalesOrderBasic.properties.currency"
+    description: Use LineTypeEnum
+    update:
+      $ref: "#/components/schemas/Currency"
+
+  - target: "$.components.schemas"
+    description: Add OurReferenceContactPersonDto
+    update:
+      OurReferenceContactPersonDto:
+        type: "object"
+        description: "Details of the person at your organization who is the sales order's point of contact within your organization. It should be one of the people provided by `/organization/people` endpoint."
+        properties:
+          id:
+            type: "number"
+            description: "Identifier of the contact person (candidates provided by `/organization/people` endpoint)."
+            example: 123
+
+  - target: "$.components.schemas.SalesOrderBasic.properties.ourReference"
+    description: Use OurReferenceContactPersonDto for SalesOrderBasic
+    update:
+      $ref: "#/components/schemas/OurReferenceContactPersonDto"
+
+  - target: "$.components.schemas"
+    description: Add YourReferenceContactPersonDto
+    update:
+      YourReferenceContactPersonDto:
+        type: "object"
+        description: "Details of the contact person at the customer side who is the sales order's point of contact at the customer"
+        properties:
+          id:
+            type: "number"
+            description: "Identifier of the contact person. Used for reference only, as the 'name'-property contains the actual name of the contact person."
+            example: 123
+          name:
+            type: "string"
+            description: "The name of the person."
+            example: "John Doe"
+
+  - target: "$.components.schemas.SalesOrderBasic.properties.yourReference"
+    description: Use YourReferenceContactPersonDto for SalesOrderBasic
+    update:
+      $ref: "#/components/schemas/YourReferenceContactPersonDto"
+
+  - target: "$.components.schemas"
+    description: Add SalesOrderStatusEnum
+    update:
+      SalesOrderStatusEnum:
+        type: "string"
+        description: "Current status of the sales order."
+        enum:
+          - "Draft"
+          - "Proposal"
+          - "Confirmed"
+          - "Invoice"
+          - "AdvanceInvoice"
+        example: "Invoice"
+  - target: "$.components.schemas.SalesOrderBasic.properties.status"
+    description: Use SalesOrderStatusEnum
+    update:
+      $ref: "#/components/schemas/SalesOrderStatusEnum"
+
+  - target: "$.paths['/salesorders'].get.parameters[5].schema"
+    description: Add SalesOrderStatusEnum
+    update:
+      $ref: "#/components/schemas/SalesOrderStatusEnum"
+
+  # FIXME: this seems to be broken in OAPI.
+  # see: https://github.com/oapi-codegen/oapi-codegen/issues/2091
+  - target: "$.components.schemas.*.properties..[?(@.nullable)]"
+    description: Ensure that nullable fields, results in omitempty
+    update:
+      x-omitempty: true
