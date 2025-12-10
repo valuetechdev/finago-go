@@ -222,11 +222,11 @@ actions:
             startdate:
               type: "string"
               description: "Start date"
-              format: date
+              x-go-type: StringDate
             enddate:
               type: "string"
               description: "End date"
-              format: date
+              x-go-type: StringDate
             enddate_reason:
               type: "string"
               description: "End date reason"
@@ -410,9 +410,17 @@ actions:
           type: "object"
           properties:
             empId:
-              type: "int"
+              type: "string"
               description: "Employee ID"
-              x-go-type: "int"
+              x-go-type: "StringInt"
+            personId:
+              type: "string"
+              description: "Employee ID (undocumented)"
+              x-go-type: "StringInt"
+            orgId:
+              type: "string"
+              description: "org ID (undocumented)"
+              x-go-type: "StringInt"
             serialNo:
               type: "string"
               description: "Serial number"

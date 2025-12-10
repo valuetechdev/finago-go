@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	"github.com/oapi-codegen/runtime"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 const (
@@ -90,7 +89,7 @@ type AbsenceDTO struct {
 	Description *string `json:"description,omitempty"`
 
 	// EmpId Employee ID
-	EmpId *int `json:"empId,omitempty"`
+	EmpId *StringInt `json:"empId,omitempty"`
 
 	// EndDate End date
 	EndDate *StringDate `json:"endDate,omitempty"`
@@ -104,11 +103,17 @@ type AbsenceDTO struct {
 	// NumberOfDays Number of days
 	NumberOfDays *StringInt `json:"numberOfDays,omitempty"`
 
+	// OrgId org ID (undocumented)
+	OrgId *StringInt `json:"orgId,omitempty"`
+
 	// Percent Absence percentage
 	Percent *StringFloat `json:"percent,omitempty"`
 
 	// PermisjonId Permission ID
 	PermisjonId *StringInt `json:"permisjonId,omitempty"`
+
+	// PersonId Employee ID (undocumented)
+	PersonId *StringInt `json:"personId,omitempty"`
 
 	// RequestDate Request date
 	RequestDate *StringDate `json:"requestDate,omitempty"`
@@ -348,7 +353,7 @@ type EmploymentDTO struct {
 	EmploymentType *string `json:"employment_type,omitempty"`
 
 	// Enddate End date
-	Enddate *openapi_types.Date `json:"enddate,omitempty"`
+	Enddate *StringDate `json:"enddate,omitempty"`
 
 	// EnddateReason End date reason
 	EnddateReason *string `json:"enddate_reason,omitempty"`
@@ -363,7 +368,7 @@ type EmploymentDTO struct {
 	ProfessionCode *string `json:"profession_code,omitempty"`
 
 	// Startdate Start date
-	Startdate *openapi_types.Date `json:"startdate,omitempty"`
+	Startdate *StringDate `json:"startdate,omitempty"`
 
 	// WorkingTimes Working times
 	WorkingTimes         *string                `json:"working_times,omitempty"`
