@@ -18,7 +18,7 @@ const orgId = "543819716587312"
 
 var cachedClient *RestyClient
 
-func getClient(t *testing.T) *RestyClient {
+func getClient() *RestyClient {
 	if cachedClient != nil {
 		return cachedClient
 	}
@@ -27,7 +27,6 @@ func getClient(t *testing.T) *RestyClient {
 		ClientSecret:   os.Getenv("TFSO_REST_SECRET"),
 		OrganizationId: orgId,
 	})
-	require.NoError(t, cachedClient.Authenticate(), "client should authenticate")
 	return cachedClient
 }
 
@@ -40,11 +39,9 @@ func TestClientInitialization(t *testing.T) {
 		OrganizationId: orgId,
 	})
 
-	require.False(c.IsTokenValid(), "token should be invalid")
-	require.NoError(c.Authenticate(), "client should authenticate")
-
-	// Verify token properties
-	token := c.GetToken()
+	// Token is fetched automatically on first request, but we can also get it directly
+	token, err := c.Token()
+	require.NoError(err, "should fetch token")
 	require.NotNil(token, "token should not be nil")
 	require.NotEmpty(token.AccessToken, "access token should not be empty")
 	require.Equal("Bearer", token.TokenType, "token type should be Bearer")
@@ -61,25 +58,27 @@ func TestClientInitialization(t *testing.T) {
 func TestClientTokenManagement(t *testing.T) {
 	require := require.New(t)
 
-	c := New(&Credentials{
-		ClientId:       "test-client",
-		ClientSecret:   "test-secret",
-		OrganizationId: "test-org",
-	})
-
 	testToken := &oauth2.Token{
 		AccessToken: "test-access-token",
 		TokenType:   "Bearer",
 		Expiry:      time.Now().Add(time.Hour),
 	}
-	c.SetToken(testToken)
-	require.Equal(testToken.AccessToken, c.GetToken().AccessToken, "access token should match")
+
+	c := New(&Credentials{
+		ClientId:       "test-client",
+		ClientSecret:   "test-secret",
+		OrganizationId: "test-org",
+	}, WithToken(testToken))
+
+	token, err := c.Token()
+	require.NoError(err)
+	require.Equal(testToken.AccessToken, token.AccessToken, "access token should match")
 }
 
 func TestCreatePrivateCustomer(t *testing.T) {
 	require := require.New(t)
 
-	c := getClient(t)
+	c := getClient()
 
 	cPostRequest := CustomerPostRequest{
 		Email: &EmailsDto{
@@ -116,7 +115,7 @@ func TestCreatePrivateCustomer(t *testing.T) {
 func TestCreateCompanyCustomer(t *testing.T) {
 	require := require.New(t)
 
-	c := getClient(t)
+	c := getClient()
 
 	cPostRequest := CustomerPostRequest{
 		Email: &EmailsDto{
@@ -149,7 +148,7 @@ func TestCreateCompanyCustomer(t *testing.T) {
 
 func TestRetrieveProductUnits(t *testing.T) {
 	require := require.New(t)
-	c := getClient(t)
+	c := getClient()
 	res, err := c.GetUnitsWithResponse(t.Context())
 	require.NoError(err)
 	require.NotNil(res.JSON200, "did not fetch product units")
@@ -158,7 +157,7 @@ func TestRetrieveProductUnits(t *testing.T) {
 func TestCreateProduct(t *testing.T) {
 	require := require.New(t)
 
-	c := getClient(t)
+	c := getClient()
 
 	cPostRequest := CustomerPostRequest{
 		Email: &EmailsDto{
@@ -211,7 +210,7 @@ func TestCreateProduct(t *testing.T) {
 func TestCreateOrder(t *testing.T) {
 	require := require.New(t)
 
-	c := getClient(t)
+	c := getClient()
 
 	pPostRequest := ProductRequestPost{
 		Name:         u.R("Badeball"),

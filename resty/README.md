@@ -10,21 +10,39 @@
 import "github.com/valuetechdev/finago-go/resty"
 
 func yourFunc() (any, error) {
-	client := New(&resty.Credentials{
+	client := resty.New(&resty.Credentials{
 		ClientId:       "your-client-id",
 		ClientSecret:   "your-client-secret",
 		OrganizationId: "your-org-id",
 	})
 
-	if err := client.Authenticate(); err != nil {
-	  return nil, err
-	}
-
-	res, err := c.GetMeWithResponse(context.Background(), nil)
+	res, err := client.GetMeWithResponse(context.Background(), nil)
 	if err != nil {
-	  return nil, err
+		return nil, err
 	}
 
-	// Use the data
+	return res.JSON200, nil
 }
+```
+
+Authentication is handled automatically via OAuth2 client credentials. Tokens are refreshed when they expire.
+
+### Reusing tokens
+
+To persist and reuse tokens across sessions:
+
+```go
+client := resty.New(creds, resty.WithToken(existingToken))
+
+// Get the current token to persist it
+token, err := client.Token()
+```
+
+### Custom HTTP client
+
+To use a custom HTTP client (e.g., with custom timeouts or transport):
+
+```go
+httpClient := &http.Client{Timeout: 30 * time.Second}
+client := resty.New(creds, resty.WithBaseHTTPClient(httpClient))
 ```
