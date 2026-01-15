@@ -3,6 +3,7 @@
 package resty
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -10,45 +11,59 @@ import (
 	"golang.org/x/oauth2/clientcredentials"
 )
 
+// RestyClient is a client for the 24SevenOffice REST API.
+// It handles OAuth2 authentication automatically and refreshes tokens when they expire.
 type RestyClient struct {
-	token *oauth2.Token
-	conf  *clientcredentials.Config
+	tokenSource oauth2.TokenSource
 
 	interceptors []RequestEditorFn
 
-	httpClient *http.Client
+	initialToken   *oauth2.Token
+	baseHTTPClient *http.Client
+
 	*ClientWithResponses
 }
 
+// Credentials contains the OAuth2 client credentials for authenticating
+// with the 24SevenOffice API.
 type Credentials struct {
 	ClientId       string
 	ClientSecret   string
 	OrganizationId string
 }
 
+// Option configures a [RestyClient].
 type Option func(*RestyClient)
 
-// WithHttpClient sets a custom http.Client. Defaults to [http.DefaultClient].
-func WithHttpClient(client *http.Client) Option {
+// WithToken sets an existing token to be reused. The token will be
+// automatically refreshed when it expires.
+func WithToken(token *oauth2.Token) Option {
 	return func(c *RestyClient) {
-		c.httpClient = client
+		c.initialToken = token
 	}
 }
 
+// WithRequestInterceptor adds a request editor function that will be called
+// before each request is sent.
 func WithRequestInterceptor(fn RequestEditorFn) Option {
 	return func(c *RestyClient) {
 		c.interceptors = append(c.interceptors, fn)
 	}
 }
 
-// Returns new [RestyClient].
+// WithHttpClient sets a custom HTTP client to use as the base for OAuth2 requests.
+// The provided client's transport will be wrapped with OAuth2 authentication.
+func WithHttpClient(client *http.Client) Option {
+	return func(c *RestyClient) {
+		c.baseHTTPClient = client
+	}
+}
+
+// New creates a new [RestyClient] with the given credentials.
+// Authentication is handled automatically via OAuth2 client credentials.
+// Tokens are refreshed when they expire.
 //
-// You can reuse an already generated token and have it revalidated if it has
-// expired, by using [RestyClient.SetToken].
-//
-// You can provide options to customize the client behavior.
-//
-// WARNING: The client hasn't been tested.
+// Use [WithToken] to reuse an existing token across sessions.
 func New(credentials *Credentials, options ...Option) *RestyClient {
 	conf := &clientcredentials.Config{
 		ClientID:     credentials.ClientId,
@@ -61,15 +76,30 @@ func New(credentials *Credentials, options ...Option) *RestyClient {
 	}
 
 	baseUrl := "https://rest.api.24sevenoffice.com/v1"
-	client := &RestyClient{conf: conf, httpClient: http.DefaultClient}
+	client := &RestyClient{}
 
 	for _, option := range options {
 		option(client)
 	}
 
+	// Use custom base HTTP client if provided
+	ctx := context.Background()
+	if client.baseHTTPClient != nil {
+		ctx = context.WithValue(ctx, oauth2.HTTPClient, client.baseHTTPClient)
+	}
+
+	// Create a token source that reuses the initial token (if provided)
+	// and automatically refreshes using client credentials when expired
+	client.tokenSource = oauth2.ReuseTokenSource(
+		client.initialToken,
+		conf.TokenSource(ctx),
+	)
+
+	// Create an HTTP client that automatically handles token auth
+	httpClient := oauth2.NewClient(ctx, client.tokenSource)
+
 	clientOptions := []ClientOption{
-		WithRequestEditorFn(client.InterceptToken),
-		WithHTTPClient(client.httpClient),
+		WithHTTPClient(httpClient),
 	}
 
 	for _, interceptor := range client.interceptors {
@@ -85,4 +115,10 @@ func New(credentials *Credentials, options ...Option) *RestyClient {
 	}
 	client.ClientWithResponses = c
 	return client
+}
+
+// Token returns the current OAuth2 token. If the token has expired,
+// it will be automatically refreshed.
+func (c *RestyClient) Token() (*oauth2.Token, error) {
+	return c.tokenSource.Token()
 }
