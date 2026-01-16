@@ -8,6 +8,8 @@ generate:
 	go generate ./...
 	go fmt ./...
 	sed -i '' 's/int \[\]/Int \[\]/g' ./soapy/**/*.gen.go
+	sed -i '' 's/IsCompany = "true"/IsCompany = true/g' ./resty/resty.gen.go
+	sed -i '' 's/IsCompany = "false"/IsCompany = false/g' ./resty/resty.gen.go
 
 .PHONY: api-payday
 api-payday:

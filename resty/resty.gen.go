@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -71,14 +72,25 @@ const (
 	CommunicationStatusTypeUnconfirmed CommunicationStatusType = "Unconfirmed"
 )
 
-// Defines values for CustomerPostRequest0IsCompany.
+// Defines values for CompanyCustomerPostRequestIsCompany.
 const (
-	True CustomerPostRequest0IsCompany = true
+	True CompanyCustomerPostRequestIsCompany = true
 )
 
-// Defines values for CustomerPostRequest1IsCompany.
+// Defines values for DistributionMethod.
 const (
-	False CustomerPostRequest1IsCompany = false
+	Efakturadistribution DistributionMethod = "efakturadistribution"
+	Ehfdistribution      DistributionMethod = "ehfdistribution"
+	Emaildistribution    DistributionMethod = "emaildistribution"
+	Empty                DistributionMethod = ""
+	Manualdistribution   DistributionMethod = "manualdistribution"
+	Postaldistribution   DistributionMethod = "postaldistribution"
+	Printdistribution    DistributionMethod = "printdistribution"
+)
+
+// Defines values for FixedDateTermsType.
+const (
+	FixedDate FixedDateTermsType = "FixedDate"
 )
 
 // Defines values for LineTypeEnum.
@@ -87,11 +99,26 @@ const (
 	LineTypeEnumText    LineTypeEnum = "text"
 )
 
+// Defines values for NumberOfDaysTermsType.
+const (
+	NumberOfDays NumberOfDaysTermsType = "NumberOfDays"
+)
+
+// Defines values for OutMonthPlusDaysTermsType.
+const (
+	OutMonthPlusDays OutMonthPlusDaysTermsType = "OutMonthPlusDays"
+)
+
 // Defines values for PaymenReferenceTypeEnum.
 const (
 	PaymenReferenceTypeEnumInvoiceRef PaymenReferenceTypeEnum = "invoiceRef"
 	PaymenReferenceTypeEnumOcr        PaymenReferenceTypeEnum = "ocr"
 	PaymenReferenceTypeEnumText       PaymenReferenceTypeEnum = "text"
+)
+
+// Defines values for PersonCustomerPostRequestIsCompany.
+const (
+	False PersonCustomerPostRequestIsCompany = false
 )
 
 // Defines values for ProductStatusEnum.
@@ -143,7 +170,7 @@ const (
 
 // Account Information about the account for which the balances belong to.
 type Account struct {
-	// Id A unique identifier for the account within 24SevenOffice accounting module.
+	// Id A unique identifier for the account within Finago Office accounting module.
 	Id *int `json:"id,omitempty"`
 
 	// Name The human-readable name that describes the purpose or nature of the account.
@@ -153,12 +180,12 @@ type Account struct {
 	Number *int `json:"number,omitempty"`
 }
 
-// AccountingPeriod Details of a financial year/accounting period within the 24SevenOffice accounting module.
+// AccountingPeriod Details of a financial year/accounting period within the Finago Office accounting module.
 type AccountingPeriod struct {
 	// EndingDate The last day of the financial year or accounting period.
 	EndingDate *string `json:"endingDate,omitempty"`
 
-	// Id A unique identifier for the accounting period within 24SevenOffice.
+	// Id A unique identifier for the accounting period within Finago Office.
 	Id *string `json:"id,omitempty"`
 
 	// StartingDate The first day of the financial year or accounting period.
@@ -170,6 +197,23 @@ type AccountingPeriod struct {
 
 // AccountingPeriodType The type of accounting period, either "Year" for a full financial year or "Period" for a sub-period within a financial year.
 type AccountingPeriodType string
+
+// Accrual Accrual information, empty object is ussed to reset accrual data
+type Accrual struct {
+	union json.RawMessage
+}
+
+// Accrual0 defines model for .
+type Accrual0 = map[string]interface{}
+
+// Accrual1 defines model for .
+type Accrual1 struct {
+	// Length The length of the accrual period in months.
+	Length int `json:"length"`
+
+	// StartDate The start date of the accrual period.
+	StartDate openapi_types.Date `json:"startDate"`
+}
 
 // AddressBasic defines model for AddressBasic.
 type AddressBasic struct {
@@ -305,13 +349,13 @@ type BankAccountBase struct {
 	// Bic The Business Identifier Codes (BIC) for the bank that manages the bank account.
 	Bic *string `json:"bic,omitempty"`
 
-	// LedgerAccount The ledger account within the 24SevenOffice accounting module that corresponds to this bank account. Accounts can be retrieved from the separate /accounts endpoint.
+	// LedgerAccount The ledger account within the Finago Office accounting module that corresponds to this bank account. Accounts can be retrieved from the separate /accounts endpoint.
 	LedgerAccount *struct {
 		// Number The unique number that indicates which type of account it belongs to.
 		Number int `json:"number"`
 	} `json:"ledgerAccount,omitempty"`
 
-	// Name A user-defined name of the bank account, as it is shown in 24SevenOffice.
+	// Name A user-defined name of the bank account, as it is shown in Finago Office.
 	Name *string `json:"name,omitempty"`
 
 	// Number The account number of the bank account.
@@ -335,7 +379,7 @@ type BankAccountBase struct {
 		OrganizationNumber string `json:"organizationNumber"`
 	} `json:"owner,omitempty"`
 
-	// TransactionType The transaction type within the 24SevenOffice accounting module, used when posting bank transactions in the 24SevenOffice bank module. Transaction types can be retrieved from the separate /transactiontypes endpoint.
+	// TransactionType The transaction type within the Finago Office accounting module, used when posting bank transactions in the Finago Office bank module. Transaction types can be retrieved from the separate /transactiontypes endpoint.
 	TransactionType *struct {
 		// Number A unique number representing the transaction type.
 		Number int `json:"number"`
@@ -368,10 +412,10 @@ type BankAccountResponse struct {
 	// CreatedAt A timestamp for when a record was created, in ISO 8601 format.
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 
-	// Id A unique identifier for the bank account within 24SevenOffice.
+	// Id A unique identifier for the bank account within Finago Office.
 	Id *openapi_types.UUID `json:"id,omitempty"`
 
-	// LedgerAccount The ledger account within the 24SevenOffice accounting module that corresponds to this bank account. Accounts can be retrieved from the separate /accounts endpoint.
+	// LedgerAccount The ledger account within the Finago Office accounting module that corresponds to this bank account. Accounts can be retrieved from the separate /accounts endpoint.
 	LedgerAccount *struct {
 		// Number The unique number that indicates which type of account it belongs to.
 		Number int `json:"number"`
@@ -380,7 +424,7 @@ type BankAccountResponse struct {
 	// ModifiedAt A timestamp for when one of the properties of a record was last modified, in ISO 8601 format. The Bank Account Balance changes are not included here, as these are defined by a separate "timestamp" property for the `balance` object.
 	ModifiedAt *time.Time `json:"modifiedAt,omitempty"`
 
-	// Name A user-defined name of the bank account, as it is shown in 24SevenOffice.
+	// Name A user-defined name of the bank account, as it is shown in Finago Office.
 	Name *string `json:"name,omitempty"`
 
 	// Number The account number of the bank account.
@@ -404,7 +448,7 @@ type BankAccountResponse struct {
 		OrganizationNumber string `json:"organizationNumber"`
 	} `json:"owner,omitempty"`
 
-	// TransactionType The transaction type within the 24SevenOffice accounting module, used when posting bank transactions in the 24SevenOffice bank module. Transaction types can be retrieved from the separate /transactiontypes endpoint.
+	// TransactionType The transaction type within the Finago Office accounting module, used when posting bank transactions in the Finago Office bank module. Transaction types can be retrieved from the separate /transactiontypes endpoint.
 	TransactionType *struct {
 		// Number A unique number representing the transaction type.
 		Number int `json:"number"`
@@ -604,7 +648,7 @@ type CategoryResponse struct {
 	// AlternativeReference An alternative user-defined reference for the category.
 	AlternativeReference *string `json:"alternativeReference,omitempty"`
 
-	// Id A unique identifier for the product category within 24SevenOffice ERP modules.
+	// Id A unique identifier for the product category within Finago Office ERP modules.
 	Id *int `json:"id,omitempty"`
 
 	// ModifiedAt A timestamp for when one of the properties of a record was last modified, in ISO 8601 format.
@@ -647,24 +691,54 @@ type ClientStateType string
 // CommunicationStatusType defines model for CommunicationStatusType.
 type CommunicationStatusType string
 
+// CompanyCustomerPostRequest defines model for CompanyCustomerPostRequest.
+type CompanyCustomerPostRequest struct {
+	// Address Addresses for the customer.
+	Address *AddressesDto `json:"address,omitempty"`
+
+	// Email Email addresses for the customer.
+	Email *EmailsDto `json:"email,omitempty"`
+
+	// Id A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
+	Id *float32 `json:"id"`
+
+	// IsCompany Discriminator flag set to true - indicating that the customer is a company.
+	IsCompany CompanyCustomerPostRequestIsCompany `json:"isCompany"`
+
+	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
+	IsSupplier *bool `json:"isSupplier,omitempty"`
+
+	// Name A human-readable name or label for a customer, making it easily identifiable to users.
+	Name string `json:"name"`
+
+	// OrganizationNumber The organization number issued by authorities, like a VAT number, of the customer.
+	OrganizationNumber *string `json:"organizationNumber"`
+
+	// Phone A phone number for contacting the customer.
+	Phone *string `json:"phone,omitempty"`
+}
+
+// CompanyCustomerPostRequestIsCompany Discriminator flag set to true - indicating that the customer is a company.
+type CompanyCustomerPostRequestIsCompany bool
+
 // CreatedAt A timestamp for when a record was created, in ISO 8601 format.
 type CreatedAt = string
 
-// Currencies List of currencies available within the 24SevenOffice accounting module.
+// Currencies List of currencies available within the Finago Office accounting module.
 type Currencies = []Currency
 
 // Currency defines model for Currency.
 type Currency struct {
-	// Code The currency code used in transactions within the 24SevenOffice.
+	// Code The currency code used in transactions within the Finago Office.
 	Code *string `json:"code,omitempty"`
 
 	// Rate The exchange rate of the currency.
 	Rate *float32 `json:"rate,omitempty"`
 }
 
-// CustomerIdOnly Details of a customer used within 24SevenOffice CRM.
+// CustomerIdOnly Details of a customer used within Finago Office CRM.
 type CustomerIdOnly struct {
-	// Id A unique identifier for the customer within 24SevenOffice CRM.
+	// Id A unique identifier for the customer within Finago Office CRM.
 	Id *int `json:"id,omitempty"`
 }
 
@@ -682,7 +756,7 @@ type Customer struct {
 	// Gln The Global Location Number (GLN) for the customer.
 	Gln *string `json:"gln,omitempty"`
 
-	// Id A unique identifier for the customer within 24SevenOffice CRM.
+	// Id A unique identifier for the customer within Finago Office CRM.
 	Id *int `json:"id,omitempty"`
 
 	// InvoiceEmailAddresses A list of email addresses to which the invoice should be sent.
@@ -716,10 +790,10 @@ type CustomerPatchRequest struct {
 	IsSupplier *bool `json:"isSupplier,omitempty"`
 
 	// Name A human-readable name or label for a customer, making it easily identifiable to users.
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name"`
 
 	// OrganizationNumber The organization number issued by authorities, like a VAT number, of the customer if the customer is a company.
-	OrganizationNumber *string `json:"organizationNumber,omitempty"`
+	OrganizationNumber *string `json:"organizationNumber"`
 
 	// Person Email addresses for the customer.
 	Person *FirstnameLastnameDto `json:"person,omitempty"`
@@ -728,57 +802,10 @@ type CustomerPatchRequest struct {
 	Phone *string `json:"phone,omitempty"`
 }
 
-// CustomerPostRequest defines model for CustomerPostRequest.
+// CustomerPostRequest A new customer to be created in Finago Office CRM, either a company or a private person - decided by the `isCompany` flag.
 type CustomerPostRequest struct {
-	// Address Addresses for the customer.
-	Address *AddressesDto `json:"address,omitempty"`
-
-	// Email Email addresses for the customer.
-	Email *EmailsDto `json:"email,omitempty"`
-
-	// Id A unique identifier for the customer within 24SevenOffice CRM. This ID is used for reference and linking transactions to specific customers.
-	Id *float32 `json:"id"`
-
-	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
-	IsSupplier *bool `json:"isSupplier,omitempty"`
-
-	// Name A human-readable name or label for a customer, making it easily identifiable to users.
-	Name *string `json:"name,omitempty"`
-
-	// OrganizationNumber The organization number issued by authorities, like a VAT number, of the customer if the customer is a company.
-	OrganizationNumber *string `json:"organizationNumber,omitempty"`
-
-	// Person Email addresses for the customer.
-	Person *FirstnameLastnameDto `json:"person,omitempty"`
-
-	// Phone A phone number for contacting the customer.
-	Phone *string `json:"phone,omitempty"`
 	union json.RawMessage
 }
-
-// CustomerPostRequest0 A new customer is a company.
-type CustomerPostRequest0 struct {
-	// IsCompany A flag variable indicating whether the customer is a company (true) or a person (false).
-	IsCompany CustomerPostRequest0IsCompany `json:"isCompany"`
-
-	// Name A human-readable name or label for a customer, making it easily identifiable to users.
-	Name string `json:"name"`
-}
-
-// CustomerPostRequest0IsCompany A flag variable indicating whether the customer is a company (true) or a person (false).
-type CustomerPostRequest0IsCompany bool
-
-// CustomerPostRequest1 A new customer is a private person.
-type CustomerPostRequest1 struct {
-	// IsCompany A flag variable indicating whether the customer is a company (true) or a person (false).
-	IsCompany CustomerPostRequest1IsCompany `json:"isCompany"`
-
-	// Person Email addresses for the customer.
-	Person FirstnameLastnameDto `json:"person"`
-}
-
-// CustomerPostRequest1IsCompany A flag variable indicating whether the customer is a company (true) or a person (false).
-type CustomerPostRequest1IsCompany bool
 
 // CustomerProperties defines model for CustomerProperties.
 type CustomerProperties struct {
@@ -791,7 +818,7 @@ type CustomerProperties struct {
 	// Email Email addresses for the customer.
 	Email *EmailsDto `json:"email,omitempty"`
 
-	// Id A unique identifier for the customer within 24SevenOffice CRM. This ID is used for reference and linking transactions to specific customers.
+	// Id A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
 	Id *int32 `json:"id,omitempty"`
 
 	// IsCompany A flag variable indicating whether the customer is a company (true) or a person (false).
@@ -818,6 +845,21 @@ type CustomerProperties struct {
 
 // CustomerResponse defines model for CustomerResponse.
 type CustomerResponse = CustomerProperties
+
+// CustomerSharedProperties defines model for CustomerSharedProperties.
+type CustomerSharedProperties struct {
+	// Address Addresses for the customer.
+	Address *AddressesDto `json:"address,omitempty"`
+
+	// Email Email addresses for the customer.
+	Email *EmailsDto `json:"email,omitempty"`
+
+	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
+	IsSupplier *bool `json:"isSupplier,omitempty"`
+
+	// Phone A phone number for contacting the customer.
+	Phone *string `json:"phone,omitempty"`
+}
 
 // DateFrom defines model for DateFrom.
 type DateFrom = openapi_types.Date
@@ -857,7 +899,7 @@ type DeliveryCustomer struct {
 	// CountrySubdivision The geographical subdivision for the address, like a county ("fylke" in Norway) or a state.
 	CountrySubdivision *string `json:"countrySubdivision,omitempty"`
 
-	// Id A unique identifier for the customer within 24SevenOffice CRM.
+	// Id A unique identifier for the customer within Finago Office CRM.
 	Id *int `json:"id,omitempty"`
 
 	// Name A human-readable name or label for a customer, making it easily identifiable to users.
@@ -884,7 +926,7 @@ type Dimension struct {
 
 // Dimension1 defines model for Dimension1.
 type Dimension1 struct {
-	// DimensionType The unique identifier for the dimension within 24SevenOffice ERP modules.
+	// DimensionType The unique identifier for the dimension within Finago Office ERP modules.
 	DimensionType int `json:"dimensionType"`
 
 	// Name The display name associated with the value of the dimension.
@@ -915,6 +957,17 @@ type DimensionsObject struct {
 	Dimensions *Dimensions `json:"dimensions,omitempty"`
 }
 
+// DistributionMethod The method used for distributing the sales order or invoice. Use "" for automatic selection based on client preferences. Values:
+//
+//	"" - Automatic
+//	"manualdistribution" - Manual handling (no distribution)
+//	"efakturadistribution" - eFaktura
+//	"ehfdistribution" - EHF
+//	"postaldistribution" - Autopost
+//	"printdistribution" - Cloudprint
+//	"emaildistribution" - Email
+type DistributionMethod string
+
 // EmailsDto Email addresses for the customer.
 type EmailsDto struct {
 	// Billing The billing email address for the customer.
@@ -939,6 +992,15 @@ type Fiscal struct {
 	StartingDate *openapi_types.Date `json:"startingDate,omitempty"`
 }
 
+// FixedDateTerms Due date is a specific date. NB: Only supported in new invoicing module
+type FixedDateTerms struct {
+	Type  FixedDateTermsType `json:"type"`
+	Value openapi_types.Date `json:"value"`
+}
+
+// FixedDateTermsType defines model for FixedDateTerms.Type.
+type FixedDateTermsType string
+
 // IdentifierModel defines model for IdentifierModel.
 type IdentifierModel struct {
 	// Id The unique identifier for the identifier.
@@ -952,7 +1014,7 @@ type IdentifierModel struct {
 	Value *string `json:"value,omitempty"`
 }
 
-// Invoice Details of an invoice used within 24SevenOffice.
+// Invoice Details of an invoice used within Finago Office.
 type Invoice struct {
 	// DueDate The due date for the invoice.
 	DueDate *openapi_types.Date `json:"dueDate,omitempty"`
@@ -969,11 +1031,24 @@ type InvoiceWithTransaction struct {
 	// Date The date when the invoice was issued.
 	Date *openapi_types.Date `json:"date,omitempty"`
 
+	// DistributionMethod The method used for distributing the sales order or invoice. Use "" for automatic selection based on client preferences. Values:
+	//   "" - Automatic
+	//   "manualdistribution" - Manual handling (no distribution)
+	//   "efakturadistribution" - eFaktura
+	//   "ehfdistribution" - EHF
+	//   "postaldistribution" - Autopost
+	//   "printdistribution" - Cloudprint
+	//   "emaildistribution" - Email
+	DistributionMethod *DistributionMethod `json:"distributionMethod,omitempty"`
+
 	// DueDate The due date by which the invoice must be paid.
 	DueDate *openapi_types.Date `json:"dueDate,omitempty"`
 
-	// Number A unique number for the invoice within 24SevenOffice ERP.
+	// Number A unique number for the invoice within Finago Office ERP.
 	Number *int32 `json:"number,omitempty"`
+
+	// PaymentTerms Payment terms for an invoice, specified in one of three three different ways:  (NB: FixedDateTerms is only supported if client has activated the new invoicing module)
+	PaymentTerms *PaymentTerms `json:"paymentTerms,omitempty"`
 
 	// RemittanceReference A reference number for the invoice used for remittance purposes, like "KID"-number in Norway, or OCR.
 	RemittanceReference *string `json:"remittanceReference,omitempty"`
@@ -1014,6 +1089,9 @@ type Line struct {
 	// Account Information about the account for which the balances belong to.
 	Account *Account `json:"account,omitempty"`
 
+	// Accrual Accrual information, empty object is ussed to reset accrual data
+	Accrual *Accrual `json:"accrual,omitempty"`
+
 	// Description A description for the line item.
 	Description *string `json:"description,omitempty"`
 
@@ -1023,7 +1101,7 @@ type Line struct {
 	// DiscountRate The discount rate applied to the line item, expressed as a whole number. For example, a discount rate of 10% is represented as 10.
 	DiscountRate *float32 `json:"discountRate,omitempty"`
 
-	// Id The unique identifier for the sales order line item within 24SevenOffice ERP.
+	// Id The unique identifier for the sales order line item within Finago Office ERP.
 	Id *int `json:"id,omitempty"`
 
 	// Price The price of a single unit of the product in the line item.
@@ -1049,6 +1127,9 @@ type LineTypeEnum string
 type LineWithoutId struct {
 	// Account Information about the account for which the balances belong to.
 	Account *Account `json:"account,omitempty"`
+
+	// Accrual Accrual information, empty object is ussed to reset accrual data
+	Accrual *Accrual `json:"accrual,omitempty"`
 
 	// Description A description for the line item.
 	Description *string `json:"description,omitempty"`
@@ -1090,6 +1171,15 @@ type LineWithoutIdTaxDto struct {
 // ModifiedAt A timestamp for when one of the properties of a record was last modified, in ISO 8601 format.
 type ModifiedAt = string
 
+// NumberOfDaysTerms Due date is calculated as a number of days after the invoice date.
+type NumberOfDaysTerms struct {
+	Type  NumberOfDaysTermsType `json:"type"`
+	Value int                   `json:"value"`
+}
+
+// NumberOfDaysTermsType defines model for NumberOfDaysTerms.Type.
+type NumberOfDaysTermsType string
+
 // OrganizationModelShortend defines model for OrganizationModel.
 type OrganizationModelShortend struct {
 	// Email The email address of the organization.
@@ -1113,7 +1203,7 @@ type OrganizationModel struct {
 	// Email The email address of the organization.
 	Email *string `json:"email,omitempty"`
 
-	// Id The unique identifier for the organization within 24SevenOffice.
+	// Id The unique identifier for the organization within Finago Office.
 	Id *int64 `json:"id,omitempty"`
 
 	// InvoiceEmail The email address for invoices.
@@ -1141,6 +1231,15 @@ type OurReferenceContactPersonDto struct {
 	Id *float32 `json:"id,omitempty"`
 }
 
+// OutMonthPlusDaysTerms Due date is calculated as a number of days after the end of the invoicing month.
+type OutMonthPlusDaysTerms struct {
+	Type  OutMonthPlusDaysTermsType `json:"type"`
+	Value int                       `json:"value"`
+}
+
+// OutMonthPlusDaysTermsType defines model for OutMonthPlusDaysTerms.Type.
+type OutMonthPlusDaysTermsType string
+
 // PaymenReferenceDto The payment reference must be one of the following types: text ocr invoiceRef.
 // * `text`: The value is a free text reference.
 // * `ocr`: The value is an structured OCR reference. KID number in Norway.
@@ -1157,16 +1256,51 @@ type PaymenReferenceDto struct {
 // PaymenReferenceTypeEnum defines model for PaymenReferenceTypeEnum.
 type PaymenReferenceTypeEnum string
 
+// PaymentTerms Payment terms for an invoice, specified in one of three three different ways:  (NB: FixedDateTerms is only supported if client has activated the new invoicing module)
+type PaymentTerms struct {
+	union json.RawMessage
+}
+
 // Periods defines model for Periods.
 type Periods = string
+
+// PersonCustomerPostRequest defines model for PersonCustomerPostRequest.
+type PersonCustomerPostRequest struct {
+	// Address Addresses for the customer.
+	Address *AddressesDto `json:"address,omitempty"`
+
+	// Email Email addresses for the customer.
+	Email *EmailsDto `json:"email,omitempty"`
+
+	// Id A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
+	Id *float32 `json:"id"`
+
+	// IsCompany Discriminator flag set to false - indicating that the customer is a person.
+	IsCompany PersonCustomerPostRequestIsCompany `json:"isCompany"`
+
+	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
+	IsSupplier *bool `json:"isSupplier,omitempty"`
+
+	// Person Email addresses for the customer.
+	Person FirstnameLastnameDto `json:"person"`
+
+	// Phone A phone number for contacting the customer.
+	Phone *string `json:"phone,omitempty"`
+}
+
+// PersonCustomerPostRequestIsCompany Discriminator flag set to false - indicating that the customer is a person.
+type PersonCustomerPostRequestIsCompany bool
 
 // PostalAddress defines model for PostalAddress.
 type PostalAddress = AddressBasic
 
 // Product Product details, if the line item type is 'product'. Note that the `product` object for the `/salesorders/{id}/lines` endpoint is not the same as the product that can be retrieved from the `/products` endpoint, even though both share the same ID reference and their schemas are similar. The `product` object in the context of `/salesorders/{id}/lines` contains the product details as they were at the time the sales order line item was created. In contrast, the `/products` endpoint always provides the latest state values for the product properties.
 type Product struct {
-	// Id A unique identifier for the product within 24SevenOffice ERP-modules.
+	// Id A unique identifier for the product within Finago Office ERP-modules.
 	Id *int `json:"id,omitempty"`
+
+	// Number The product number assigned to the product. Read-only property (ignored if set in POST/PATCH requests)
+	Number *string `json:"number,omitempty"`
 }
 
 // ProductBase Base fields of products.
@@ -1177,7 +1311,7 @@ type ProductBase struct {
 	// Description The description of the product.
 	Description *string `json:"description,omitempty"`
 
-	// Ean The product's 13-digit European Article Number (EAN).
+	// Ean The product's GTIN - Usually a 13-digit European Article Number (EAN), but can also be one of the other GTIN formats.
 	Ean *string `json:"ean,omitempty"`
 
 	// EanAlternative An alternative article number field, supporting up to 25 digits.
@@ -1206,6 +1340,9 @@ type ProductBase struct {
 
 	// Type Specifies whether the product is defined as a regular or structure product.
 	Type *ProductTypeEnum `json:"type,omitempty"`
+
+	// WebshopEnabled A flag variable set to true if the product is enabled for webshop sales.
+	WebshopEnabled *bool `json:"webshopEnabled,omitempty"`
 }
 
 // ProductRequestPatch defines model for ProductRequestPatch.
@@ -1219,7 +1356,7 @@ type ProductRequestPatch struct {
 	// Description The description of the product.
 	Description *string `json:"description,omitempty"`
 
-	// Ean The product's 13-digit European Article Number (EAN).
+	// Ean The product's GTIN - Usually a 13-digit European Article Number (EAN), but can also be one of the other GTIN formats.
 	Ean *string `json:"ean,omitempty"`
 
 	// EanAlternative An alternative article number field, supporting up to 25 digits.
@@ -1254,6 +1391,9 @@ type ProductRequestPatch struct {
 
 	// Units Information about the units of measurement for the product.
 	Units *UnitsRequest `json:"units,omitempty"`
+
+	// WebshopEnabled A flag variable set to true if the product is enabled for webshop sales.
+	WebshopEnabled *bool `json:"webshopEnabled,omitempty"`
 }
 
 // ProductRequestPost defines model for ProductRequestPost.
@@ -1267,7 +1407,7 @@ type ProductRequestPost struct {
 	// Description The description of the product.
 	Description *string `json:"description,omitempty"`
 
-	// Ean The product's 13-digit European Article Number (EAN).
+	// Ean The product's GTIN - Usually a 13-digit European Article Number (EAN), but can also be one of the other GTIN formats.
 	Ean *string `json:"ean,omitempty"`
 
 	// EanAlternative An alternative article number field, supporting up to 25 digits.
@@ -1302,6 +1442,9 @@ type ProductRequestPost struct {
 
 	// Units Information about the units of measurement for the product.
 	Units *UnitsRequest `json:"units,omitempty"`
+
+	// WebshopEnabled A flag variable set to true if the product is enabled for webshop sales.
+	WebshopEnabled *bool `json:"webshopEnabled,omitempty"`
 }
 
 // ProductResponse defines model for ProductResponse.
@@ -1318,13 +1461,13 @@ type ProductResponse struct {
 	// Description The description of the product.
 	Description *string `json:"description,omitempty"`
 
-	// Ean The product's 13-digit European Article Number (EAN).
+	// Ean The product's GTIN - Usually a 13-digit European Article Number (EAN), but can also be one of the other GTIN formats.
 	Ean *string `json:"ean,omitempty"`
 
 	// EanAlternative An alternative article number field, supporting up to 25 digits.
 	EanAlternative *string `json:"eanAlternative,omitempty"`
 
-	// Id A unique identifier for the product within 24SevenOffice ERP-modules.
+	// Id A unique identifier for the product within Finago Office ERP-modules.
 	Id *int `json:"id,omitempty"`
 
 	// IndirectCost The sum of indirect costs related to the product.
@@ -1359,6 +1502,9 @@ type ProductResponse struct {
 
 	// Units Information about the units of measurement for the product.
 	Units *UnitsRequest `json:"units,omitempty"`
+
+	// WebshopEnabled A flag variable set to true if the product is enabled for webshop sales.
+	WebshopEnabled *bool `json:"webshopEnabled,omitempty"`
 }
 
 // ProductStatusEnum Specifies whether the product's status is active or inactive (expired).
@@ -1396,6 +1542,9 @@ type ProfileModel struct {
 
 // SalesOrder defines model for SalesOrder.
 type SalesOrder struct {
+	// Accrual Accrual information, empty object is ussed to reset accrual data
+	Accrual *Accrual `json:"accrual,omitempty"`
+
 	// CreatedAt A timestamp for when a record was created, in ISO 8601 format.
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	Currency  *Currency  `json:"currency,omitempty"`
@@ -1412,7 +1561,7 @@ type SalesOrder struct {
 	// GrossAmount The total amount for the sales order, including taxes.
 	GrossAmount *float32 `json:"grossAmount,omitempty"`
 
-	// Id A unique identifier for the sales order within 24SevenOffice ERP.
+	// Id A unique identifier for the sales order within Finago Office ERP.
 	Id *int `json:"id,omitempty"`
 
 	// InternalMemo An internal memo for the sales order.
@@ -1473,6 +1622,9 @@ type SalesOrderAttachment struct {
 
 // SalesOrderBasic defines model for SalesOrderBasic.
 type SalesOrderBasic struct {
+	// Accrual Accrual information, empty object is ussed to reset accrual data
+	Accrual *Accrual `json:"accrual,omitempty"`
+
 	// CreatedAt A timestamp for when a record was created, in ISO 8601 format.
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	Currency  *Currency  `json:"currency,omitempty"`
@@ -1513,6 +1665,9 @@ type SalesOrderBasic struct {
 
 // SalesOrderExtended defines model for SalesOrderExtended.
 type SalesOrderExtended struct {
+	// Accrual Accrual information, empty object is ussed to reset accrual data
+	Accrual *Accrual `json:"accrual,omitempty"`
+
 	// CreatedAt A timestamp for when a record was created, in ISO 8601 format.
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	Currency  *Currency  `json:"currency,omitempty"`
@@ -1532,7 +1687,7 @@ type SalesOrderExtended struct {
 	// GrossAmount The total amount for the sales order, including taxes.
 	GrossAmount *float32 `json:"grossAmount,omitempty"`
 
-	// Id A unique identifier for the sales order within 24SevenOffice ERP.
+	// Id A unique identifier for the sales order within Finago Office ERP.
 	Id *int `json:"id,omitempty"`
 
 	// InternalMemo An internal memo for the sales order.
@@ -1571,6 +1726,9 @@ type SalesOrderExtended struct {
 
 // SalesOrderRequestPatch defines model for SalesOrderRequestPatch.
 type SalesOrderRequestPatch struct {
+	// Accrual Accrual information, empty object is ussed to reset accrual data
+	Accrual *Accrual `json:"accrual,omitempty"`
+
 	// CreatedAt A timestamp for when a record was created, in ISO 8601 format.
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	Currency  *Currency  `json:"currency,omitempty"`
@@ -1617,6 +1775,9 @@ type SalesOrderRequestPatch struct {
 
 // SalesOrderRequestPost defines model for SalesOrderRequestPost.
 type SalesOrderRequestPost struct {
+	// Accrual Accrual information, empty object is ussed to reset accrual data
+	Accrual *Accrual `json:"accrual,omitempty"`
+
 	// CreatedAt A timestamp for when a record was created, in ISO 8601 format.
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	Currency  *Currency  `json:"currency,omitempty"`
@@ -1633,7 +1794,7 @@ type SalesOrderRequestPost struct {
 		// Gln The Global Location Number (GLN) for the customer.
 		Gln *string `json:"gln,omitempty"`
 
-		// Id A unique identifier for the customer within 24SevenOffice CRM.
+		// Id A unique identifier for the customer within Finago Office CRM.
 		Id int `json:"id"`
 
 		// InvoiceEmailAddresses A list of email addresses to which the invoice should be sent.
@@ -1697,9 +1858,9 @@ type SalesOrderStatusEnum string
 
 // SalesType defines model for SalesType.
 type SalesType struct {
-	// Account The associated account within the 24SevenOffice accounting module for this sales type.
+	// Account The associated account within the Finago Office accounting module for this sales type.
 	Account *struct {
-		// Id A unique identifier for the account within 24SevenOffice accounting module.
+		// Id A unique identifier for the account within Finago Office accounting module.
 		Id *int `json:"id,omitempty"`
 	} `json:"account,omitempty"`
 
@@ -1761,9 +1922,9 @@ type SupplierResponse struct {
 	Name *string `json:"name,omitempty"`
 }
 
-// Tax Details of a tax used within 24SevenOffice.
+// Tax Details of a tax used within Finago Office.
 type Tax struct {
-	// Id A unique identifier for the tax within 24SevenOffice.
+	// Id A unique identifier for the tax within Finago Office.
 	Id *int `json:"id,omitempty"`
 
 	// Rate The tax rate applied to the transaction line.
@@ -1772,7 +1933,7 @@ type Tax struct {
 
 // TaxResponse A single tax code
 type TaxResponse struct {
-	// Id A unique identifier for the tax code within 24SevenOffice ERP modules.
+	// Id A unique identifier for the tax code within Finago Office ERP modules.
 	Id *int `json:"id,omitempty"`
 
 	// Name The name of the tax code.
@@ -1796,7 +1957,7 @@ type TfsoApiOrganizationUnitOfWorkModelsPersonModel struct {
 	// HasLicense A flag variable indicating whether the person has a license.
 	HasLicense *bool `json:"hasLicense,omitempty"`
 
-	// Id The unique identifier for the person within 24SevenOffice.
+	// Id The unique identifier for the person within Finago Office.
 	Id *int32 `json:"id,omitempty"`
 
 	// IdentityId The identifier for the connected identity.
@@ -1822,7 +1983,7 @@ type Transaction struct {
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	Currency  *Currency  `json:"currency,omitempty"`
 
-	// CustomerIdOnly Details of a customer used within 24SevenOffice CRM.
+	// CustomerIdOnly Details of a customer used within Finago Office CRM.
 	CustomerIdOnly *CustomerIdOnly `json:"customer,omitempty"`
 
 	// Date The date when the transaction line was posted.
@@ -1830,7 +1991,7 @@ type Transaction struct {
 
 	// Dimensions A list of dimensions and dimension values associated with the transaction line, such as department or project. Included if `includeDimensions=true` is specified in the query parameters.
 	Dimensions *[]struct {
-		// DimensionType The type identifier for the dimension within 24SevenOffice ERP modules.
+		// DimensionType The type identifier for the dimension within Finago Office ERP modules.
 		DimensionType int `json:"dimensionType"`
 
 		// DimensionTypeName The human-readable name for the dimension type.
@@ -1843,36 +2004,39 @@ type Transaction struct {
 		Value string `json:"value"`
 	} `json:"dimensions,omitempty"`
 
-	// Id A unique identifier for the transaction line within 24SevenOffice accounting module.
+	// DocumentId The ID of the Document attached to the transaction, if any.
+	DocumentId *int `json:"documentId,omitempty"`
+
+	// Id A unique identifier for the transaction line within Finago Office accounting module.
 	Id *openapi_types.UUID `json:"id,omitempty"`
 
-	// Invoice Details of an invoice used within 24SevenOffice.
+	// Invoice Details of an invoice used within Finago Office.
 	Invoice *Invoice `json:"invoice,omitempty"`
 
 	// ModifiedAt A timestamp for when one of the properties of a record was last modified, in ISO 8601 format.
 	ModifiedAt *time.Time `json:"modifiedAt,omitempty"`
 
-	// Tax Details of a tax used within 24SevenOffice.
+	// Tax Details of a tax used within Finago Office.
 	Tax *Tax `json:"tax,omitempty"`
 
-	// Transaction Details of the transaction within the 24SevenOffice accounting module to which the transaction line pertains.
+	// Transaction Details of the transaction within the Finago Office accounting module to which the transaction line pertains.
 	//
 	// Note: Many other Norway-based accounting systems refer to transactions as "vouchers".
 	Transaction *Voucher `json:"transaction,omitempty"`
 
-	// TransactionTypeIdOnly Details of a transaction type used within the 24SevenOffice accounting module.
+	// TransactionTypeIdOnly Details of a transaction type used within the Finago Office accounting module.
 	TransactionTypeIdOnly *TransactionTypeIdOnly `json:"transactionType,omitempty"`
 }
 
-// TransactionTypeIdOnly Details of a transaction type used within the 24SevenOffice accounting module.
+// TransactionTypeIdOnly Details of a transaction type used within the Finago Office accounting module.
 type TransactionTypeIdOnly struct {
-	// Id A unique identifier for the transaction type within 24SevenOffice accounting module.
+	// Id A unique identifier for the transaction type within Finago Office accounting module.
 	Id *int `json:"id,omitempty"`
 }
 
-// TransactionType Information about a single transaction type within the 24SevenOffice accounting module.
+// TransactionType Information about a single transaction type within the Finago Office accounting module.
 type TransactionType struct {
-	// Id A unique identifier for the transaction type within 24SevenOffice accounting module.
+	// Id A unique identifier for the transaction type within Finago Office accounting module.
 	Id *int `json:"id,omitempty"`
 
 	// Name A human-readable name of the transaction type.
@@ -1882,7 +2046,7 @@ type TransactionType struct {
 	Number *int `json:"number,omitempty"`
 }
 
-// TransactionTypes List of transaction types available within the 24SevenOffice accounting module.
+// TransactionTypes List of transaction types available within the Finago Office accounting module.
 type TransactionTypes = []TransactionType
 
 // Type defines model for Type.
@@ -1954,11 +2118,11 @@ type VisitAddress struct {
 	Street *string `json:"street,omitempty"`
 }
 
-// Voucher Details of the transaction within the 24SevenOffice accounting module to which the transaction line pertains.
+// Voucher Details of the transaction within the Finago Office accounting module to which the transaction line pertains.
 //
 // Note: Many other Norway-based accounting systems refer to transactions as "vouchers".
 type Voucher struct {
-	// Id A unique identifier for the transaction within 24SevenOffice accounting module.
+	// Id A unique identifier for the transaction within Finago Office accounting module.
 	Id *openapi_types.UUID `json:"id,omitempty"`
 
 	// Number The unique number representing the transaction.
@@ -2208,6 +2372,12 @@ type GetTransactionlinesParams struct {
 	// DateTo The ending date (exclusive) until which transactions will be retrieved. If set to 2024-01-01, the latest result will be retrieved before 23:59 on 2023-12-31.
 	DateTo openapi_types.Date `form:"dateTo" json:"dateTo"`
 
+	// CreatedAfter Retrieve transactions created after the specified timestamp (ISO 8601 format).
+	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
+
+	// ModifiedAfter Retrieve transactions modified after the specified timestamp (ISO 8601 format).
+	ModifiedAfter *time.Time `form:"modifiedAfter,omitempty" json:"modifiedAfter,omitempty"`
+
 	// TransactionNumber The unique number representing the transaction.
 	TransactionNumber *float32 `form:"transactionNumber,omitempty" json:"transactionNumber,omitempty"`
 
@@ -2281,22 +2451,22 @@ type PostSalesordersIdLinesJSONRequestBody = LineWithoutId
 // PatchSalesordersIdLinesLineIdJSONRequestBody defines body for PatchSalesordersIdLinesLineId for application/json ContentType.
 type PatchSalesordersIdLinesLineIdJSONRequestBody = Line
 
-// AsCustomerPostRequest0 returns the union data inside the CustomerPostRequest as a CustomerPostRequest0
-func (t CustomerPostRequest) AsCustomerPostRequest0() (CustomerPostRequest0, error) {
-	var body CustomerPostRequest0
+// AsAccrual0 returns the union data inside the Accrual as a Accrual0
+func (t Accrual) AsAccrual0() (Accrual0, error) {
+	var body Accrual0
 	err := json.Unmarshal(t.union, &body)
 	return body, err
 }
 
-// FromCustomerPostRequest0 overwrites any union data inside the CustomerPostRequest as the provided CustomerPostRequest0
-func (t *CustomerPostRequest) FromCustomerPostRequest0(v CustomerPostRequest0) error {
+// FromAccrual0 overwrites any union data inside the Accrual as the provided Accrual0
+func (t *Accrual) FromAccrual0(v Accrual0) error {
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
 }
 
-// MergeCustomerPostRequest0 performs a merge with any union data inside the CustomerPostRequest, using the provided CustomerPostRequest0
-func (t *CustomerPostRequest) MergeCustomerPostRequest0(v CustomerPostRequest0) error {
+// MergeAccrual0 performs a merge with any union data inside the Accrual, using the provided Accrual0
+func (t *Accrual) MergeAccrual0(v Accrual0) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -2307,22 +2477,22 @@ func (t *CustomerPostRequest) MergeCustomerPostRequest0(v CustomerPostRequest0) 
 	return err
 }
 
-// AsCustomerPostRequest1 returns the union data inside the CustomerPostRequest as a CustomerPostRequest1
-func (t CustomerPostRequest) AsCustomerPostRequest1() (CustomerPostRequest1, error) {
-	var body CustomerPostRequest1
+// AsAccrual1 returns the union data inside the Accrual as a Accrual1
+func (t Accrual) AsAccrual1() (Accrual1, error) {
+	var body Accrual1
 	err := json.Unmarshal(t.union, &body)
 	return body, err
 }
 
-// FromCustomerPostRequest1 overwrites any union data inside the CustomerPostRequest as the provided CustomerPostRequest1
-func (t *CustomerPostRequest) FromCustomerPostRequest1(v CustomerPostRequest1) error {
+// FromAccrual1 overwrites any union data inside the Accrual as the provided Accrual1
+func (t *Accrual) FromAccrual1(v Accrual1) error {
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
 }
 
-// MergeCustomerPostRequest1 performs a merge with any union data inside the CustomerPostRequest, using the provided CustomerPostRequest1
-func (t *CustomerPostRequest) MergeCustomerPostRequest1(v CustomerPostRequest1) error {
+// MergeAccrual1 performs a merge with any union data inside the Accrual, using the provided Accrual1
+func (t *Accrual) MergeAccrual1(v Accrual1) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -2331,147 +2501,223 @@ func (t *CustomerPostRequest) MergeCustomerPostRequest1(v CustomerPostRequest1) 
 	merged, err := runtime.JSONMerge(t.union, b)
 	t.union = merged
 	return err
+}
+
+func (t Accrual) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Accrual) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsCompanyCustomerPostRequest returns the union data inside the CustomerPostRequest as a CompanyCustomerPostRequest
+func (t CustomerPostRequest) AsCompanyCustomerPostRequest() (CompanyCustomerPostRequest, error) {
+	var body CompanyCustomerPostRequest
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromCompanyCustomerPostRequest overwrites any union data inside the CustomerPostRequest as the provided CompanyCustomerPostRequest
+func (t *CustomerPostRequest) FromCompanyCustomerPostRequest(v CompanyCustomerPostRequest) error {
+	v.IsCompany = true
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeCompanyCustomerPostRequest performs a merge with any union data inside the CustomerPostRequest, using the provided CompanyCustomerPostRequest
+func (t *CustomerPostRequest) MergeCompanyCustomerPostRequest(v CompanyCustomerPostRequest) error {
+	v.IsCompany = true
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsPersonCustomerPostRequest returns the union data inside the CustomerPostRequest as a PersonCustomerPostRequest
+func (t CustomerPostRequest) AsPersonCustomerPostRequest() (PersonCustomerPostRequest, error) {
+	var body PersonCustomerPostRequest
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromPersonCustomerPostRequest overwrites any union data inside the CustomerPostRequest as the provided PersonCustomerPostRequest
+func (t *CustomerPostRequest) FromPersonCustomerPostRequest(v PersonCustomerPostRequest) error {
+	v.IsCompany = false
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergePersonCustomerPostRequest performs a merge with any union data inside the CustomerPostRequest, using the provided PersonCustomerPostRequest
+func (t *CustomerPostRequest) MergePersonCustomerPostRequest(v PersonCustomerPostRequest) error {
+	v.IsCompany = false
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CustomerPostRequest) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"isCompany"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t CustomerPostRequest) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "false":
+		return t.AsPersonCustomerPostRequest()
+	case "true":
+		return t.AsCompanyCustomerPostRequest()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
 }
 
 func (t CustomerPostRequest) MarshalJSON() ([]byte, error) {
 	b, err := t.union.MarshalJSON()
-	if err != nil {
-		return nil, err
-	}
-	object := make(map[string]json.RawMessage)
-	if t.union != nil {
-		err = json.Unmarshal(b, &object)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if t.Address != nil {
-		object["address"], err = json.Marshal(t.Address)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'address': %w", err)
-		}
-	}
-
-	if t.Email != nil {
-		object["email"], err = json.Marshal(t.Email)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'email': %w", err)
-		}
-	}
-
-	if t.Id != nil {
-		object["id"], err = json.Marshal(t.Id)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'id': %w", err)
-		}
-	}
-
-	if t.IsSupplier != nil {
-		object["isSupplier"], err = json.Marshal(t.IsSupplier)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'isSupplier': %w", err)
-		}
-	}
-
-	if t.Name != nil {
-		object["name"], err = json.Marshal(t.Name)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'name': %w", err)
-		}
-	}
-
-	if t.OrganizationNumber != nil {
-		object["organizationNumber"], err = json.Marshal(t.OrganizationNumber)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'organizationNumber': %w", err)
-		}
-	}
-
-	if t.Person != nil {
-		object["person"], err = json.Marshal(t.Person)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'person': %w", err)
-		}
-	}
-
-	if t.Phone != nil {
-		object["phone"], err = json.Marshal(t.Phone)
-		if err != nil {
-			return nil, fmt.Errorf("error marshaling 'phone': %w", err)
-		}
-	}
-	b, err = json.Marshal(object)
 	return b, err
 }
 
 func (t *CustomerPostRequest) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsNumberOfDaysTerms returns the union data inside the PaymentTerms as a NumberOfDaysTerms
+func (t PaymentTerms) AsNumberOfDaysTerms() (NumberOfDaysTerms, error) {
+	var body NumberOfDaysTerms
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromNumberOfDaysTerms overwrites any union data inside the PaymentTerms as the provided NumberOfDaysTerms
+func (t *PaymentTerms) FromNumberOfDaysTerms(v NumberOfDaysTerms) error {
+	v.Type = "NumberOfDays"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeNumberOfDaysTerms performs a merge with any union data inside the PaymentTerms, using the provided NumberOfDaysTerms
+func (t *PaymentTerms) MergeNumberOfDaysTerms(v NumberOfDaysTerms) error {
+	v.Type = "NumberOfDays"
+	b, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
-	object := make(map[string]json.RawMessage)
-	err = json.Unmarshal(b, &object)
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsOutMonthPlusDaysTerms returns the union data inside the PaymentTerms as a OutMonthPlusDaysTerms
+func (t PaymentTerms) AsOutMonthPlusDaysTerms() (OutMonthPlusDaysTerms, error) {
+	var body OutMonthPlusDaysTerms
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromOutMonthPlusDaysTerms overwrites any union data inside the PaymentTerms as the provided OutMonthPlusDaysTerms
+func (t *PaymentTerms) FromOutMonthPlusDaysTerms(v OutMonthPlusDaysTerms) error {
+	v.Type = "OutMonthPlusDays"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeOutMonthPlusDaysTerms performs a merge with any union data inside the PaymentTerms, using the provided OutMonthPlusDaysTerms
+func (t *PaymentTerms) MergeOutMonthPlusDaysTerms(v OutMonthPlusDaysTerms) error {
+	v.Type = "OutMonthPlusDays"
+	b, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
 
-	if raw, found := object["address"]; found {
-		err = json.Unmarshal(raw, &t.Address)
-		if err != nil {
-			return fmt.Errorf("error reading 'address': %w", err)
-		}
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsFixedDateTerms returns the union data inside the PaymentTerms as a FixedDateTerms
+func (t PaymentTerms) AsFixedDateTerms() (FixedDateTerms, error) {
+	var body FixedDateTerms
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromFixedDateTerms overwrites any union data inside the PaymentTerms as the provided FixedDateTerms
+func (t *PaymentTerms) FromFixedDateTerms(v FixedDateTerms) error {
+	v.Type = "FixedDate"
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeFixedDateTerms performs a merge with any union data inside the PaymentTerms, using the provided FixedDateTerms
+func (t *PaymentTerms) MergeFixedDateTerms(v FixedDateTerms) error {
+	v.Type = "FixedDate"
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
 	}
 
-	if raw, found := object["email"]; found {
-		err = json.Unmarshal(raw, &t.Email)
-		if err != nil {
-			return fmt.Errorf("error reading 'email': %w", err)
-		}
-	}
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
 
-	if raw, found := object["id"]; found {
-		err = json.Unmarshal(raw, &t.Id)
-		if err != nil {
-			return fmt.Errorf("error reading 'id': %w", err)
-		}
+func (t PaymentTerms) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"type"`
 	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
 
-	if raw, found := object["isSupplier"]; found {
-		err = json.Unmarshal(raw, &t.IsSupplier)
-		if err != nil {
-			return fmt.Errorf("error reading 'isSupplier': %w", err)
-		}
+func (t PaymentTerms) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
 	}
-
-	if raw, found := object["name"]; found {
-		err = json.Unmarshal(raw, &t.Name)
-		if err != nil {
-			return fmt.Errorf("error reading 'name': %w", err)
-		}
+	switch discriminator {
+	case "FixedDate":
+		return t.AsFixedDateTerms()
+	case "NumberOfDays":
+		return t.AsNumberOfDaysTerms()
+	case "OutMonthPlusDays":
+		return t.AsOutMonthPlusDaysTerms()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
 	}
+}
 
-	if raw, found := object["organizationNumber"]; found {
-		err = json.Unmarshal(raw, &t.OrganizationNumber)
-		if err != nil {
-			return fmt.Errorf("error reading 'organizationNumber': %w", err)
-		}
-	}
+func (t PaymentTerms) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
 
-	if raw, found := object["person"]; found {
-		err = json.Unmarshal(raw, &t.Person)
-		if err != nil {
-			return fmt.Errorf("error reading 'person': %w", err)
-		}
-	}
-
-	if raw, found := object["phone"]; found {
-		err = json.Unmarshal(raw, &t.Phone)
-		if err != nil {
-			return fmt.Errorf("error reading 'phone': %w", err)
-		}
-	}
-
+func (t *PaymentTerms) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
 	return err
 }
 
@@ -6492,6 +6738,38 @@ func NewGetTransactionlinesRequest(server string, params *GetTransactionlinesPar
 					queryValues.Add(k, v2)
 				}
 			}
+		}
+
+		if params.CreatedAfter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdAfter", runtime.ParamLocationQuery, *params.CreatedAfter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ModifiedAfter != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "modifiedAfter", runtime.ParamLocationQuery, *params.ModifiedAfter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
 		}
 
 		if params.TransactionNumber != nil {

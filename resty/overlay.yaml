@@ -201,7 +201,7 @@ actions:
           delivery:
             $ref: "#/components/schemas/DeliveryAddress"
 
-  - target: "$.components.schemas.CustomerPatchRequest.properties.address"
+  - target: "$.components.schemas.CustomerSharedProperties.properties.address"
     description: Use AddressesDto
     update:
       $ref: "#/components/schemas/AddressesDto"
@@ -225,7 +225,7 @@ actions:
             description: "The billing email address for the customer."
             example: "billing@example.com"
 
-  - target: "$.components.schemas.CustomerPatchRequest.properties.email"
+  - target: "$.components.schemas.CustomerSharedProperties.properties.email"
     description: Use EmailsDto
     update:
       $ref: "#/components/schemas/EmailsDto"
@@ -248,25 +248,13 @@ actions:
             description: "The last name of a person if the customer is a person."
             example: "Doe"
 
-  - target: "$.components.schemas.CustomerPatchRequest.properties.person"
+  - target: "$.components.schemas.CustomerPatchRequest.allOf[0].properties.person"
     description: Use FirstnameLastnameDto
     update:
       $ref: "#/components/schemas/FirstnameLastnameDto"
 
-  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[0].properties.person"
-    description: Remove person from company customer
-    remove: true
-
-  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[1].properties.organizationNumber"
-    description: Remove organizationNumber from private customer
-    remove: true
-
-  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[1].properties.name"
-    description: Remove name from private customer
-    remove: true
-
-  - target: "$.components.schemas.CustomerPostRequest.allOf[0].oneOf[1].properties.person"
-    description: Use FirstnameLastnameDto
+  - target: "$.components.schemas.PersonCustomerPostRequest.allOf[0].properties.person"
+    description: Use FirstnameLastnameDto for person customer
     update:
       $ref: "#/components/schemas/FirstnameLastnameDto"
 

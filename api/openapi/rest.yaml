@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: 24SevenOffice Public API
-  version: 0.33.1
+  title: Finago Office Public API
+  version: 0.40.7
 servers:
   - url: https://rest.api.24sevenoffice.com/v1
 paths:
@@ -230,7 +230,7 @@ paths:
       - name: id
         in: path
         required: true
-        description: A unique identifier for the account within 24SevenOffice accounting module.
+        description: A unique identifier for the account within Finago Office accounting module.
         schema:
           type: integer
     get:
@@ -268,7 +268,7 @@ paths:
   /currencies:
     get:
       summary: Read currencies
-      description: Read a list of available currencies within 24SevenOffice accounting module.
+      description: Read a list of available currencies within Finago Office accounting module.
       tags:
         - currencies
       responses:
@@ -387,7 +387,7 @@ paths:
     parameters:
       - name: id
         in: path
-        description: A unique identifier for the tax code within 24SevenOffice ERP modules.
+        description: A unique identifier for the tax code within Finago Office ERP modules.
         required: true
         schema:
           type: integer
@@ -450,6 +450,20 @@ paths:
             type: string
             format: date
           description: The ending date (exclusive) until which transactions will be retrieved. If set to 2024-01-01, the latest result will be retrieved before 23:59 on 2023-12-31.
+        - name: createdAfter
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Retrieve transactions created after the specified timestamp (ISO 8601 format).
+          example: {}
+        - name: modifiedAfter
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Retrieve transactions modified after the specified timestamp (ISO 8601 format).
+          example: {}
         - name: transactionNumber
           in: query
           schema:
@@ -578,7 +592,7 @@ paths:
   /transactiontypes:
     get:
       summary: Read transaction types
-      description: Read a list of available transaction types within 24SevenOffice accounting module.
+      description: Read a list of available transaction types within Finago Office accounting module.
       tags:
         - transactionTypes
       security:
@@ -1066,9 +1080,9 @@ paths:
     post:
       summary: Create a customer
       description: |
-        Create a new customer record for a company or a person, and get the newly created customer in return. 
+        Create a new customer record for a company or a person, and get the newly created customer in return.
 
-        For a new company customer, define "name" property and set "isCompany" flag to true in the request body. For a new private person customer, define "firstName" and "lastName" under the "person" property, and set "isCompany" flag to false in the request body. These are the minimum required properties that should be defined in the request body for creating a new customer. 
+        For a new company customer, define "name" property and set "isCompany" flag to true in the request body. For a new private person customer, define "firstName" and "lastName" under the "person" property, and set "isCompany" flag to false in the request body. These are the minimum required properties that should be defined in the request body for creating a new customer.
 
         All other properties for a customer (see response attributes for each property description) can also be defined in the request body, except for "person" when a new customer is a company, and "organizationNumber" and "name" (this one is generated from "firstName" and "lastName" under the "person" property) when a new customer is a person.
       tags:
@@ -1541,6 +1555,7 @@ paths:
             type: string
             enum:
               - Draft
+              - Web
               - Proposal
               - Confirmed
               - Invoice
@@ -1619,7 +1634,7 @@ paths:
       - name: id
         in: path
         required: true
-        description: A unique identifier for the sales order within 24SevenOffice ERP.
+        description: A unique identifier for the sales order within Finago Office ERP.
         schema:
           type: integer
           format: int32
@@ -2016,7 +2031,7 @@ paths:
       description: |
         Read information about the current profile. This endpoint is only available for access tokens that have the identityId claim.
 
-        24SevenOffice is a multi-tenant application, where a personal login gives access to more than one organization and its people. 
+        Finago Office is a multi-tenant application, where a personal login gives access to more than one organization and its people.
 
         Hence, there exist "identity", "organization" and the organization’s "people".
 
@@ -2024,10 +2039,10 @@ paths:
 
         > info
         > Identity
-        > An `identity` is a personal user who logs into 24SevenOffice. An `identity` will have one or more unique identifiers for the personal user, such as an email or a phone number
+        > An `identity` is a personal user who logs into Finago Office. An `identity` will have one or more unique identifiers for the personal user, such as an email or a phone number
         > An `identity` may or may not have access to one or more organizations through a person.
 
-        24SevenOffice has a global identity pool where an identity may have access to all organizations available in 24SevenOffice.
+        Finago Office has a global identity pool where an identity may have access to all organizations available in Finago Office.
       tags:
         - Profile
       parameters:
@@ -2139,7 +2154,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: A unique identifier for the identifier within 24SevenOffice.
+          description: A unique identifier for the identifier within Finago Office.
           schema:
             type: string
             format: uuid
@@ -2283,7 +2298,7 @@ paths:
       description: |
         Read information about the organization that the current profile is logged into. 
 
-        24SevenOffice is a multi-tenant application, where a personal login gives access to more than one organization and its people.
+        Finago Office is a multi-tenant application, where a personal login gives access to more than one organization and its people.
 
         Hence, there exist "identity", "organization" and the organization’s "people".
 
@@ -2349,7 +2364,7 @@ paths:
       description: |
         Read a list of all people under the organization.
 
-        24SevenOffice is a multi-tenant application, where a personal login gives access to more than one organization and its people. 
+        Finago Office is a multi-tenant application, where a personal login gives access to more than one organization and its people.
 
         Hence, there exist "identity", "organization" and the organization’s "people".
 
@@ -2424,7 +2439,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: A unique identifier for the person within 24SevenOffice.
+          description: A unique identifier for the person within Finago Office.
           required: true
           schema:
             type: integer
@@ -2571,7 +2586,7 @@ paths:
     parameters:
       - name: id
         in: path
-        description: A unique identifier for the product category within 24SevenOffice ERP modules.
+        description: A unique identifier for the product category within Finago Office ERP modules.
         required: true
         schema:
           type: integer
@@ -2839,7 +2854,7 @@ paths:
           format: int32
           minimum: 1
         example: 123
-        description: A unique identifier for the product within 24SevenOffice ERP-modules.
+        description: A unique identifier for the product within Finago Office ERP-modules.
     get:
       summary: Read a product by ID
       description: Read details of a specific product identified by its unique ID.
@@ -3023,7 +3038,7 @@ components:
       properties:
         id:
           type: integer
-          description: A unique identifier for the account within 24SevenOffice accounting module.
+          description: A unique identifier for the account within Finago Office accounting module.
           example: 1000001
         number:
           type: integer
@@ -3095,7 +3110,7 @@ components:
       properties:
         id:
           type: integer
-          description: A unique identifier for the account within 24SevenOffice accounting module.
+          description: A unique identifier for the account within Finago Office accounting module.
           example: 1000001
         number:
           type: integer
@@ -3106,7 +3121,7 @@ components:
           description: The human-readable name that describes the purpose or nature of the account.
           example: Cash, NOK
     Currencies:
-      description: List of currencies available within the 24SevenOffice accounting module.
+      description: List of currencies available within the Finago Office accounting module.
       minItems: 1
       type: array
       items:
@@ -3116,7 +3131,7 @@ components:
       properties:
         code:
           type: string
-          description: The currency code used in transactions within the 24SevenOffice.
+          description: The currency code used in transactions within the Finago Office.
           example: USD
         rate:
           type: number
@@ -3124,11 +3139,11 @@ components:
           example: 1.25
     AccountingPeriod:
       type: object
-      description: Details of a financial year/accounting period within the 24SevenOffice accounting module.
+      description: Details of a financial year/accounting period within the Finago Office accounting module.
       properties:
         id:
           type: string
-          description: A unique identifier for the accounting period within 24SevenOffice.
+          description: A unique identifier for the accounting period within Finago Office.
           example: 3acda329-3074-4036-a1a2-499397dd6dc3
         type:
           type: string
@@ -3151,7 +3166,7 @@ components:
       properties:
         id:
           type: integer
-          description: A unique identifier for the tax code within 24SevenOffice ERP modules.
+          description: A unique identifier for the tax code within Finago Office ERP modules.
           example: 1
         number:
           type: integer
@@ -3167,11 +3182,11 @@ components:
           example: 25
     Account2:
       type: object
-      description: Details of an account within the 24SevenOffice accounting module to which the transaction line is posted.
+      description: Details of an account within the Finago Office accounting module to which the transaction line is posted.
       properties:
         id:
           type: integer
-          description: A unique identifier for the account within 24SevenOffice.
+          description: A unique identifier for the account within Finago Office.
           example: 1000001
         number:
           type: integer
@@ -3183,11 +3198,11 @@ components:
           example: Cash, NOK
     Tax:
       type: object
-      description: Details of a tax used within 24SevenOffice.
+      description: Details of a tax used within Finago Office.
       properties:
         id:
           type: integer
-          description: A unique identifier for the tax within 24SevenOffice.
+          description: A unique identifier for the tax within Finago Office.
           example: 2001
         rate:
           type: number
@@ -3196,13 +3211,13 @@ components:
     Voucher:
       type: object
       description: |
-        Details of the transaction within the 24SevenOffice accounting module to which the transaction line pertains.
+        Details of the transaction within the Finago Office accounting module to which the transaction line pertains.
 
         Note: Many other Norway-based accounting systems refer to transactions as "vouchers".
       properties:
         id:
           type: string
-          description: A unique identifier for the transaction within 24SevenOffice accounting module.
+          description: A unique identifier for the transaction within Finago Office accounting module.
           example: 123e4567-e89b-12d3-a456-426614174002
         number:
           type: integer
@@ -3210,23 +3225,23 @@ components:
           example: 1010
     TransactionType:
       type: object
-      description: Details of a transaction type used within the 24SevenOffice accounting module.
+      description: Details of a transaction type used within the Finago Office accounting module.
       properties:
         id:
           type: integer
-          description: A unique identifier for the transaction type within 24SevenOffice accounting module.
+          description: A unique identifier for the transaction type within Finago Office accounting module.
           example: 5001
     Customer:
       type: object
-      description: Details of a customer used within 24SevenOffice CRM.
+      description: Details of a customer used within Finago Office CRM.
       properties:
         id:
           type: integer
-          description: A unique identifier for the customer within 24SevenOffice CRM.
+          description: A unique identifier for the customer within Finago Office CRM.
           example: 6001
     Invoice:
       type: object
-      description: Details of an invoice used within 24SevenOffice.
+      description: Details of an invoice used within Finago Office.
       properties:
         number:
           type: string
@@ -3245,7 +3260,7 @@ components:
       required:
         - rate
       type: object
-      description: Details of the currency used within 24SevenOffice.
+      description: Details of the currency used within Finago Office.
       properties:
         code:
           pattern: ^([A-Z]{3}|LOCAL)$
@@ -3275,7 +3290,7 @@ components:
       properties:
         id:
           type: string
-          description: A unique identifier for the transaction line within 24SevenOffice accounting module.
+          description: A unique identifier for the transaction line within Finago Office accounting module.
           example: 123e4567-e89b-12d3-a456-426614174001
         transaction:
           $ref: '#/components/schemas/Voucher'
@@ -3312,7 +3327,7 @@ components:
             properties:
               dimensionType:
                 type: integer
-                description: The type identifier for the dimension within 24SevenOffice ERP modules.
+                description: The type identifier for the dimension within Finago Office ERP modules.
                 example: 1
               dimensionTypeName:
                 type: string
@@ -3332,6 +3347,10 @@ components:
           description: A brief description of the transaction.
           maxLength: 75
           example: Payment for services
+        documentId:
+          type: integer
+          description: The ID of the Document attached to the transaction, if any.
+          example: 41
         createdAt:
           type: string
           description: A timestamp for when a record was created, in ISO 8601 format.
@@ -3343,18 +3362,18 @@ components:
           format: date-time
           example: '2023-12-31T18:00:00Z'
     TransactionTypes:
-      description: List of transaction types available within the 24SevenOffice accounting module.
+      description: List of transaction types available within the Finago Office accounting module.
       minItems: 1
       type: array
       items:
         $ref: '#/components/schemas/TransactionType1'
     TransactionType1:
-      description: Information about a single transaction type within the 24SevenOffice accounting module.
+      description: Information about a single transaction type within the Finago Office accounting module.
       type: object
       properties:
         id:
           type: integer
-          description: A unique identifier for the transaction type within 24SevenOffice accounting module.
+          description: A unique identifier for the transaction type within Finago Office accounting module.
           example: 5001
         number:
           type: integer
@@ -3382,7 +3401,7 @@ components:
             id:
               type: string
               format: uuid
-              description: A unique identifier for the bank account within 24SevenOffice.
+              description: A unique identifier for the bank account within Finago Office.
               example: 123-456-789
         - $ref: '#/components/schemas/BankAccountBase'
         - type: object
@@ -3423,7 +3442,7 @@ components:
           example: bban
         name:
           type: string
-          description: A user-defined name of the bank account, as it is shown in 24SevenOffice.
+          description: A user-defined name of the bank account, as it is shown in Finago Office.
           example: ABC bank account
         owner:
           type: object
@@ -3458,7 +3477,7 @@ components:
                   description: The email of the contact person.
                   example: doe@example.com
         transactionType:
-          description: The transaction type within the 24SevenOffice accounting module, used when posting bank transactions in the 24SevenOffice bank module. Transaction types can be retrieved from the separate /transactiontypes endpoint.
+          description: The transaction type within the Finago Office accounting module, used when posting bank transactions in the Finago Office bank module. Transaction types can be retrieved from the separate /transactiontypes endpoint.
           type: object
           required:
             - number
@@ -3469,7 +3488,7 @@ components:
               example: 5
         ledgerAccount:
           type: object
-          description: The ledger account within the 24SevenOffice accounting module that corresponds to this bank account. Accounts can be retrieved from the separate /accounts endpoint.
+          description: The ledger account within the Finago Office accounting module that corresponds to this bank account. Accounts can be retrieved from the separate /accounts endpoint.
           required:
             - number
           properties:
@@ -3599,7 +3618,7 @@ components:
           properties:
             id:
               type: string
-              description: A unique identifier for the bank account within 24SevenOffice.
+              description: A unique identifier for the bank account within Finago Office.
               example: 123-456-789
               nullable: false
         paymentReference:
@@ -3718,37 +3737,42 @@ components:
     CustomerResponse:
       $ref: '#/components/schemas/CustomerProperties'
     CustomerPatchRequest:
+      allOf:
+        - type: object
+          properties:
+            person:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  nullable: true
+                  description: The first name of a person if the customer is a person.
+                  example: John
+                lastName:
+                  type: string
+                  nullable: true
+                  description: The last name of a person if the customer is a person.
+                  example: Doe
+              description: The first and the last name of a customer if the customer is a person.
+            name:
+              type: string
+              description: A human-readable name or label for a customer, making it easily identifiable to users.
+              example: ABC Corporation
+              nullable: true
+            organizationNumber:
+              type: string
+              nullable: true
+              description: The organization number issued by authorities, like a VAT number, of the customer if the customer is a company.
+              example: '123456789'
+        - $ref: '#/components/schemas/CustomerSharedProperties'
+    CustomerSharedProperties:
       type: object
       properties:
-        name:
-          type: string
-          description: A human-readable name or label for a customer, making it easily identifiable to users.
-          example: ABC Corporation
-          nullable: true
-        person:
-          type: object
-          properties:
-            firstName:
-              type: string
-              nullable: true
-              description: The first name of a person if the customer is a person.
-              example: John
-            lastName:
-              type: string
-              nullable: true
-              description: The last name of a person if the customer is a person.
-              example: Doe
-          description: The first and the last name of a customer if the customer is a person.
         isSupplier:
           type: boolean
           nullable: false
           description: A flag variable indicating whether the customer is also a supplier (true) or not (false).
           example: false
-        organizationNumber:
-          type: string
-          nullable: true
-          description: The organization number issued by authorities, like a VAT number, of the customer if the customer is a company.
-          example: '123456789'
         address:
           type: object
           properties:
@@ -3781,72 +3805,81 @@ components:
           description: A phone number for contacting the customer.
           example: +47-12345678
     CustomerPostRequest:
+      description: A new customer to be created in Finago Office CRM, either a company or a private person - decided by the `isCompany` flag.
+      oneOf:
+        - $ref: '#/components/schemas/CompanyCustomerPostRequest'
+        - $ref: '#/components/schemas/PersonCustomerPostRequest'
+      discriminator:
+        propertyName: isCompany
+        mapping:
+          'true': '#/components/schemas/CompanyCustomerPostRequest'
+          'false': '#/components/schemas/PersonCustomerPostRequest'
+    CompanyCustomerPostRequest:
+      description: A new company customer to be created in Finago Office CRM.
       allOf:
-        - oneOf:
-            - type: object
-              properties:
-                name:
-                  type: string
-                  description: A human-readable name or label for a customer, making it easily identifiable to users.
-                isCompany:
-                  type: boolean
-                  description: A flag variable indicating whether the customer is a company (true) or a person (false).
-                  enum:
-                    - true
-                  nullable: false
-                person:
-                  type: string
-                  nullable: true
-                  readOnly: true
-              required:
-                - name
-                - isCompany
-              description: A new customer is a company.
-            - type: object
-              properties:
-                person:
-                  type: object
-                  properties:
-                    firstName:
-                      type: string
-                      nullable: true
-                      description: The first name of a person if the customer is a person.
-                    lastName:
-                      type: string
-                      nullable: true
-                      description: The last name of a person if the customer is a person.
-                isCompany:
-                  type: boolean
-                  description: A flag variable indicating whether the customer is a company (true) or a person (false).
-                  enum:
-                    - false
-                  nullable: false
-                name:
-                  type: string
-                  nullable: true
-                  readOnly: true
-                organizationNumber:
-                  type: string
-                  nullable: true
-                  readOnly: true
-              required:
-                - person
-                - isCompany
-              description: A new customer is a private person.
+        - type: object
+          required:
+            - isCompany
+            - name
+          properties:
+            isCompany:
+              type: boolean
+              description: Discriminator flag set to true - indicating that the customer is a company.
+              enum:
+                - true
+            name:
+              type: string
+              description: A human-readable name or label for a customer, making it easily identifiable to users.
+            organizationNumber:
+              type: string
+              nullable: true
+              description: The organization number issued by authorities, like a VAT number, of the customer.
+              example: '123456789'
         - type: object
           properties:
             id:
               type: number
               nullable: true
-              description: A unique identifier for the customer within 24SevenOffice CRM. This ID is used for reference and linking transactions to specific customers.
-        - $ref: '#/components/schemas/CustomerPatchRequest'
+              description: A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
+        - $ref: '#/components/schemas/CustomerSharedProperties'
+    PersonCustomerPostRequest:
+      description: A new private person customer to be created in Finago Office CRM.
+      allOf:
+        - type: object
+          required:
+            - isCompany
+            - person
+          properties:
+            isCompany:
+              type: boolean
+              description: Discriminator flag set to false - indicating that the customer is a person.
+              enum:
+                - false
+            person:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  nullable: true
+                  description: The first name of the person.
+                lastName:
+                  type: string
+                  nullable: true
+                  description: The last name of the person.
+        - type: object
+          properties:
+            id:
+              type: number
+              nullable: true
+              description: A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
+        - $ref: '#/components/schemas/CustomerSharedProperties'
     CustomerProperties:
       type: object
       properties:
         id:
           type: integer
           format: int32
-          description: A unique identifier for the customer within 24SevenOffice CRM. This ID is used for reference and linking transactions to specific customers.
+          description: A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
           example: 12345
         name:
           type: string
@@ -4072,7 +4105,7 @@ components:
           properties:
             id:
               type: integer
-              description: A unique identifier for the sales order within 24SevenOffice ERP.
+              description: A unique identifier for the sales order within Finago Office ERP.
               example: 1234
         - type: object
           properties:
@@ -4103,6 +4136,7 @@ components:
           description: Current status of the sales order.
           enum:
             - Draft
+            - Web
             - Proposal
             - Confirmed
             - Invoice
@@ -4112,6 +4146,8 @@ components:
           $ref: '#/components/schemas/DeliveryCustomer'
         invoice:
           $ref: '#/components/schemas/Invoice1'
+        accrual:
+          $ref: '#/components/schemas/Accrual'
         date:
           type: string
           format: date
@@ -4188,7 +4224,7 @@ components:
       properties:
         dimensionType:
           type: integer
-          description: The unique identifier for the dimension within 24SevenOffice ERP modules.
+          description: The unique identifier for the dimension within Finago Office ERP modules.
           example: 1
         value:
           type: string
@@ -4205,7 +4241,7 @@ components:
       properties:
         number:
           type: integer
-          description: A unique number for the invoice within 24SevenOffice ERP.
+          description: A unique number for the invoice within Finago Office ERP.
           example: 123
           format: int32
         date:
@@ -4218,6 +4254,10 @@ components:
           format: date
           description: The due date by which the invoice must be paid.
           example: '2023-06-15'
+        distributionMethod:
+          $ref: '#/components/schemas/DistributionMethod'
+        paymentTerms:
+          $ref: '#/components/schemas/PaymentTerms'
         remittanceReference:
           type: string
           description: A reference number for the invoice used for remittance purposes, like "KID"-number in Norway, or OCR.
@@ -4229,8 +4269,108 @@ components:
             id:
               type: string
               format: guid
-              description: A unique identifier for the transaction within 24SevenOffice ERP.
+              description: A unique identifier for the transaction within Finago Office ERP.
               example: 63293496-884f-4358-b489-f641fe51cdaa
+    FixedDateTerms:
+      description: 'Due date is a specific date. NB: Only supported in new invoicing module'
+      type: object
+      required:
+        - type
+        - value
+      properties:
+        type:
+          type: string
+          enum:
+            - FixedDate
+        value:
+          type: string
+          format: date
+          pattern: ^\d{4}-\d{2}-\d{2}$
+    NumberOfDaysTerms:
+      description: Due date is calculated as a number of days after the invoice date.
+      type: object
+      required:
+        - type
+        - value
+      properties:
+        type:
+          type: string
+          enum:
+            - NumberOfDays
+        value:
+          type: integer
+          minimum: 0
+    OutMonthPlusDaysTerms:
+      description: Due date is calculated as a number of days after the end of the invoicing month.
+      type: object
+      required:
+        - type
+        - value
+      properties:
+        type:
+          type: string
+          enum:
+            - OutMonthPlusDays
+        value:
+          type: integer
+          minimum: 0
+    PaymentTerms:
+      description: 'Payment terms for an invoice, specified in one of three three different ways:  (NB: FixedDateTerms is only supported if client has activated the new invoicing module)'
+      oneOf:
+        - $ref: '#/components/schemas/NumberOfDaysTerms'
+        - $ref: '#/components/schemas/OutMonthPlusDaysTerms'
+        - $ref: '#/components/schemas/FixedDateTerms'
+      discriminator:
+        propertyName: type
+        mapping:
+          NumberOfDays: '#/components/schemas/NumberOfDaysTerms'
+          OutMonthPlusDays: '#/components/schemas/OutMonthPlusDaysTerms'
+          FixedDate: '#/components/schemas/FixedDateTerms'
+      example:
+        type: NumberOfDays
+        value: 14
+    Accrual:
+      description: Accrual information, empty object is ussed to reset accrual data
+      oneOf:
+        - type: object
+          properties: {}
+          additionalProperties: false
+        - type: object
+          required:
+            - startDate
+            - length
+          properties:
+            startDate:
+              type: string
+              format: date
+              description: The start date of the accrual period.
+              example: '2023-06-01'
+            length:
+              type: integer
+              minimum: 1
+              description: The length of the accrual period in months.
+              example: 12
+          additionalProperties: false
+    DistributionMethod:
+      type: string
+      description: |
+        The method used for distributing the sales order or invoice. Use "" for automatic selection based on client preferences. Values:
+          "" - Automatic
+          "manualdistribution" - Manual handling (no distribution)
+          "efakturadistribution" - eFaktura
+          "ehfdistribution" - EHF
+          "postaldistribution" - Autopost
+          "printdistribution" - Cloudprint
+          "emaildistribution" - Email
+      enum:
+        - ''
+        - manualdistribution
+        - efakturadistribution
+        - ehfdistribution
+        - postaldistribution
+        - printdistribution
+        - emaildistribution
+      default: ''
     Currency2:
       type: object
       properties:
@@ -4252,7 +4392,7 @@ components:
       properties:
         id:
           type: integer
-          description: A unique identifier for the customer within 24SevenOffice CRM.
+          description: A unique identifier for the customer within Finago Office CRM.
           example: 12345
         organizationNumber:
           type: string
@@ -4312,7 +4452,7 @@ components:
       properties:
         id:
           type: integer
-          description: A unique identifier for the customer within 24SevenOffice CRM.
+          description: A unique identifier for the customer within Finago Office CRM.
           example: 12345
         name:
           type: string
@@ -4388,7 +4528,7 @@ components:
           properties:
             id:
               type: integer
-              description: A unique identifier for the tax code within 24SevenOffice ERP modules, associated with the line item.
+              description: A unique identifier for the tax code within Finago Office ERP modules, associated with the line item.
               example: 1
             number:
               type: integer
@@ -4407,7 +4547,7 @@ components:
           properties:
             id:
               type: integer
-              description: A unique identifier for the account within 24SevenOffice accounting module.
+              description: A unique identifier for the account within Finago Office accounting module.
               example: 200001
             number:
               type: integer
@@ -4421,6 +4561,8 @@ components:
               example: Accounts Receivable
         dimensions:
           $ref: '#/components/schemas/Dimensions'
+        accrual:
+          $ref: '#/components/schemas/Accrual'
       additionalProperties: false
     Line:
       allOf:
@@ -4428,7 +4570,7 @@ components:
           properties:
             id:
               type: integer
-              description: The unique identifier for the sales order line item within 24SevenOffice ERP.
+              description: The unique identifier for the sales order line item within Finago Office ERP.
               example: 123456789
         - $ref: '#/components/schemas/LineWithoutId'
     Product:
@@ -4437,8 +4579,13 @@ components:
       properties:
         id:
           type: integer
-          description: A unique identifier for the product within 24SevenOffice ERP-modules.
+          description: A unique identifier for the product within Finago Office ERP-modules.
           example: 101
+        number:
+          type: string
+          description: The product number assigned to the product. Read-only property (ignored if set in POST/PATCH requests)
+          example: PROD-001
+          maxLength: 100
     SalesOrderAttachment:
       type: object
       description: Details of an attachment associated with a sales order.
@@ -4763,7 +4910,7 @@ components:
           type: integer
           format: int64
           readOnly: true
-          description: The unique identifier for the organization within 24SevenOffice.
+          description: The unique identifier for the organization within Finago Office.
           example: 12345
         name:
           type: string
@@ -4812,7 +4959,7 @@ components:
         id:
           type: integer
           format: int32
-          description: The unique identifier for the person within 24SevenOffice.
+          description: The unique identifier for the person within Finago Office.
           example: 123
         identityId:
           type: string
@@ -4851,7 +4998,7 @@ components:
           properties:
             id:
               type: integer
-              description: A unique identifier for the product category within 24SevenOffice ERP modules.
+              description: A unique identifier for the product category within Finago Office ERP modules.
               example: 12
         - $ref: '#/components/schemas/CategoryBase'
         - type: object
@@ -4928,7 +5075,7 @@ components:
               type: integer
               nullable: false
               example: 123
-              description: A unique identifier for the product within 24SevenOffice ERP-modules.
+              description: A unique identifier for the product within Finago Office ERP-modules.
         - $ref: '#/components/schemas/ProductBase'
         - type: object
           properties:
@@ -5033,6 +5180,10 @@ components:
           description: The sum of indirect costs related to the product.
           example: 12.77
           default: 0
+        webshopEnabled:
+          type: boolean
+          description: A flag variable set to true if the product is enabled for webshop sales.
+          example: true
         stock:
           type: object
           description: Stock information for the product.
@@ -5056,8 +5207,8 @@ components:
               example: A-313
         ean:
           type: string
-          maxLength: 13
-          description: The product's 13-digit European Article Number (EAN).
+          maxLength: 14
+          description: The product's GTIN - Usually a 13-digit European Article Number (EAN), but can also be one of the other GTIN formats.
           nullable: true
           example: '0123456789000'
         eanAlternative:
@@ -5181,18 +5332,18 @@ components:
           example: Product Sales
         account:
           type: object
-          description: The associated account within the 24SevenOffice accounting module for this sales type.
+          description: The associated account within the Finago Office accounting module for this sales type.
           properties:
             id:
               type: integer
-              description: A unique identifier for the account within 24SevenOffice accounting module.
+              description: A unique identifier for the account within Finago Office accounting module.
               example: 2000001
   parameters:
     id:
       name: id
       in: path
       required: true
-      description: A unique identifier for the customer within 24SevenOffice CRM.
+      description: A unique identifier for the customer within Finago Office CRM.
       schema:
         type: integer
         format: int32
@@ -5278,12 +5429,10 @@ components:
           account:
             id: 1000001
             number: 1900
-            name: Cash, NOK
           transactionType:
             id: 5001
           tax:
             id: 2001
-            rate: 25
           amount: 1500
           currency:
             code: USD
@@ -5305,12 +5454,10 @@ components:
           account:
             id: 1000002
             number: 1800
-            name: Accounts Receivable
           transactionType:
             id: 5002
           tax:
             id: 2002
-            rate: 20
           amount: 2500
           currency:
             code: NOK
@@ -5332,12 +5479,10 @@ components:
           account:
             id: 1000003
             number: 2000
-            name: Inventory
           transactionType:
             id: 5003
           tax:
             id: 2003
-            rate: 15
           amount: 3000
           currency:
             code: NOK
@@ -5715,6 +5860,9 @@ components:
             number: 123
             date: '2023-06-01'
             dueDate: '2023-06-15'
+            paymentTerms:
+              type: NumberOfDays
+              value: 14
             remittanceReference: ABC12345
           date: '2023-06-01'
           internalMemo: Customer requested special packaging.
@@ -5747,7 +5895,13 @@ components:
             countryCode: 'NO'
           invoice:
             date: '2023-07-01'
-            dueDate: '2023-07-15'
+            dueDate: '2023-08-15'
+            paymentTerms:
+              type: OutMonthPlusDays
+              value: 15
+          accrual:
+            startDate: '2023-07-01'
+            length: 6
           date: '2023-07-01'
           internalMemo: Customer needs delivery before end of month.
           memo: Express delivery.
@@ -5779,6 +5933,9 @@ components:
             number: 789
             date: '2023-08-01'
             dueDate: '2023-08-15'
+            paymentTerms:
+              type: FixedDate
+              value: '2023-08-15'
             remittanceReference: DEF78901
           date: '2023-08-01'
           internalMemo: Customer has specific handling instructions.
@@ -5985,11 +6142,11 @@ components:
 x-topics:
   - title: Welcome
     content: |
-      Welcome to 24SevenOffice API documentation!
+      Welcome to Finago Office (formerly 24SevenOffice) API documentation!
 
       We are excited to announce that we are gradually releasing new API endpoints for public access. Our REST API is designed to provide developers with a simple and secure way to integrate with our platform and access our services.
 
-      By leveraging 24SevenOffice API, you can build integrations, custom applications, automate workflows, and access data in real-time. We believe that our API will help you create innovative solutions based on 24SevenOffice products and enhance the overall user experience.
+      By leveraging Finago Office API, you can build integrations, custom applications, automate workflows, and access data in real-time. We believe that our API will help you create innovative solutions based on Finago Office products and enhance the overall user experience.
 
       Please note that we will be rolling out new API endpoints over time, and not all endpoints will be available for public access at once. Our team is committed to providing high-quality, reliable API that meet the needs of our developer community. As we continue to develop and release new endpoints, we will keep you informed through our API documentation and other communication channels.
 
@@ -5997,18 +6154,18 @@ x-topics:
 
       We do our best to make sure that this documentation has everything you need to help you get started quickly and make good use of our API. Please do not hesitate to contact API Team, should you feel like something is off. 
 
-      We are thrilled to have you on board and look forward to seeing what you are about to create with 24SevenOffice API!
+      We are thrilled to have you on board and look forward to seeing what you are about to create with Finago Office API!
   - title: Get Started
     content: |
 
-      To initiate your journey with the 24SevenOffice API, follow these steps:
+      To initiate your journey with the Finago Office API, follow these steps:
 
       **Step 1: Request Access**
 
-      Locate your 24SevenOffice Client ID for the organization you intend to request access for. Keep this Client ID on hand and complete the access request form by visiting [this link](https://forms.office.com/e/eKGahcT804).
+      Locate your Finago Office Client ID for the organization you intend to request access for. Keep this Client ID on hand and complete the access request form by visiting [this link](https://forms.office.com/e/eKGahcT804).
 
       *How to find Client ID:*
-        * *Log in to 24SevenOffice under the organization that will own your integrations.*
+        * *Log in to Finago Office under the organization that will own your integrations.*
         * *Navigate to Accounting and then either:*
           * *Go to [Manage vouchers](https://app.24sevenoffice.com/modules/accounting/vouchers), where you can find the Client ID. The Client ID is the number preceding "@voucher.24sevenoffice.com" at the top-right corner.*
           * *Alternatively, go to Administration > Settings > Retrieval, and find the Client ID next to "@voucher.24sevenoffice.com" there.*
@@ -6024,9 +6181,9 @@ x-topics:
       If you have any questions or issues during the setup process, please do not hesitate to contact API Team for assistance. 
   - title: Authentication
     content: |
-      To authenticate requests to 24SevenOffice API, users must create an OAuth2 application in our system and obtain client ID and client secret. 
+      To authenticate requests to Finago Office API, users must create an OAuth2 application in our system and obtain client ID and client secret.
 
-      In addition to client ID and client secret, users must also obtain an organization ID for which the application is granted access to. This is because 24SevenOffice is a multi-tenant application, where a personal login gives access to more than one organization and its people. Please, refer to each of the endpoints for [Identity](/doc/v1/operation/operation-get-me), [Organization](/doc/v1/operation/operation-getclient), and [People](/doc/v1/operation/operation-get-organization-people) in 24SevenOffice API for further details. 
+      In addition to client ID and client secret, users must also obtain an organization ID for which the application is granted access to. This is because Finago Office is a multi-tenant application, where a personal login gives access to more than one organization and its people. Please, refer to each of the endpoints for [Identity](/doc/v1/operation/operation-get-me), [Organization](/doc/v1/operation/operation-getclient), and [People](/doc/v1/operation/operation-get-organization-people) in Finago Office API for further details.
 
       The application will then use these credentials (client ID, organization ID, and client secret) to obtain an access token for the user. The process of getting an access token follows OAuth 2.0 Client Credentials Flow (explained in details here: https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow)
 
@@ -6042,10 +6199,10 @@ x-topics:
     content: |
       To acquire an access token and initiate your first API call, follow these steps:
 
-      Before you begin, ensure that you have the [Developer Admin Panel](https://app.24sevenoffice.com/modules/applicationadmin/applications) enabled for your account. You should locate a button labeled “Developer” (or “Utvikler” in Norwegian) at the bottom of the main navigation left-side menu on the 24SevenOffice Home page.
+      Before you begin, ensure that you have the [Developer Admin Panel](https://app.24sevenoffice.com/modules/applicationadmin/applications) enabled for your account. You should locate a button labeled “Developer” (or “Utvikler” in Norwegian) at the bottom of the main navigation left-side menu on the Finago Office Home page.
 
       > info
-      > If you do not have the Developer admin panel enabled, contact the 24SevenOffice API team.
+      > If you do not have the Developer admin panel enabled, contact the Finago Office API team.
 
       1) Log in to the [Developer Admin Panel](https://app.24sevenoffice.com/modules/applicationadmin/applications) and select Create Application.
 
@@ -6057,7 +6214,7 @@ x-topics:
 
       5) Proceed to Settings and copy the Application ID.
 
-      6) Authorize the application to access your organization's user account details based on the previously selected scopes. To do this, visit the 24SevenOffice Home page and select Integrations under Administration in the main navigation left-side menu. You will be redirected to the [Integrations Admin Panel](https://app.24sevenoffice.com/modules/applicationadmin/integrations) where you manage integrations for your organization account. Click Connect Application.
+      6) Authorize the application to access your organization's user account details based on the previously selected scopes. To do this, visit the Finago Office Home page and select Integrations under Administration in the main navigation left-side menu. You will be redirected to the [Integrations Admin Panel](https://app.24sevenoffice.com/modules/applicationadmin/integrations) where you manage integrations for your organization account. Click Connect Application.
 
       7) Paste the Application ID, accept terms of usage and scopes. The application is now connected to your organization's account.
 
@@ -6075,7 +6232,7 @@ x-topics:
       > info
       > The access token is valid for a single organization. If you intend to access multiple organizations, steps 6 to 10 should be repeated for each organization.
 
-      To obtain an authentication token for accessing 24SevenOffice REST API resources, you can utilize your code, development environment (Visual Studio, JetBrains, etc.) extensions, or employ API tools like Postman. You can also explore the 24SevenOffice playground at [https://tfso.github.io/publicapi/playground/](https://tfso.github.io/publicapi/playground/) using the [OAuth 2.0 Client Credentials Flow](https://auth0.com/docs/flows/concepts/client-credentials).
+      To obtain an authentication token for accessing Finago Office REST API resources, you can utilize your code, development environment (Visual Studio, JetBrains, etc.) extensions, or employ API tools like Postman. You can also explore the Finago Office playground at [https://tfso.github.io/publicapi/playground/](https://tfso.github.io/publicapi/playground/) using the [OAuth 2.0 Client Credentials Flow](https://auth0.com/docs/flows/concepts/client-credentials).
 
       For the purpose of further demonstration, we proceed with Postman. Access Postman here: [https://www.postman.com/](https://www.postman.com/)
       If you are new to Postman, refer to this guide to help you get started: [Postman Overview](https://learning.postman.com/docs/introduction/overview/)
@@ -6116,7 +6273,7 @@ x-topics:
       Please note that each status code may come with additional information in the response body to help developers understand what went wrong and how to resolve the issue. We recommend reviewing the response body for each status code to get a better understanding of the error message.
   - title: Rate limiting
     content: |
-      We implement rate limiting to ensure fair usage and protect the stability and reliability of 24SevenOffice API. 
+      We implement rate limiting to ensure fair usage and protect the stability and reliability of Finago Office API.
 
       Rate limiting refers to the practice of limiting the number of requests that can be made to the API within a certain time period. This helps prevent excessive usage that could potentially overload the system or cause performance issues.
 
@@ -6127,7 +6284,7 @@ x-topics:
       Please contact our API team for specific rate limit information, as it may vary depending on the API endpoint or resource.
   - title: Versioning
     content: |
-      Each version of 24SevenOffice API is identified by a version number, which is included in the URL of the endpoint. This allows you to specify which version of the API you want to use in your requests.
+      Each version of Finago Office API is identified by a version number, which is included in the URL of the endpoint. This allows you to specify which version of the API you want to use in your requests.
 
       As we make updates and improvements to our API, we will release new versions to ensure backward compatibility. This means that your existing integrations will continue to work, even as we introduce new features and functionality.
 
