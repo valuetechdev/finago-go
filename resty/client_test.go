@@ -80,13 +80,18 @@ func TestCreatePrivateCustomer(t *testing.T) {
 
 	c := getClient()
 
-	cPostRequest := CustomerPostRequest{
+	var cPostRequest CustomerPostRequest
+	err := cPostRequest.FromPersonCustomerPostRequest(PersonCustomerPostRequest{
+		IsCompany: false,
+		Person: FirstnameLastnameDto{
+			FirstName: u.R("John"),
+			LastName:  u.R("Doe"),
+		},
 		Email: &EmailsDto{
 			Billing: u.R("billing@example.org"),
 			Contact: u.R("contact@example.org"),
 		},
 		Phone: u.R("+47-12345678"),
-
 		Address: &AddressesDto{
 			Visit: &VisitAddress{
 				Street:             u.R("Torgallmenningen 1"),
@@ -97,13 +102,6 @@ func TestCreatePrivateCustomer(t *testing.T) {
 			},
 		},
 		IsSupplier: u.R(false),
-	}
-	err := cPostRequest.FromCustomerPostRequest1(CustomerPostRequest1{
-		IsCompany: CustomerPostRequest1IsCompany(false),
-		Person: FirstnameLastnameDto{
-			FirstName: u.R("John"),
-			LastName:  u.R("Doe"),
-		},
 	})
 	require.NoError(err)
 
@@ -117,7 +115,10 @@ func TestCreateCompanyCustomer(t *testing.T) {
 
 	c := getClient()
 
-	cPostRequest := CustomerPostRequest{
+	var cPostRequest CustomerPostRequest
+	err := cPostRequest.FromCompanyCustomerPostRequest(CompanyCustomerPostRequest{
+		IsCompany: true,
+		Name:      "ACME INC.",
 		Email: &EmailsDto{
 			Billing: u.R("billing@example.org"),
 			Contact: u.R("contact@example.org"),
@@ -134,10 +135,6 @@ func TestCreateCompanyCustomer(t *testing.T) {
 		},
 		IsSupplier:         u.R(false),
 		OrganizationNumber: u.R("123456789"),
-	}
-	err := cPostRequest.FromCustomerPostRequest0(CustomerPostRequest0{
-		IsCompany: CustomerPostRequest0IsCompany(true),
-		Name:      "ACME INC.",
 	})
 	require.NoError(err)
 
@@ -159,7 +156,10 @@ func TestCreateProduct(t *testing.T) {
 
 	c := getClient()
 
-	cPostRequest := CustomerPostRequest{
+	var cPostRequest CustomerPostRequest
+	err := cPostRequest.FromCompanyCustomerPostRequest(CompanyCustomerPostRequest{
+		IsCompany: true,
+		Name:      "ACME INC.",
 		Email: &EmailsDto{
 			Billing: u.R("billing@example.org"),
 			Contact: u.R("contact@example.org"),
@@ -176,10 +176,6 @@ func TestCreateProduct(t *testing.T) {
 		},
 		IsSupplier:         u.R(true),
 		OrganizationNumber: u.R("123456789"),
-	}
-	err := cPostRequest.FromCustomerPostRequest0(CustomerPostRequest0{
-		IsCompany: CustomerPostRequest0IsCompany(true),
-		Name:      "ACME INC.",
 	})
 	require.NoError(err)
 	resCustomer, err := c.CreateCustomerWithResponse(t.Context(), cPostRequest)
@@ -232,7 +228,10 @@ func TestCreateOrder(t *testing.T) {
 	require.NoError(err)
 	require.NotNil(resProduct.JSON201, "no product was created")
 
-	cPostRequest := CustomerPostRequest{
+	var cPostRequest CustomerPostRequest
+	err = cPostRequest.FromCompanyCustomerPostRequest(CompanyCustomerPostRequest{
+		IsCompany: true,
+		Name:      "ACME INC.",
 		Email: &EmailsDto{
 			Billing: u.R("billing@example.org"),
 			Contact: u.R("contact@example.org"),
@@ -249,10 +248,6 @@ func TestCreateOrder(t *testing.T) {
 		},
 		IsSupplier:         u.R(true),
 		OrganizationNumber: u.R("123456789"),
-	}
-	err = cPostRequest.FromCustomerPostRequest0(CustomerPostRequest0{
-		IsCompany: CustomerPostRequest0IsCompany(true),
-		Name:      "ACME INC.",
 	})
 	require.NoError(err)
 	resCustomer, err := c.CreateCustomerWithResponse(t.Context(), cPostRequest)
