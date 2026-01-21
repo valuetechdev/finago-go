@@ -140,6 +140,7 @@ const (
 	SalesOrderStatusEnumDraft          SalesOrderStatusEnum = "Draft"
 	SalesOrderStatusEnumInvoice        SalesOrderStatusEnum = "Invoice"
 	SalesOrderStatusEnumProposal       SalesOrderStatusEnum = "Proposal"
+	SalesOrderStatusEnumWeb            SalesOrderStatusEnum = "Web"
 )
 
 // Defines values for TfsoApiOrganizationModelsUserType.

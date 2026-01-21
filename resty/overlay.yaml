@@ -647,6 +647,7 @@ actions:
         description: "Current status of the sales order."
         enum:
           - "Draft"
+          - "Web"
           - "Proposal"
           - "Confirmed"
           - "Invoice"
