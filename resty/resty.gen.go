@@ -700,6 +700,9 @@ type CompanyCustomerPostRequest struct {
 	// Email Email addresses for the customer.
 	Email *EmailsDto `json:"email,omitempty"`
 
+	// ExternalReference An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
+	ExternalReference *string `json:"externalReference,omitempty"`
+
 	// Id A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
 	Id *float32 `json:"id"`
 
@@ -787,6 +790,9 @@ type CustomerPatchRequest struct {
 	// Email Email addresses for the customer.
 	Email *EmailsDto `json:"email,omitempty"`
 
+	// ExternalReference An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
+	ExternalReference *string `json:"externalReference,omitempty"`
+
 	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
 	IsSupplier *bool `json:"isSupplier,omitempty"`
 
@@ -818,6 +824,9 @@ type CustomerProperties struct {
 
 	// Email Email addresses for the customer.
 	Email *EmailsDto `json:"email,omitempty"`
+
+	// ExternalReference An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
+	ExternalReference *string `json:"externalReference,omitempty"`
 
 	// Id A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
 	Id *int32 `json:"id,omitempty"`
@@ -854,6 +863,9 @@ type CustomerSharedProperties struct {
 
 	// Email Email addresses for the customer.
 	Email *EmailsDto `json:"email,omitempty"`
+
+	// ExternalReference An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
+	ExternalReference *string `json:"externalReference,omitempty"`
 
 	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
 	IsSupplier *bool `json:"isSupplier,omitempty"`
@@ -968,6 +980,18 @@ type DimensionsObject struct {
 //	"printdistribution" - Cloudprint
 //	"emaildistribution" - Email
 type DistributionMethod string
+
+// DocumentInfo defines model for DocumentInfo.
+type DocumentInfo struct {
+	// ContentType MIME type of the document. Currently only 'application/pdf' is returned.
+	ContentType string `json:"contentType"`
+
+	// DocumentId Identifier for the document
+	DocumentId int `json:"documentId"`
+
+	// DownloadUrl URL to download the document, typically a presigned URL with limited validity
+	DownloadUrl string `json:"downloadUrl"`
+}
 
 // EmailsDto Email addresses for the customer.
 type EmailsDto struct {
@@ -1105,6 +1129,10 @@ type Line struct {
 	// Id The unique identifier for the sales order line item within Finago Office ERP.
 	Id *int `json:"id,omitempty"`
 
+	// IsHidden An optional flag for the old invoicing module, indicating whether the line item is hidden on the generated PDF-invoice. NB! Ignored in new module. NB! Do not use for PEPOL/EHF-distributed invoices.
+	// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
+	IsHidden *bool `json:"isHidden,omitempty"`
+
 	// Price The price of a single unit of the product in the line item.
 	Price *float32 `json:"price,omitempty"`
 
@@ -1140,6 +1168,10 @@ type LineWithoutId struct {
 
 	// DiscountRate The discount rate applied to the line item, expressed as a whole number. For example, a discount rate of 10% is represented as 10.
 	DiscountRate *float32 `json:"discountRate,omitempty"`
+
+	// IsHidden An optional flag for the old invoicing module, indicating whether the line item is hidden on the generated PDF-invoice. NB! Ignored in new module. NB! Do not use for PEPOL/EHF-distributed invoices.
+	// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
+	IsHidden *bool `json:"isHidden,omitempty"`
 
 	// Price The price of a single unit of the product in the line item.
 	Price *float32 `json:"price,omitempty"`
@@ -1272,6 +1304,9 @@ type PersonCustomerPostRequest struct {
 
 	// Email Email addresses for the customer.
 	Email *EmailsDto `json:"email,omitempty"`
+
+	// ExternalReference An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
+	ExternalReference *string `json:"externalReference,omitempty"`
 
 	// Id A unique identifier for the customer within Finago Office CRM. This ID is used for reference and linking transactions to specific customers.
 	Id *float32 `json:"id"`
@@ -1559,6 +1594,9 @@ type SalesOrder struct {
 	// DeliveryCustomer Delivery details for the sales order.
 	DeliveryCustomer *DeliveryCustomer `json:"deliveryCustomer,omitempty"`
 
+	// DeliveryDate The set delivery date for the sales order.
+	DeliveryDate *openapi_types.Date `json:"deliveryDate,omitempty"`
+
 	// GrossAmount The total amount for the sales order, including taxes.
 	GrossAmount *float32 `json:"grossAmount,omitempty"`
 
@@ -1636,6 +1674,9 @@ type SalesOrderBasic struct {
 	// DeliveryCustomer Delivery details for the sales order.
 	DeliveryCustomer *DeliveryCustomer `json:"deliveryCustomer,omitempty"`
 
+	// DeliveryDate The set delivery date for the sales order.
+	DeliveryDate *openapi_types.Date `json:"deliveryDate,omitempty"`
+
 	// InternalMemo An internal memo for the sales order.
 	InternalMemo *string `json:"internalMemo,omitempty"`
 
@@ -1681,6 +1722,9 @@ type SalesOrderExtended struct {
 
 	// DeliveryCustomer Delivery details for the sales order.
 	DeliveryCustomer *DeliveryCustomer `json:"deliveryCustomer,omitempty"`
+
+	// DeliveryDate The set delivery date for the sales order.
+	DeliveryDate *openapi_types.Date `json:"deliveryDate,omitempty"`
 
 	// Dimensions A list of dimensions such as department or project.
 	Dimensions *Dimensions `json:"dimensions,omitempty"`
@@ -1742,6 +1786,9 @@ type SalesOrderRequestPatch struct {
 
 	// DeliveryCustomer Delivery details for the sales order.
 	DeliveryCustomer *DeliveryCustomer `json:"deliveryCustomer,omitempty"`
+
+	// DeliveryDate The set delivery date for the sales order.
+	DeliveryDate *openapi_types.Date `json:"deliveryDate,omitempty"`
 
 	// Dimensions A list of dimensions such as department or project.
 	Dimensions *Dimensions `json:"dimensions,omitempty"`
@@ -1822,6 +1869,9 @@ type SalesOrderRequestPost struct {
 
 	// DeliveryCustomer Delivery details for the sales order.
 	DeliveryCustomer *DeliveryCustomer `json:"deliveryCustomer,omitempty"`
+
+	// DeliveryDate The set delivery date for the sales order.
+	DeliveryDate *openapi_types.Date `json:"deliveryDate,omitempty"`
 
 	// Dimensions A list of dimensions such as department or project.
 	Dimensions *Dimensions `json:"dimensions,omitempty"`
@@ -2016,6 +2066,9 @@ type Transaction struct {
 
 	// ModifiedAt A timestamp for when one of the properties of a record was last modified, in ISO 8601 format.
 	ModifiedAt *time.Time `json:"modifiedAt,omitempty"`
+
+	// PeriodDate The accounting period date for the transaction line.
+	PeriodDate *openapi_types.Date `json:"periodDate,omitempty"`
 
 	// Tax Details of a tax used within Finago Office.
 	Tax *Tax `json:"tax,omitempty"`
@@ -2373,10 +2426,16 @@ type GetTransactionlinesParams struct {
 	// DateTo The ending date (exclusive) until which transactions will be retrieved. If set to 2024-01-01, the latest result will be retrieved before 23:59 on 2023-12-31.
 	DateTo openapi_types.Date `form:"dateTo" json:"dateTo"`
 
-	// CreatedAfter Retrieve transactions created after the specified timestamp (ISO 8601 format).
+	// CreatedFrom Retrieve transactions created after the specified timestamp (ISO 8601 format).
+	CreatedFrom *time.Time `form:"createdFrom,omitempty" json:"createdFrom,omitempty"`
+
+	// CreatedAfter Deprecated - use `createdFrom` instead.
 	CreatedAfter *time.Time `form:"createdAfter,omitempty" json:"createdAfter,omitempty"`
 
-	// ModifiedAfter Retrieve transactions modified after the specified timestamp (ISO 8601 format).
+	// ModifiedFrom Retrieve transactions modified after the specified timestamp (ISO 8601 format).
+	ModifiedFrom *time.Time `form:"modifiedFrom,omitempty" json:"modifiedFrom,omitempty"`
+
+	// ModifiedAfter Deprecated - use `modifiedFrom` instead.
 	ModifiedAfter *time.Time `form:"modifiedAfter,omitempty" json:"modifiedAfter,omitempty"`
 
 	// TransactionNumber The unique number representing the transaction.
@@ -2868,6 +2927,9 @@ type ClientInterface interface {
 	// GetDimensionsDimensionTypeElementsValue request
 	GetDimensionsDimensionTypeElementsValue(ctx context.Context, dimensionType int, value string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetDocumentsDocumentId request
+	GetDocumentsDocumentId(ctx context.Context, documentId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetFiscalperiods request
 	GetFiscalperiods(ctx context.Context, params *GetFiscalperiodsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2944,6 +3006,9 @@ type ClientInterface interface {
 
 	PostSalesorders(ctx context.Context, body PostSalesordersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteSalesordersId request
+	DeleteSalesordersId(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetSalesordersId request
 	GetSalesordersId(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -2965,6 +3030,9 @@ type ClientInterface interface {
 	PostSalesordersIdLinesWithBody(ctx context.Context, id int32, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	PostSalesordersIdLines(ctx context.Context, id int32, body PostSalesordersIdLinesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSalesordersIdLinesLineId request
+	DeleteSalesordersIdLinesLineId(ctx context.Context, id int32, lineId int32, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetSalesordersIdLinesLineId request
 	GetSalesordersIdLinesLineId(ctx context.Context, id int32, lineId int32, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3308,6 +3376,18 @@ func (c *WriteClient) GetDimensionsDimensionTypeElementsValue(ctx context.Contex
 	return c.Client.Do(req)
 }
 
+func (c *WriteClient) GetDocumentsDocumentId(ctx context.Context, documentId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetDocumentsDocumentIdRequest(c.Server, documentId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *WriteClient) GetFiscalperiods(ctx context.Context, params *GetFiscalperiodsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetFiscalperiodsRequest(c.Server, params)
 	if err != nil {
@@ -3632,6 +3712,18 @@ func (c *WriteClient) PostSalesorders(ctx context.Context, body PostSalesordersJ
 	return c.Client.Do(req)
 }
 
+func (c *WriteClient) DeleteSalesordersId(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSalesordersIdRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *WriteClient) GetSalesordersId(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetSalesordersIdRequest(c.Server, id)
 	if err != nil {
@@ -3718,6 +3810,18 @@ func (c *WriteClient) PostSalesordersIdLinesWithBody(ctx context.Context, id int
 
 func (c *WriteClient) PostSalesordersIdLines(ctx context.Context, id int32, body PostSalesordersIdLinesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPostSalesordersIdLinesRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) DeleteSalesordersIdLinesLineId(ctx context.Context, id int32, lineId int32, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSalesordersIdLinesLineIdRequest(c.Server, id, lineId)
 	if err != nil {
 		return nil, err
 	}
@@ -5036,6 +5140,40 @@ func NewGetDimensionsDimensionTypeElementsValueRequest(server string, dimensionT
 	return req, nil
 }
 
+// NewGetDocumentsDocumentIdRequest generates requests for GetDocumentsDocumentId
+func NewGetDocumentsDocumentIdRequest(server string, documentId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "documentId", runtime.ParamLocationPath, documentId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/documents/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetFiscalperiodsRequest generates requests for GetFiscalperiods
 func NewGetFiscalperiodsRequest(server string, params *GetFiscalperiodsParams) (*http.Request, error) {
 	var err error
@@ -6222,6 +6360,40 @@ func NewPostSalesordersRequestWithBody(server string, contentType string, body i
 	return req, nil
 }
 
+// NewDeleteSalesordersIdRequest generates requests for DeleteSalesordersId
+func NewDeleteSalesordersIdRequest(server string, id int32) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/salesorders/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetSalesordersIdRequest generates requests for GetSalesordersId
 func NewGetSalesordersIdRequest(server string, id int32) (*http.Request, error) {
 	var err error
@@ -6474,6 +6646,47 @@ func NewPostSalesordersIdLinesRequestWithBody(server string, id int32, contentTy
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteSalesordersIdLinesLineIdRequest generates requests for DeleteSalesordersIdLinesLineId
+func NewDeleteSalesordersIdLinesLineIdRequest(server string, id int32, lineId int32) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "lineId", runtime.ParamLocationPath, lineId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/salesorders/%s/lines/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -6741,9 +6954,41 @@ func NewGetTransactionlinesRequest(server string, params *GetTransactionlinesPar
 			}
 		}
 
+		if params.CreatedFrom != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdFrom", runtime.ParamLocationQuery, *params.CreatedFrom); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.CreatedAfter != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "createdAfter", runtime.ParamLocationQuery, *params.CreatedAfter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ModifiedFrom != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "modifiedFrom", runtime.ParamLocationQuery, *params.ModifiedFrom); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -7121,6 +7366,9 @@ type ClientWithResponsesInterface interface {
 	// GetDimensionsDimensionTypeElementsValueWithResponse request
 	GetDimensionsDimensionTypeElementsValueWithResponse(ctx context.Context, dimensionType int, value string, reqEditors ...RequestEditorFn) (*GetDimensionsDimensionTypeElementsValueResponse, error)
 
+	// GetDocumentsDocumentIdWithResponse request
+	GetDocumentsDocumentIdWithResponse(ctx context.Context, documentId int, reqEditors ...RequestEditorFn) (*GetDocumentsDocumentIdResponse, error)
+
 	// GetFiscalperiodsWithResponse request
 	GetFiscalperiodsWithResponse(ctx context.Context, params *GetFiscalperiodsParams, reqEditors ...RequestEditorFn) (*GetFiscalperiodsResponse, error)
 
@@ -7197,6 +7445,9 @@ type ClientWithResponsesInterface interface {
 
 	PostSalesordersWithResponse(ctx context.Context, body PostSalesordersJSONRequestBody, reqEditors ...RequestEditorFn) (*PostSalesordersResponse, error)
 
+	// DeleteSalesordersIdWithResponse request
+	DeleteSalesordersIdWithResponse(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*DeleteSalesordersIdResponse, error)
+
 	// GetSalesordersIdWithResponse request
 	GetSalesordersIdWithResponse(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*GetSalesordersIdResponse, error)
 
@@ -7218,6 +7469,9 @@ type ClientWithResponsesInterface interface {
 	PostSalesordersIdLinesWithBodyWithResponse(ctx context.Context, id int32, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostSalesordersIdLinesResponse, error)
 
 	PostSalesordersIdLinesWithResponse(ctx context.Context, id int32, body PostSalesordersIdLinesJSONRequestBody, reqEditors ...RequestEditorFn) (*PostSalesordersIdLinesResponse, error)
+
+	// DeleteSalesordersIdLinesLineIdWithResponse request
+	DeleteSalesordersIdLinesLineIdWithResponse(ctx context.Context, id int32, lineId int32, reqEditors ...RequestEditorFn) (*DeleteSalesordersIdLinesLineIdResponse, error)
 
 	// GetSalesordersIdLinesLineIdWithResponse request
 	GetSalesordersIdLinesLineIdWithResponse(ctx context.Context, id int32, lineId int32, reqEditors ...RequestEditorFn) (*GetSalesordersIdLinesLineIdResponse, error)
@@ -7710,6 +7964,28 @@ func (r GetDimensionsDimensionTypeElementsValueResponse) StatusCode() int {
 	return 0
 }
 
+type GetDocumentsDocumentIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DocumentInfo
+}
+
+// Status returns HTTPResponse.Status
+func (r GetDocumentsDocumentIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetDocumentsDocumentIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetFiscalperiodsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8195,6 +8471,27 @@ func (r PostSalesordersResponse) StatusCode() int {
 	return 0
 }
 
+type DeleteSalesordersIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSalesordersIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSalesordersIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetSalesordersIdResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -8327,6 +8624,27 @@ func (r PostSalesordersIdLinesResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r PostSalesordersIdLinesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteSalesordersIdLinesLineIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSalesordersIdLinesLineIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSalesordersIdLinesLineIdResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8763,6 +9081,15 @@ func (c *ClientWithResponses) GetDimensionsDimensionTypeElementsValueWithRespons
 	return ParseGetDimensionsDimensionTypeElementsValueResponse(rsp)
 }
 
+// GetDocumentsDocumentIdWithResponse request returning *GetDocumentsDocumentIdResponse
+func (c *ClientWithResponses) GetDocumentsDocumentIdWithResponse(ctx context.Context, documentId int, reqEditors ...RequestEditorFn) (*GetDocumentsDocumentIdResponse, error) {
+	rsp, err := c.GetDocumentsDocumentId(ctx, documentId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetDocumentsDocumentIdResponse(rsp)
+}
+
 // GetFiscalperiodsWithResponse request returning *GetFiscalperiodsResponse
 func (c *ClientWithResponses) GetFiscalperiodsWithResponse(ctx context.Context, params *GetFiscalperiodsParams, reqEditors ...RequestEditorFn) (*GetFiscalperiodsResponse, error) {
 	rsp, err := c.GetFiscalperiods(ctx, params, reqEditors...)
@@ -9001,6 +9328,15 @@ func (c *ClientWithResponses) PostSalesordersWithResponse(ctx context.Context, b
 	return ParsePostSalesordersResponse(rsp)
 }
 
+// DeleteSalesordersIdWithResponse request returning *DeleteSalesordersIdResponse
+func (c *ClientWithResponses) DeleteSalesordersIdWithResponse(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*DeleteSalesordersIdResponse, error) {
+	rsp, err := c.DeleteSalesordersId(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSalesordersIdResponse(rsp)
+}
+
 // GetSalesordersIdWithResponse request returning *GetSalesordersIdResponse
 func (c *ClientWithResponses) GetSalesordersIdWithResponse(ctx context.Context, id int32, reqEditors ...RequestEditorFn) (*GetSalesordersIdResponse, error) {
 	rsp, err := c.GetSalesordersId(ctx, id, reqEditors...)
@@ -9069,6 +9405,15 @@ func (c *ClientWithResponses) PostSalesordersIdLinesWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParsePostSalesordersIdLinesResponse(rsp)
+}
+
+// DeleteSalesordersIdLinesLineIdWithResponse request returning *DeleteSalesordersIdLinesLineIdResponse
+func (c *ClientWithResponses) DeleteSalesordersIdLinesLineIdWithResponse(ctx context.Context, id int32, lineId int32, reqEditors ...RequestEditorFn) (*DeleteSalesordersIdLinesLineIdResponse, error) {
+	rsp, err := c.DeleteSalesordersIdLinesLineId(ctx, id, lineId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSalesordersIdLinesLineIdResponse(rsp)
 }
 
 // GetSalesordersIdLinesLineIdWithResponse request returning *GetSalesordersIdLinesLineIdResponse
@@ -9702,6 +10047,32 @@ func ParseGetDimensionsDimensionTypeElementsValueResponse(rsp *http.Response) (*
 	return response, nil
 }
 
+// ParseGetDocumentsDocumentIdResponse parses an HTTP response from a GetDocumentsDocumentIdWithResponse call
+func ParseGetDocumentsDocumentIdResponse(rsp *http.Response) (*GetDocumentsDocumentIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetDocumentsDocumentIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DocumentInfo
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetFiscalperiodsResponse parses an HTTP response from a GetFiscalperiodsWithResponse call
 func ParseGetFiscalperiodsResponse(rsp *http.Response) (*GetFiscalperiodsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10269,6 +10640,22 @@ func ParsePostSalesordersResponse(rsp *http.Response) (*PostSalesordersResponse,
 	return response, nil
 }
 
+// ParseDeleteSalesordersIdResponse parses an HTTP response from a DeleteSalesordersIdWithResponse call
+func ParseDeleteSalesordersIdResponse(rsp *http.Response) (*DeleteSalesordersIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSalesordersIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
 // ParseGetSalesordersIdResponse parses an HTTP response from a GetSalesordersIdWithResponse call
 func ParseGetSalesordersIdResponse(rsp *http.Response) (*GetSalesordersIdResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10438,6 +10825,22 @@ func ParsePostSalesordersIdLinesResponse(rsp *http.Response) (*PostSalesordersId
 		}
 		response.JSON400 = &dest
 
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSalesordersIdLinesLineIdResponse parses an HTTP response from a DeleteSalesordersIdLinesLineIdWithResponse call
+func ParseDeleteSalesordersIdLinesLineIdResponse(rsp *http.Response) (*DeleteSalesordersIdLinesLineIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSalesordersIdLinesLineIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
 	}
 
 	return response, nil

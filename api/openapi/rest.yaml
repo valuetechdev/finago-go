@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Finago Office Public API
-  version: 0.40.7
+  version: 0.47.1
 servers:
   - url: https://rest.api.24sevenoffice.com/v1
 paths:
@@ -300,6 +300,44 @@ paths:
           required: true
           schema:
             type: string
+  /documents/{documentId}:
+    get:
+      summary: Get a document by its DocumentID
+      tags:
+        - Documents
+      security:
+        - tfso:
+            - api.accounting.transaction:read
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          description: The ID of the document to retrieve.
+          schema:
+            type: integer
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentInfo'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
   /fiscalperiods:
     get:
       summary: Read fiscal periods
@@ -450,19 +488,35 @@ paths:
             type: string
             format: date
           description: The ending date (exclusive) until which transactions will be retrieved. If set to 2024-01-01, the latest result will be retrieved before 23:59 on 2023-12-31.
-        - name: createdAfter
+        - name: createdFrom
           in: query
           schema:
             type: string
             format: date-time
           description: Retrieve transactions created after the specified timestamp (ISO 8601 format).
           example: {}
-        - name: modifiedAfter
+        - name: createdAfter
+          deprecated: true
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Deprecated - use `createdFrom` instead.
+          example: {}
+        - name: modifiedFrom
           in: query
           schema:
             type: string
             format: date-time
           description: Retrieve transactions modified after the specified timestamp (ISO 8601 format).
+          example: {}
+        - name: modifiedAfter
+          deprecated: true
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Deprecated - use `modifiedFrom` instead.
           example: {}
         - name: transactionNumber
           in: query
@@ -1721,6 +1775,56 @@ paths:
           required: true
           schema:
             type: string
+    delete:
+      summary: Delete a sales order
+      description: Delete a specific sales order identified by its unique sales order ID.
+      responses:
+        '204':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '404':
+          description: Sales order not found
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '409':
+          description: Conflict - The sales order cannot be deleted, likely because it has already been invoiced or is in a status that does not allow deletion.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.invoicing.salesorder:delete
+      parameters:
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
   /salesorders/{id}/attachments:
     parameters:
       - name: id
@@ -2018,6 +2122,56 @@ paths:
       security:
         - tfso:
             - api.invoicing.salesorder.line:write
+      parameters:
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+    delete:
+      summary: Delete a sales order line
+      description: Delete a specific line from a sales order identified by its unique sales order ID and line ID.
+      responses:
+        '204':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '404':
+          description: Sales order or sales order line not found
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '409':
+          description: Conflict - The sales order line cannot be deleted, likely because it has already been invoiced or is in a status that does not allow deletion.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.invoicing.salesorder.line:delete
       parameters:
         - in: header
           name: Authorization
@@ -3137,6 +3291,26 @@ components:
           type: number
           description: The exchange rate of the currency.
           example: 1.25
+    DocumentInfo:
+      type: object
+      required:
+        - documentId
+        - contentType
+        - downloadUrl
+      properties:
+        documentId:
+          type: integer
+          description: Identifier for the document
+          example: 12345
+        contentType:
+          type: string
+          description: MIME type of the document. Currently only 'application/pdf' is returned.
+          example: application/pdf
+        downloadUrl:
+          type: string
+          format: uri
+          description: URL to download the document, typically a presigned URL with limited validity
+          example: https://attachment.api.24sevenoffice.com/download/abc123?signature=xyz
     AccountingPeriod:
       type: object
       description: Details of a financial year/accounting period within the Finago Office accounting module.
@@ -3347,6 +3521,11 @@ components:
           description: A brief description of the transaction.
           maxLength: 75
           example: Payment for services
+        periodDate:
+          type: string
+          description: The accounting period date for the transaction line.
+          format: date
+          example: '2022-07-31'
         documentId:
           type: integer
           description: The ID of the Document attached to the transaction, if any.
@@ -3768,6 +3947,12 @@ components:
     CustomerSharedProperties:
       type: object
       properties:
+        externalReference:
+          type: string
+          nullable: true
+          maxLength: 100
+          description: An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
+          example: EXT-12345
         isSupplier:
           type: boolean
           nullable: false
@@ -3886,6 +4071,12 @@ components:
           description: A human-readable name or label for a customer, making it easily identifiable to users.
           example: ABC Corporation
           nullable: true
+        externalReference:
+          type: string
+          nullable: true
+          maxLength: 100
+          description: An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
+          example: EXT-12345
         person:
           type: object
           properties:
@@ -4141,9 +4332,15 @@ components:
             - Confirmed
             - Invoice
             - AdvanceInvoice
+            - Inactive
           example: Invoice
         deliveryCustomer:
           $ref: '#/components/schemas/DeliveryCustomer'
+        deliveryDate:
+          type: string
+          format: date
+          description: The set delivery date for the sales order.
+          example: '2023-06-10'
         invoice:
           $ref: '#/components/schemas/Invoice1'
         accrual:
@@ -4559,6 +4756,11 @@ components:
               maxLength: 75
               description: The human-readable name that describes the purpose or nature of the account.
               example: Accounts Receivable
+        isHidden:
+          deprecated: true
+          type: boolean
+          description: An optional flag for the old invoicing module, indicating whether the line item is hidden on the generated PDF-invoice. NB! Ignored in new module. NB! Do not use for PEPOL/EHF-distributed invoices.
+          default: false
         dimensions:
           $ref: '#/components/schemas/Dimensions'
         accrual:
