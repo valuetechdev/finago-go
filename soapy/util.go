@@ -9,8 +9,8 @@ import (
 // Helper function to ensure valid time for SOAP, considering DST transitions
 // for Finago Office's SOAP API.
 func EnsureValidTimeForSOAP(t time.Time) soap.XSDDateTime {
-	// Ensure the time is in a specific timezone (e.g., the server's timezone or your local timezone)
-	loc, _ := time.LoadLocation("UTC")
+	// Finago Office runs on Europe/Helsinki - DST gaps must be checked in that timezone
+	loc, _ := time.LoadLocation("Europe/Oslo")
 
 	// Convert the time to the target timezone
 	timeInTargetTZ := t.In(loc)
