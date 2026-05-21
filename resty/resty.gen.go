@@ -43,8 +43,8 @@ const (
 
 // Defines values for BankAccountTypeEnum.
 const (
-	Bban BankAccountTypeEnum = "bban"
-	Iban BankAccountTypeEnum = "iban"
+	BankAccountTypeEnumBban BankAccountTypeEnum = "bban"
+	BankAccountTypeEnumIban BankAccountTypeEnum = "iban"
 )
 
 // Defines values for BankTransactionResponseStatus.
@@ -75,6 +75,14 @@ const (
 // Defines values for CompanyCustomerPostRequestIsCompany.
 const (
 	True CompanyCustomerPostRequestIsCompany = true
+)
+
+// Defines values for CustomerBankAccountType.
+const (
+	CustomerBankAccountTypeBankgiro CustomerBankAccountType = "bankgiro"
+	CustomerBankAccountTypeBban     CustomerBankAccountType = "bban"
+	CustomerBankAccountTypeIban     CustomerBankAccountType = "iban"
+	CustomerBankAccountTypePlusgiro CustomerBankAccountType = "plusgiro"
 )
 
 // Defines values for DistributionMethod.
@@ -712,6 +720,9 @@ type CompanyCustomerPostRequest struct {
 	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
 	IsSupplier *bool `json:"isSupplier,omitempty"`
 
+	// MobilePhone A mobile phone number for contacting the customer.
+	MobilePhone *string `json:"mobilePhone,omitempty"`
+
 	// Name A human-readable name or label for a customer, making it easily identifiable to users.
 	Name string `json:"name"`
 
@@ -782,6 +793,36 @@ type Customer struct {
 	Street *MultilineString `json:"street,omitempty"`
 }
 
+// CustomerBankAccount defines model for CustomerBankAccount.
+type CustomerBankAccount struct {
+	// Address Bank address
+	Address *string `json:"address,omitempty"`
+
+	// Bic Bank Identifier Code (SWIFT code)
+	Bic *string `json:"bic,omitempty"`
+
+	// Bsc Bank Sort Code
+	Bsc *string `json:"bsc,omitempty"`
+
+	// CountryCode ISO country code
+	CountryCode *string `json:"countryCode,omitempty"`
+
+	// IsDefault Whether this is the default bank account
+	IsDefault bool `json:"isDefault"`
+
+	// Name Optional name for the bank account
+	Name *string `json:"name,omitempty"`
+
+	// Number Bank account number (uppercase letters, numbers, or dash only)
+	Number string `json:"number"`
+
+	// Type Type of bank account
+	Type CustomerBankAccountType `json:"type"`
+}
+
+// CustomerBankAccountType Type of bank account
+type CustomerBankAccountType string
+
 // CustomerPatchRequest defines model for CustomerPatchRequest.
 type CustomerPatchRequest struct {
 	// Address Addresses for the customer.
@@ -795,6 +836,9 @@ type CustomerPatchRequest struct {
 
 	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
 	IsSupplier *bool `json:"isSupplier,omitempty"`
+
+	// MobilePhone A mobile phone number for contacting the customer.
+	MobilePhone *string `json:"mobilePhone,omitempty"`
 
 	// Name A human-readable name or label for a customer, making it easily identifiable to users.
 	Name *string `json:"name"`
@@ -837,6 +881,9 @@ type CustomerProperties struct {
 	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
 	IsSupplier *bool `json:"isSupplier,omitempty"`
 
+	// MobilePhone A mobile phone number for contacting the customer.
+	MobilePhone *string `json:"mobilePhone,omitempty"`
+
 	// ModifiedAt A timestamp for when one of the properties of a record was last modified, in ISO 8601 format.
 	ModifiedAt *ModifiedAt `json:"modifiedAt,omitempty"`
 
@@ -851,6 +898,9 @@ type CustomerProperties struct {
 
 	// Phone A phone number for contacting the customer.
 	Phone *string `json:"phone,omitempty"`
+
+	// PricelistId The ID of the pricelist associated with this customer for pricing.
+	PricelistId *int `json:"pricelistId,omitempty"`
 }
 
 // CustomerResponse defines model for CustomerResponse.
@@ -869,6 +919,9 @@ type CustomerSharedProperties struct {
 
 	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
 	IsSupplier *bool `json:"isSupplier,omitempty"`
+
+	// MobilePhone A mobile phone number for contacting the customer.
+	MobilePhone *string `json:"mobilePhone,omitempty"`
 
 	// Phone A phone number for contacting the customer.
 	Phone *string `json:"phone,omitempty"`
@@ -991,6 +1044,21 @@ type DocumentInfo struct {
 
 	// DownloadUrl URL to download the document, typically a presigned URL with limited validity
 	DownloadUrl string `json:"downloadUrl"`
+
+	// Pages List of pages in the document, if available. This may be used to display document content in client applications.
+	Pages *[]DocumentPageInfo `json:"pages,omitempty"`
+}
+
+// DocumentPageInfo defines model for DocumentPageInfo.
+type DocumentPageInfo struct {
+	// PreviewUrl URL to a preview image of the page suitable for display in the main document viewer, typically a presigned URL with limited validity
+	PreviewUrl string `json:"previewUrl"`
+
+	// SequenceNumber Page number within the document
+	SequenceNumber int `json:"sequenceNumber"`
+
+	// ThumbnailUrl URL to a thumbnail image of the page suitable for quick display in lists or previews, typically a presigned URL with limited validity
+	ThumbnailUrl string `json:"thumbnailUrl"`
 }
 
 // EmailsDto Email addresses for the customer.
@@ -1000,6 +1068,36 @@ type EmailsDto struct {
 
 	// Contact The email address for contacting the customer.
 	Contact *string `json:"contact,omitempty"`
+}
+
+// FileUploadRequest defines model for FileUploadRequest.
+type FileUploadRequest struct {
+	// ContentType content type (MIME type) of the file being uploaded
+	ContentType string `json:"contentType"`
+}
+
+// FileUploadResponse defines model for FileUploadResponse.
+type FileUploadResponse struct {
+	// FileId Identifier for the file to be uploaded in the system
+	FileId string `json:"fileId"`
+
+	// UploadMethod HTTP method to use for uploading the file
+	UploadMethod string `json:"uploadMethod"`
+
+	// UploadUrl Presigned URL to which the file should be uploaded, using {uploadMethod} as HTTP method
+	UploadUrl string `json:"uploadUrl"`
+}
+
+// FileUploadStatusResponse defines model for FileUploadStatusResponse.
+type FileUploadStatusResponse struct {
+	// DocumentId Identifier of the document associated with the uploaded file, if completed
+	DocumentId *int `json:"documentId,omitempty"`
+
+	// FileId Identifier for the file upload
+	FileId string `json:"fileId"`
+
+	// Status Current status of the file upload (e.g., Pending, Completed, Failed)
+	Status string `json:"status"`
 }
 
 // FirstnameLastnameDto Email addresses for the customer.
@@ -1117,6 +1215,9 @@ type Line struct {
 	// Accrual Accrual information, empty object is ussed to reset accrual data
 	Accrual *Accrual `json:"accrual,omitempty"`
 
+	// CostPrice The cost of buying a single unit of the product from the supplier.
+	CostPrice *float32 `json:"costPrice,omitempty"`
+
 	// Description A description for the line item.
 	Description *string `json:"description,omitempty"`
 
@@ -1159,6 +1260,9 @@ type LineWithoutId struct {
 
 	// Accrual Accrual information, empty object is ussed to reset accrual data
 	Accrual *Accrual `json:"accrual,omitempty"`
+
+	// CostPrice The cost of buying a single unit of the product from the supplier.
+	CostPrice *float32 `json:"costPrice,omitempty"`
 
 	// Description A description for the line item.
 	Description *string `json:"description,omitempty"`
@@ -1289,6 +1393,20 @@ type PaymenReferenceDto struct {
 // PaymenReferenceTypeEnum defines model for PaymenReferenceTypeEnum.
 type PaymenReferenceTypeEnum string
 
+// PaymentMethod defines model for PaymentMethod.
+type PaymentMethod struct {
+	Account *struct {
+		// Id Unique identifier for the account associated with the payment method
+		Id *int `json:"id,omitempty"`
+	} `json:"account,omitempty"`
+
+	// Id Unique identifier for the payment method
+	Id int `json:"id"`
+
+	// Name Display name of the payment method
+	Name string `json:"name"`
+}
+
 // PaymentTerms Payment terms for an invoice, specified in one of three three different ways:  (NB: FixedDateTerms is only supported if client has activated the new invoicing module)
 type PaymentTerms struct {
 	union json.RawMessage
@@ -1317,6 +1435,9 @@ type PersonCustomerPostRequest struct {
 	// IsSupplier A flag variable indicating whether the customer is also a supplier (true) or not (false).
 	IsSupplier *bool `json:"isSupplier,omitempty"`
 
+	// MobilePhone A mobile phone number for contacting the customer.
+	MobilePhone *string `json:"mobilePhone,omitempty"`
+
 	// Person Email addresses for the customer.
 	Person FirstnameLastnameDto `json:"person"`
 
@@ -1329,6 +1450,33 @@ type PersonCustomerPostRequestIsCompany bool
 
 // PostalAddress defines model for PostalAddress.
 type PostalAddress = AddressBasic
+
+// Pricelist defines model for Pricelist.
+type Pricelist struct {
+	// CurrencyCode Currency code (e.g., LOCAL, USD, EUR)
+	CurrencyCode string `json:"currencyCode"`
+
+	// Description Optional description of the pricelist
+	Description *string `json:"description,omitempty"`
+
+	// Id Unique identifier of the pricelist
+	Id int `json:"id"`
+
+	// IsInclusiveTax Whether prices include tax
+	IsInclusiveTax bool `json:"isInclusiveTax"`
+
+	// Name Name of the pricelist
+	Name string `json:"name"`
+}
+
+// PricelistPrice defines model for PricelistPrice.
+type PricelistPrice struct {
+	// Price Price for the product in this pricelist
+	Price float32 `json:"price"`
+
+	// ProductId Product identifier
+	ProductId int `json:"productId"`
+}
 
 // Product Product details, if the line item type is 'product'. Note that the `product` object for the `/salesorders/{id}/lines` endpoint is not the same as the product that can be retrieved from the `/products` endpoint, even though both share the same ID reference and their schemas are similar. The `product` object in the context of `/salesorders/{id}/lines` contains the product details as they were at the time the sales order line item was created. In contrast, the `/products` endpoint always provides the latest state values for the product properties.
 type Product struct {
@@ -1380,6 +1528,30 @@ type ProductBase struct {
 	// WebshopEnabled A flag variable set to true if the product is enabled for webshop sales.
 	WebshopEnabled *bool `json:"webshopEnabled,omitempty"`
 }
+
+// ProductDimensionRead defines model for ProductDimensionRead.
+type ProductDimensionRead struct {
+	// DimensionType The unique identifier for the dimension within Finago Office ERP modules.
+	DimensionType int `json:"dimensionType"`
+
+	// DimensionTypeName The display name of the dimension.
+	DimensionTypeName string `json:"dimensionTypeName"`
+
+	// Name The display name associated with the value of the dimension.
+	Name string `json:"name"`
+
+	// Value The value (ie key) for the dimension.
+	Value string `json:"value"`
+}
+
+// ProductDimensionWrite defines model for ProductDimensionWrite.
+type ProductDimensionWrite struct {
+	// Value The value (ie key) for the dimension.
+	Value string `json:"value"`
+}
+
+// ProductDimensionsResponse A list of dimensions of a product as set in the system
+type ProductDimensionsResponse = []ProductDimensionRead
 
 // ProductRequestPatch defines model for ProductRequestPatch.
 type ProductRequestPatch struct {
@@ -1543,6 +1715,27 @@ type ProductResponse struct {
 	WebshopEnabled *bool `json:"webshopEnabled,omitempty"`
 }
 
+// ProductSalesTypeOverride An override of the default account number for a sales type on a specific product
+type ProductSalesTypeOverride struct {
+	// AccountNumber The account number that should be used instead of the default account number for the sales type
+	AccountNumber int `json:"accountNumber"`
+
+	// ProductId The id of the product for which the override applies (see GET /products/{id})
+	ProductId int `json:"productId"`
+
+	// SalesTypeId The id of the sales type for which the override applies (see GET /salestypes/{id})
+	SalesTypeId int `json:"salesTypeId"`
+}
+
+// ProductSalesTypeOverrideRequest Request body for creating or updating a product sales type override
+type ProductSalesTypeOverrideRequest struct {
+	// AccountNumber The account number that should be used instead of the default account number for the sales type (set to null to remove the override)
+	AccountNumber *int `json:"accountNumber,omitempty"`
+}
+
+// ProductSalesTypeOverridesResponse List of sales type overrides applied for a product (empty list if no overrides exist)
+type ProductSalesTypeOverridesResponse = []ProductSalesTypeOverride
+
 // ProductStatusEnum Specifies whether the product's status is active or inactive (expired).
 type ProductStatusEnum string
 
@@ -1621,6 +1814,12 @@ type SalesOrder struct {
 	// OurReference Details of the person at your organization who is the sales order's point of contact within your organization. It should be one of the people provided by `/organization/people` endpoint.
 	OurReference *OurReferenceContactPersonDto `json:"ourReference,omitempty"`
 
+	// PaymentMethod Reference to the payment method used for the sales order. See GET /paymentmethods. Send with id set to null to remove the payment method from the sales order.
+	PaymentMethod *struct {
+		// Id Identifier of the payment method. (Set to null to remove the payment method from the sales order).
+		Id *int `json:"id,omitempty"`
+	} `json:"paymentMethod,omitempty"`
+
 	// ReferenceNumber A reference number for the sales order, like a purchase order number provided by the customer.
 	ReferenceNumber *string `json:"referenceNumber,omitempty"`
 
@@ -1692,6 +1891,12 @@ type SalesOrderBasic struct {
 	// OurReference Details of the person at your organization who is the sales order's point of contact within your organization. It should be one of the people provided by `/organization/people` endpoint.
 	OurReference *OurReferenceContactPersonDto `json:"ourReference,omitempty"`
 
+	// PaymentMethod Reference to the payment method used for the sales order. See GET /paymentmethods. Send with id set to null to remove the payment method from the sales order.
+	PaymentMethod *struct {
+		// Id Identifier of the payment method. (Set to null to remove the payment method from the sales order).
+		Id *int `json:"id,omitempty"`
+	} `json:"paymentMethod,omitempty"`
+
 	// ReferenceNumber A reference number for the sales order, like a purchase order number provided by the customer.
 	ReferenceNumber *string `json:"referenceNumber,omitempty"`
 
@@ -1753,6 +1958,12 @@ type SalesOrderExtended struct {
 	// OurReference Details of the person at your organization who is the sales order's point of contact within your organization. It should be one of the people provided by `/organization/people` endpoint.
 	OurReference *OurReferenceContactPersonDto `json:"ourReference,omitempty"`
 
+	// PaymentMethod Reference to the payment method used for the sales order. See GET /paymentmethods. Send with id set to null to remove the payment method from the sales order.
+	PaymentMethod *struct {
+		// Id Identifier of the payment method. (Set to null to remove the payment method from the sales order).
+		Id *int `json:"id,omitempty"`
+	} `json:"paymentMethod,omitempty"`
+
 	// ReferenceNumber A reference number for the sales order, like a purchase order number provided by the customer.
 	ReferenceNumber *string `json:"referenceNumber,omitempty"`
 
@@ -1807,6 +2018,12 @@ type SalesOrderRequestPatch struct {
 
 	// OurReference Details of the person at your organization who is the sales order's point of contact within your organization. It should be one of the people provided by `/organization/people` endpoint.
 	OurReference *OurReferenceContactPersonDto `json:"ourReference,omitempty"`
+
+	// PaymentMethod Reference to the payment method used for the sales order. See GET /paymentmethods. Send with id set to null to remove the payment method from the sales order.
+	PaymentMethod *struct {
+		// Id Identifier of the payment method. (Set to null to remove the payment method from the sales order).
+		Id *int `json:"id,omitempty"`
+	} `json:"paymentMethod,omitempty"`
 
 	// ReferenceNumber A reference number for the sales order, like a purchase order number provided by the customer.
 	ReferenceNumber *string `json:"referenceNumber,omitempty"`
@@ -1890,6 +2107,12 @@ type SalesOrderRequestPost struct {
 
 	// OurReference Details of the person at your organization who is the sales order's point of contact within your organization. It should be one of the people provided by `/organization/people` endpoint.
 	OurReference *OurReferenceContactPersonDto `json:"ourReference,omitempty"`
+
+	// PaymentMethod Reference to the payment method used for the sales order. See GET /paymentmethods. Send with id set to null to remove the payment method from the sales order.
+	PaymentMethod *struct {
+		// Id Identifier of the payment method. (Set to null to remove the payment method from the sales order).
+		Id *int `json:"id,omitempty"`
+	} `json:"paymentMethod,omitempty"`
 
 	// ReferenceNumber A reference number for the sales order, like a purchase order number provided by the customer.
 	ReferenceNumber *string `json:"referenceNumber,omitempty"`
@@ -2082,6 +2305,102 @@ type Transaction struct {
 	TransactionTypeIdOnly *TransactionTypeIdOnly `json:"transactionType,omitempty"`
 }
 
+// TransactionCreatedResponse defines model for TransactionCreatedResponse.
+type TransactionCreatedResponse struct {
+	// TransactionId Unique identifier assigned to the posted transaction
+	TransactionId string `json:"transactionId"`
+}
+
+// TransactionInput defines model for TransactionInput.
+type TransactionInput struct {
+	// Comment General comment of the transaction. Will be applied to all lines unless overridden at line level.
+	Comment *string `json:"comment,omitempty"`
+
+	// Date Date of the transaction in ISO 8601 format - NB there must be a financial period open for this date. This may be overridden by individual transaction lines.
+	Date openapi_types.Date `json:"date"`
+
+	// DocumentId Optional identifier (Document number) for a document/attachment associated with this transaction.
+	DocumentId *int `json:"documentId,omitempty"`
+
+	// Lines List of transaction lines. Each line must have an account number and an amount. All lines must balance to zero per date.
+	Lines []TransactionLine `json:"lines"`
+
+	// TransactionTypeNumber Type of transaction (as defined by the accounting system). Only types with number > 0 are allowed (negative numbers are reserved for system transaction types). TransactionType controls which number-series is used for the transaction.
+	TransactionTypeNumber int `json:"transactionTypeNumber"`
+}
+
+// TransactionLine defines model for TransactionLine.
+type TransactionLine struct {
+	// AccountNumber General ledger account number
+	AccountNumber int `json:"accountNumber"`
+
+	// Amount Total amount for this line (in stated currency, usually inclusive tax). Positive for debit, negative for credit. When tax-codes 81-89 are used, the amount is typically exclusive of tax (as the tax-amount is to be paid separately).
+	Amount float32 `json:"amount"`
+
+	// Comment Comment for this transaction line. If omitted, the comment from the parent transaction will be used.
+	Comment *string `json:"comment,omitempty"`
+
+	// Currency Optional currency information for the transaction line. If not set, the system default currency is used.
+	Currency *struct {
+		// Code ISO 4217 currency code (e.g. 'USD', 'EUR', 'SEK').
+		Code string `json:"code"`
+
+		// Rate Exchange rate to the system base currency.  (Example: System Currency is NOK, line is in USD, rate is 10.50 means 1 USD = 10.50 NOK).
+		Rate float32 `json:"rate"`
+	} `json:"currency,omitempty"`
+
+	// Date Date of the transaction line in ISO 8601 format if different from the parent transaction - NB there must be a financial period open for this date. If omitted, the date from the parent transaction will be used.
+	Date *openapi_types.Date `json:"date,omitempty"`
+
+	// Dimensions Optional dimensions for the entry. Each dimension must match a predefined key in the system.
+	Dimensions *[]struct {
+		// DimensionType The identifier for the dimension within 24SevenOffice ERP modules.
+		DimensionType int `json:"dimensionType"`
+
+		// Value Value of the dimension
+		Value string `json:"value"`
+	} `json:"dimensions,omitempty"`
+
+	// Invoice Details of the invoice associated with the transaction, if applicable.
+	Invoice *TransactionLineInvoiceProps `json:"invoice,omitempty"`
+
+	// PeriodDate Tax-Period date for the transaction line in ISO 8601 format, if different from date (usually not)
+	PeriodDate *openapi_types.Date `json:"periodDate,omitempty"`
+
+	// Tax Tax information for a transaction line. The tax code number must correspond to a valid tax code in the system (see `GET /taxes`). Use {"code":0} to indicate that no tax.
+	Tax TransactionTax `json:"tax"`
+}
+
+// TransactionLineInvoiceProps Details of the invoice associated with the transaction, if applicable.
+type TransactionLineInvoiceProps struct {
+	// BankAccount Bank account number for the invoice associated with the transaction line, if applicable.
+	BankAccount *string `json:"bankAccount,omitempty"`
+
+	// DueDate Due date for the invoice related to the transaction line in ISO 8601 format, if applicable.
+	DueDate *openapi_types.Date `json:"dueDate,omitempty"`
+
+	// Number Invoice number for the invoice associated with the transaction line, if applicable.
+	Number *string `json:"number,omitempty"`
+
+	// RemittanceReference The remittance reference (OCR number) for the invoice associated with the transaction line, if applicable.
+	RemittanceReference *string `json:"remittanceReference,omitempty"`
+}
+
+// TransactionTax Tax information for a transaction line. The tax code number must correspond to a valid tax code in the system (see `GET /taxes`). Use {"code":0} to indicate that no tax.
+type TransactionTax struct {
+	// Amount Tax amount for this line. Positive for debit, negative for credit. If not set, the amount will be inferred based on the tax type.
+	Amount *float32 `json:"amount,omitempty"`
+
+	// BaseRate Base rate for the tax calculation. Applicable for partial deduction ("forholdsmessig fradrag"), otherwise don't set.
+	BaseRate *int `json:"baseRate,omitempty"`
+
+	// Number Tax code number as defined in the accounting system (see `GET /taxes`).
+	Number int `json:"number"`
+
+	// SpecificationNumber Optional specification number for the tax type, if applicable.
+	SpecificationNumber *int `json:"specificationNumber,omitempty"`
+}
+
 // TransactionTypeIdOnly Details of a transaction type used within the Finago Office accounting module.
 type TransactionTypeIdOnly struct {
 	// Id A unique identifier for the transaction type within Finago Office accounting module.
@@ -2192,8 +2511,8 @@ type YourReferenceContactPersonDto struct {
 	Name *string `json:"name,omitempty"`
 }
 
-// Id defines model for id.
-type Id = int32
+// CustomerId defines model for customerId.
+type CustomerId = int32
 
 // GetAccountbalancesParams defines parameters for GetAccountbalances.
 type GetAccountbalancesParams struct {
@@ -2353,6 +2672,12 @@ type GetOrganizationPeopleIdParams struct {
 	PersonType *TfsoApiOrganizationModelsUserType `form:"personType,omitempty" json:"personType,omitempty"`
 }
 
+// GetPricelistPricesParams defines parameters for GetPricelistPrices.
+type GetPricelistPricesParams struct {
+	// ProductIds Comma-separated list of product IDs and/or ranges of product IDs (using .. as separator) to filter prices
+	ProductIds *string `form:"productIds,omitempty" json:"productIds,omitempty"`
+}
+
 // GetProductsParams defines parameters for GetProducts.
 type GetProductsParams struct {
 	// Page Specify the page number to fetch, defaults to 1.
@@ -2363,6 +2688,12 @@ type GetProductsParams struct {
 
 	// ProductSearch Perform a search in productNumber, name, and supplier's productNumber and name. Wildcards are allowed using '%'. '%' at the end returns 'starts with'. '%' at the beginning returns 'ends with'. '%' at both ends returns 'contains'.
 	ProductSearch *string `form:"productSearch,omitempty" json:"productSearch,omitempty"`
+
+	// CategoryIds Searches for products belonging to specific categories. Multiple category IDs can be provided, separated by commas.
+	CategoryIds *string `form:"categoryIds,omitempty" json:"categoryIds,omitempty"`
+
+	// SupplierIds Searches for products belonging to specific suppliers. Multiple supplier IDs can be provided, separated by commas.
+	SupplierIds *string `form:"supplierIds,omitempty" json:"supplierIds,omitempty"`
 
 	// ProductNumber Searches for product number.
 	ProductNumber *string `form:"productNumber,omitempty" json:"productNumber,omitempty"`
@@ -2484,6 +2815,15 @@ type CreateCustomerJSONRequestBody = CustomerPostRequest
 // UpdateCustomerJSONRequestBody defines body for UpdateCustomer for application/json ContentType.
 type UpdateCustomerJSONRequestBody = CustomerPatchRequest
 
+// CreateCustomerBankAccountJSONRequestBody defines body for CreateCustomerBankAccount for application/json ContentType.
+type CreateCustomerBankAccountJSONRequestBody = CustomerBankAccount
+
+// UpdateCustomerBankAccountJSONRequestBody defines body for UpdateCustomerBankAccount for application/json ContentType.
+type UpdateCustomerBankAccountJSONRequestBody = CustomerBankAccount
+
+// PostFileUploadJSONRequestBody defines body for PostFileUpload for application/json ContentType.
+type PostFileUploadJSONRequestBody = FileUploadRequest
+
 // CreateCategoryJSONRequestBody defines body for CreateCategory for application/json ContentType.
 type CreateCategoryJSONRequestBody = CategoryPostRequest
 
@@ -2495,6 +2835,12 @@ type CreateProductJSONRequestBody = ProductRequestPost
 
 // UpdateProductJSONRequestBody defines body for UpdateProduct for application/json ContentType.
 type UpdateProductJSONRequestBody = ProductRequestPatch
+
+// UpdateProductDimensionJSONRequestBody defines body for UpdateProductDimension for application/json ContentType.
+type UpdateProductDimensionJSONRequestBody = ProductDimensionWrite
+
+// PutProductSalesTypeOverrideJSONRequestBody defines body for PutProductSalesTypeOverride for application/json ContentType.
+type PutProductSalesTypeOverrideJSONRequestBody = ProductSalesTypeOverrideRequest
 
 // PostSalesordersJSONRequestBody defines body for PostSalesorders for application/json ContentType.
 type PostSalesordersJSONRequestBody = SalesOrderRequestPost
@@ -2510,6 +2856,9 @@ type PostSalesordersIdLinesJSONRequestBody = LineWithoutId
 
 // PatchSalesordersIdLinesLineIdJSONRequestBody defines body for PatchSalesordersIdLinesLineId for application/json ContentType.
 type PatchSalesordersIdLinesLineIdJSONRequestBody = Line
+
+// PostTransactionsJSONRequestBody defines body for PostTransactions for application/json ContentType.
+type PostTransactionsJSONRequestBody = TransactionInput
 
 // AsAccrual0 returns the union data inside the Accrual as a Accrual0
 func (t Accrual) AsAccrual0() (Accrual0, error) {
@@ -2904,16 +3253,32 @@ type ClientInterface interface {
 
 	CreateCustomer(ctx context.Context, body CreateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// DeleteCustomersId request
-	DeleteCustomersId(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// DeleteCustomersCustomerId request
+	DeleteCustomersCustomerId(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetCustomersId request
-	GetCustomersId(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetCustomersCustomerId request
+	GetCustomersCustomerId(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateCustomerWithBody request with any body
-	UpdateCustomerWithBody(ctx context.Context, id Id, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateCustomerWithBody(ctx context.Context, customerId CustomerId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateCustomer(ctx context.Context, id Id, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateCustomer(ctx context.Context, customerId CustomerId, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCustomerBankAccounts request
+	GetCustomerBankAccounts(ctx context.Context, customerId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateCustomerBankAccountWithBody request with any body
+	CreateCustomerBankAccountWithBody(ctx context.Context, customerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateCustomerBankAccount(ctx context.Context, customerId string, body CreateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCustomerBankAccount request
+	GetCustomerBankAccount(ctx context.Context, customerId string, accountNumber string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateCustomerBankAccountWithBody request with any body
+	UpdateCustomerBankAccountWithBody(ctx context.Context, customerId string, accountNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateCustomerBankAccount(ctx context.Context, customerId string, accountNumber string, body UpdateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetDimensions request
 	GetDimensions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2929,6 +3294,14 @@ type ClientInterface interface {
 
 	// GetDocumentsDocumentId request
 	GetDocumentsDocumentId(ctx context.Context, documentId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostFileUploadWithBody request with any body
+	PostFileUploadWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostFileUpload(ctx context.Context, body PostFileUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetFileUploadStatus request
+	GetFileUploadStatus(ctx context.Context, fileId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetFiscalperiods request
 	GetFiscalperiods(ctx context.Context, params *GetFiscalperiodsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2956,6 +3329,18 @@ type ClientInterface interface {
 
 	// GetOrganizationPeopleId request
 	GetOrganizationPeopleId(ctx context.Context, id int32, params *GetOrganizationPeopleIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPaymentMethods request
+	GetPaymentMethods(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPricelists request
+	GetPricelists(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPricelist request
+	GetPricelist(ctx context.Context, listId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPricelistPrices request
+	GetPricelistPrices(ctx context.Context, listId int, params *GetPricelistPricesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetCategories request
 	GetCategories(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -2994,6 +3379,28 @@ type ClientInterface interface {
 	UpdateProductWithBody(ctx context.Context, id int32, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateProduct(ctx context.Context, id int32, body UpdateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetProductDimensions request
+	GetProductDimensions(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteProductDimension request
+	DeleteProductDimension(ctx context.Context, id int, dimensionId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateProductDimensionWithBody request with any body
+	UpdateProductDimensionWithBody(ctx context.Context, id int, dimensionId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateProductDimension(ctx context.Context, id int, dimensionId int, body UpdateProductDimensionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetProductSalesTypeOverrides request
+	GetProductSalesTypeOverrides(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteProductSalesTypeOverride request
+	DeleteProductSalesTypeOverride(ctx context.Context, id int, salesTypeId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutProductSalesTypeOverrideWithBody request with any body
+	PutProductSalesTypeOverrideWithBody(ctx context.Context, id int, salesTypeId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PutProductSalesTypeOverride(ctx context.Context, id int, salesTypeId int, body PutProductSalesTypeOverrideJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetUnits request
 	GetUnits(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3059,6 +3466,11 @@ type ClientInterface interface {
 
 	// GetTransactionlinesId request
 	GetTransactionlinesId(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostTransactionsWithBody request with any body
+	PostTransactionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostTransactions(ctx context.Context, body PostTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetTransactiontypes request
 	GetTransactiontypes(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -3280,8 +3692,8 @@ func (c *WriteClient) CreateCustomer(ctx context.Context, body CreateCustomerJSO
 	return c.Client.Do(req)
 }
 
-func (c *WriteClient) DeleteCustomersId(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteCustomersIdRequest(c.Server, id)
+func (c *WriteClient) DeleteCustomersCustomerId(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteCustomersCustomerIdRequest(c.Server, customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -3292,8 +3704,8 @@ func (c *WriteClient) DeleteCustomersId(ctx context.Context, id Id, reqEditors .
 	return c.Client.Do(req)
 }
 
-func (c *WriteClient) GetCustomersId(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetCustomersIdRequest(c.Server, id)
+func (c *WriteClient) GetCustomersCustomerId(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCustomersCustomerIdRequest(c.Server, customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -3304,8 +3716,8 @@ func (c *WriteClient) GetCustomersId(ctx context.Context, id Id, reqEditors ...R
 	return c.Client.Do(req)
 }
 
-func (c *WriteClient) UpdateCustomerWithBody(ctx context.Context, id Id, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateCustomerRequestWithBody(c.Server, id, contentType, body)
+func (c *WriteClient) UpdateCustomerWithBody(ctx context.Context, customerId CustomerId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomerRequestWithBody(c.Server, customerId, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3316,8 +3728,80 @@ func (c *WriteClient) UpdateCustomerWithBody(ctx context.Context, id Id, content
 	return c.Client.Do(req)
 }
 
-func (c *WriteClient) UpdateCustomer(ctx context.Context, id Id, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateCustomerRequest(c.Server, id, body)
+func (c *WriteClient) UpdateCustomer(ctx context.Context, customerId CustomerId, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomerRequest(c.Server, customerId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetCustomerBankAccounts(ctx context.Context, customerId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCustomerBankAccountsRequest(c.Server, customerId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) CreateCustomerBankAccountWithBody(ctx context.Context, customerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCustomerBankAccountRequestWithBody(c.Server, customerId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) CreateCustomerBankAccount(ctx context.Context, customerId string, body CreateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateCustomerBankAccountRequest(c.Server, customerId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetCustomerBankAccount(ctx context.Context, customerId string, accountNumber string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCustomerBankAccountRequest(c.Server, customerId, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) UpdateCustomerBankAccountWithBody(ctx context.Context, customerId string, accountNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomerBankAccountRequestWithBody(c.Server, customerId, accountNumber, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) UpdateCustomerBankAccount(ctx context.Context, customerId string, accountNumber string, body UpdateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateCustomerBankAccountRequest(c.Server, customerId, accountNumber, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3378,6 +3862,42 @@ func (c *WriteClient) GetDimensionsDimensionTypeElementsValue(ctx context.Contex
 
 func (c *WriteClient) GetDocumentsDocumentId(ctx context.Context, documentId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetDocumentsDocumentIdRequest(c.Server, documentId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) PostFileUploadWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostFileUploadRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) PostFileUpload(ctx context.Context, body PostFileUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostFileUploadRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetFileUploadStatus(ctx context.Context, fileId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetFileUploadStatusRequest(c.Server, fileId)
 	if err != nil {
 		return nil, err
 	}
@@ -3486,6 +4006,54 @@ func (c *WriteClient) GetOrganizationPeople(ctx context.Context, params *GetOrga
 
 func (c *WriteClient) GetOrganizationPeopleId(ctx context.Context, id int32, params *GetOrganizationPeopleIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetOrganizationPeopleIdRequest(c.Server, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetPaymentMethods(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPaymentMethodsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetPricelists(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPricelistsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetPricelist(ctx context.Context, listId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPricelistRequest(c.Server, listId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetPricelistPrices(ctx context.Context, listId int, params *GetPricelistPricesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPricelistPricesRequest(c.Server, listId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -3654,6 +4222,102 @@ func (c *WriteClient) UpdateProductWithBody(ctx context.Context, id int32, conte
 
 func (c *WriteClient) UpdateProduct(ctx context.Context, id int32, body UpdateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateProductRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetProductDimensions(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetProductDimensionsRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) DeleteProductDimension(ctx context.Context, id int, dimensionId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteProductDimensionRequest(c.Server, id, dimensionId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) UpdateProductDimensionWithBody(ctx context.Context, id int, dimensionId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateProductDimensionRequestWithBody(c.Server, id, dimensionId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) UpdateProductDimension(ctx context.Context, id int, dimensionId int, body UpdateProductDimensionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateProductDimensionRequest(c.Server, id, dimensionId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) GetProductSalesTypeOverrides(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetProductSalesTypeOverridesRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) DeleteProductSalesTypeOverride(ctx context.Context, id int, salesTypeId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteProductSalesTypeOverrideRequest(c.Server, id, salesTypeId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) PutProductSalesTypeOverrideWithBody(ctx context.Context, id int, salesTypeId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutProductSalesTypeOverrideRequestWithBody(c.Server, id, salesTypeId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) PutProductSalesTypeOverride(ctx context.Context, id int, salesTypeId int, body PutProductSalesTypeOverrideJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutProductSalesTypeOverrideRequest(c.Server, id, salesTypeId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3930,6 +4594,30 @@ func (c *WriteClient) GetTransactionlines(ctx context.Context, params *GetTransa
 
 func (c *WriteClient) GetTransactionlinesId(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetTransactionlinesIdRequest(c.Server, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) PostTransactionsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostTransactionsRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *WriteClient) PostTransactions(ctx context.Context, body PostTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostTransactionsRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4851,13 +5539,13 @@ func NewCreateCustomerRequestWithBody(server string, contentType string, body io
 	return req, nil
 }
 
-// NewDeleteCustomersIdRequest generates requests for DeleteCustomersId
-func NewDeleteCustomersIdRequest(server string, id Id) (*http.Request, error) {
+// NewDeleteCustomersCustomerIdRequest generates requests for DeleteCustomersCustomerId
+func NewDeleteCustomersCustomerIdRequest(server string, customerId CustomerId) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "customerId", runtime.ParamLocationPath, customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -4885,13 +5573,13 @@ func NewDeleteCustomersIdRequest(server string, id Id) (*http.Request, error) {
 	return req, nil
 }
 
-// NewGetCustomersIdRequest generates requests for GetCustomersId
-func NewGetCustomersIdRequest(server string, id Id) (*http.Request, error) {
+// NewGetCustomersCustomerIdRequest generates requests for GetCustomersCustomerId
+func NewGetCustomersCustomerIdRequest(server string, customerId CustomerId) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "customerId", runtime.ParamLocationPath, customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -4920,23 +5608,23 @@ func NewGetCustomersIdRequest(server string, id Id) (*http.Request, error) {
 }
 
 // NewUpdateCustomerRequest calls the generic UpdateCustomer builder with application/json body
-func NewUpdateCustomerRequest(server string, id Id, body UpdateCustomerJSONRequestBody) (*http.Request, error) {
+func NewUpdateCustomerRequest(server string, customerId CustomerId, body UpdateCustomerJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateCustomerRequestWithBody(server, id, "application/json", bodyReader)
+	return NewUpdateCustomerRequestWithBody(server, customerId, "application/json", bodyReader)
 }
 
 // NewUpdateCustomerRequestWithBody generates requests for UpdateCustomer with any type of body
-func NewUpdateCustomerRequestWithBody(server string, id Id, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateCustomerRequestWithBody(server string, customerId CustomerId, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "customerId", runtime.ParamLocationPath, customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -4947,6 +5635,182 @@ func NewUpdateCustomerRequestWithBody(server string, id Id, contentType string, 
 	}
 
 	operationPath := fmt.Sprintf("/customers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetCustomerBankAccountsRequest generates requests for GetCustomerBankAccounts
+func NewGetCustomerBankAccountsRequest(server string, customerId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "customerId", runtime.ParamLocationPath, customerId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/customers/%s/bankaccounts", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateCustomerBankAccountRequest calls the generic CreateCustomerBankAccount builder with application/json body
+func NewCreateCustomerBankAccountRequest(server string, customerId string, body CreateCustomerBankAccountJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateCustomerBankAccountRequestWithBody(server, customerId, "application/json", bodyReader)
+}
+
+// NewCreateCustomerBankAccountRequestWithBody generates requests for CreateCustomerBankAccount with any type of body
+func NewCreateCustomerBankAccountRequestWithBody(server string, customerId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "customerId", runtime.ParamLocationPath, customerId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/customers/%s/bankaccounts", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetCustomerBankAccountRequest generates requests for GetCustomerBankAccount
+func NewGetCustomerBankAccountRequest(server string, customerId string, accountNumber string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "customerId", runtime.ParamLocationPath, customerId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "accountNumber", runtime.ParamLocationPath, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/customers/%s/bankaccounts/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateCustomerBankAccountRequest calls the generic UpdateCustomerBankAccount builder with application/json body
+func NewUpdateCustomerBankAccountRequest(server string, customerId string, accountNumber string, body UpdateCustomerBankAccountJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateCustomerBankAccountRequestWithBody(server, customerId, accountNumber, "application/json", bodyReader)
+}
+
+// NewUpdateCustomerBankAccountRequestWithBody generates requests for UpdateCustomerBankAccount with any type of body
+func NewUpdateCustomerBankAccountRequestWithBody(server string, customerId string, accountNumber string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "customerId", runtime.ParamLocationPath, customerId)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "accountNumber", runtime.ParamLocationPath, accountNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/customers/%s/bankaccounts/%s", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -5157,6 +6021,80 @@ func NewGetDocumentsDocumentIdRequest(server string, documentId int) (*http.Requ
 	}
 
 	operationPath := fmt.Sprintf("/documents/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostFileUploadRequest calls the generic PostFileUpload builder with application/json body
+func NewPostFileUploadRequest(server string, body PostFileUploadJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostFileUploadRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostFileUploadRequestWithBody generates requests for PostFileUpload with any type of body
+func NewPostFileUploadRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/fileUpload")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetFileUploadStatusRequest generates requests for GetFileUploadStatus
+func NewGetFileUploadStatusRequest(server string, fileId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "fileId", runtime.ParamLocationPath, fileId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/fileUpload/%s", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -5634,6 +6572,150 @@ func NewGetOrganizationPeopleIdRequest(server string, id int32, params *GetOrgan
 	return req, nil
 }
 
+// NewGetPaymentMethodsRequest generates requests for GetPaymentMethods
+func NewGetPaymentMethodsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/paymentmethods")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPricelistsRequest generates requests for GetPricelists
+func NewGetPricelistsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/pricelists")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPricelistRequest generates requests for GetPricelist
+func NewGetPricelistRequest(server string, listId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "listId", runtime.ParamLocationPath, listId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/pricelists/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPricelistPricesRequest generates requests for GetPricelistPrices
+func NewGetPricelistPricesRequest(server string, listId int, params *GetPricelistPricesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "listId", runtime.ParamLocationPath, listId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/pricelists/%s/prices", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.ProductIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "productIds", runtime.ParamLocationQuery, *params.ProductIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetCategoriesRequest generates requests for GetCategories
 func NewGetCategoriesRequest(server string) (*http.Request, error) {
 	var err error
@@ -5886,6 +6968,38 @@ func NewGetProductsRequest(server string, params *GetProductsParams) (*http.Requ
 
 		}
 
+		if params.CategoryIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "categoryIds", runtime.ParamLocationQuery, *params.CategoryIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.SupplierIds != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "supplierIds", runtime.ParamLocationQuery, *params.SupplierIds); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
 		if params.ProductNumber != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "productNumber", runtime.ParamLocationQuery, *params.ProductNumber); err != nil {
@@ -6059,6 +7173,264 @@ func NewUpdateProductRequestWithBody(server string, id int32, contentType string
 	}
 
 	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetProductDimensionsRequest generates requests for GetProductDimensions
+func NewGetProductDimensionsRequest(server string, id int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s/dimensions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteProductDimensionRequest generates requests for DeleteProductDimension
+func NewDeleteProductDimensionRequest(server string, id int, dimensionId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "dimensionId", runtime.ParamLocationPath, dimensionId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s/dimensions/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateProductDimensionRequest calls the generic UpdateProductDimension builder with application/json body
+func NewUpdateProductDimensionRequest(server string, id int, dimensionId int, body UpdateProductDimensionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateProductDimensionRequestWithBody(server, id, dimensionId, "application/json", bodyReader)
+}
+
+// NewUpdateProductDimensionRequestWithBody generates requests for UpdateProductDimension with any type of body
+func NewUpdateProductDimensionRequestWithBody(server string, id int, dimensionId int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "dimensionId", runtime.ParamLocationPath, dimensionId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s/dimensions/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetProductSalesTypeOverridesRequest generates requests for GetProductSalesTypeOverrides
+func NewGetProductSalesTypeOverridesRequest(server string, id int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s/salestypeOverrides", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteProductSalesTypeOverrideRequest generates requests for DeleteProductSalesTypeOverride
+func NewDeleteProductSalesTypeOverrideRequest(server string, id int, salesTypeId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "salesTypeId", runtime.ParamLocationPath, salesTypeId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s/salestypeOverrides/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutProductSalesTypeOverrideRequest calls the generic PutProductSalesTypeOverride builder with application/json body
+func NewPutProductSalesTypeOverrideRequest(server string, id int, salesTypeId int, body PutProductSalesTypeOverrideJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutProductSalesTypeOverrideRequestWithBody(server, id, salesTypeId, "application/json", bodyReader)
+}
+
+// NewPutProductSalesTypeOverrideRequestWithBody generates requests for PutProductSalesTypeOverride with any type of body
+func NewPutProductSalesTypeOverrideRequestWithBody(server string, id int, salesTypeId int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "salesTypeId", runtime.ParamLocationPath, salesTypeId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s/salestypeOverrides/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -7223,6 +8595,46 @@ func NewGetTransactionlinesIdRequest(server string, id string) (*http.Request, e
 	return req, nil
 }
 
+// NewPostTransactionsRequest calls the generic PostTransactions builder with application/json body
+func NewPostTransactionsRequest(server string, body PostTransactionsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostTransactionsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostTransactionsRequestWithBody generates requests for PostTransactions with any type of body
+func NewPostTransactionsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/transactions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetTransactiontypesRequest generates requests for GetTransactiontypes
 func NewGetTransactiontypesRequest(server string) (*http.Request, error) {
 	var err error
@@ -7343,16 +8755,32 @@ type ClientWithResponsesInterface interface {
 
 	CreateCustomerWithResponse(ctx context.Context, body CreateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCustomerResponse, error)
 
-	// DeleteCustomersIdWithResponse request
-	DeleteCustomersIdWithResponse(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*DeleteCustomersIdResponse, error)
+	// DeleteCustomersCustomerIdWithResponse request
+	DeleteCustomersCustomerIdWithResponse(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*DeleteCustomersCustomerIdResponse, error)
 
-	// GetCustomersIdWithResponse request
-	GetCustomersIdWithResponse(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*GetCustomersIdResponse, error)
+	// GetCustomersCustomerIdWithResponse request
+	GetCustomersCustomerIdWithResponse(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*GetCustomersCustomerIdResponse, error)
 
 	// UpdateCustomerWithBodyWithResponse request with any body
-	UpdateCustomerWithBodyWithResponse(ctx context.Context, id Id, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error)
+	UpdateCustomerWithBodyWithResponse(ctx context.Context, customerId CustomerId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error)
 
-	UpdateCustomerWithResponse(ctx context.Context, id Id, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error)
+	UpdateCustomerWithResponse(ctx context.Context, customerId CustomerId, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error)
+
+	// GetCustomerBankAccountsWithResponse request
+	GetCustomerBankAccountsWithResponse(ctx context.Context, customerId string, reqEditors ...RequestEditorFn) (*GetCustomerBankAccountsResponse, error)
+
+	// CreateCustomerBankAccountWithBodyWithResponse request with any body
+	CreateCustomerBankAccountWithBodyWithResponse(ctx context.Context, customerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCustomerBankAccountResponse, error)
+
+	CreateCustomerBankAccountWithResponse(ctx context.Context, customerId string, body CreateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCustomerBankAccountResponse, error)
+
+	// GetCustomerBankAccountWithResponse request
+	GetCustomerBankAccountWithResponse(ctx context.Context, customerId string, accountNumber string, reqEditors ...RequestEditorFn) (*GetCustomerBankAccountResponse, error)
+
+	// UpdateCustomerBankAccountWithBodyWithResponse request with any body
+	UpdateCustomerBankAccountWithBodyWithResponse(ctx context.Context, customerId string, accountNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomerBankAccountResponse, error)
+
+	UpdateCustomerBankAccountWithResponse(ctx context.Context, customerId string, accountNumber string, body UpdateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomerBankAccountResponse, error)
 
 	// GetDimensionsWithResponse request
 	GetDimensionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetDimensionsResponse, error)
@@ -7368,6 +8796,14 @@ type ClientWithResponsesInterface interface {
 
 	// GetDocumentsDocumentIdWithResponse request
 	GetDocumentsDocumentIdWithResponse(ctx context.Context, documentId int, reqEditors ...RequestEditorFn) (*GetDocumentsDocumentIdResponse, error)
+
+	// PostFileUploadWithBodyWithResponse request with any body
+	PostFileUploadWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostFileUploadResponse, error)
+
+	PostFileUploadWithResponse(ctx context.Context, body PostFileUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*PostFileUploadResponse, error)
+
+	// GetFileUploadStatusWithResponse request
+	GetFileUploadStatusWithResponse(ctx context.Context, fileId string, reqEditors ...RequestEditorFn) (*GetFileUploadStatusResponse, error)
 
 	// GetFiscalperiodsWithResponse request
 	GetFiscalperiodsWithResponse(ctx context.Context, params *GetFiscalperiodsParams, reqEditors ...RequestEditorFn) (*GetFiscalperiodsResponse, error)
@@ -7395,6 +8831,18 @@ type ClientWithResponsesInterface interface {
 
 	// GetOrganizationPeopleIdWithResponse request
 	GetOrganizationPeopleIdWithResponse(ctx context.Context, id int32, params *GetOrganizationPeopleIdParams, reqEditors ...RequestEditorFn) (*GetOrganizationPeopleIdResponse, error)
+
+	// GetPaymentMethodsWithResponse request
+	GetPaymentMethodsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPaymentMethodsResponse, error)
+
+	// GetPricelistsWithResponse request
+	GetPricelistsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPricelistsResponse, error)
+
+	// GetPricelistWithResponse request
+	GetPricelistWithResponse(ctx context.Context, listId int, reqEditors ...RequestEditorFn) (*GetPricelistResponse, error)
+
+	// GetPricelistPricesWithResponse request
+	GetPricelistPricesWithResponse(ctx context.Context, listId int, params *GetPricelistPricesParams, reqEditors ...RequestEditorFn) (*GetPricelistPricesResponse, error)
 
 	// GetCategoriesWithResponse request
 	GetCategoriesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetCategoriesResponse, error)
@@ -7433,6 +8881,28 @@ type ClientWithResponsesInterface interface {
 	UpdateProductWithBodyWithResponse(ctx context.Context, id int32, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error)
 
 	UpdateProductWithResponse(ctx context.Context, id int32, body UpdateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error)
+
+	// GetProductDimensionsWithResponse request
+	GetProductDimensionsWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*GetProductDimensionsResponse, error)
+
+	// DeleteProductDimensionWithResponse request
+	DeleteProductDimensionWithResponse(ctx context.Context, id int, dimensionId int, reqEditors ...RequestEditorFn) (*DeleteProductDimensionResponse, error)
+
+	// UpdateProductDimensionWithBodyWithResponse request with any body
+	UpdateProductDimensionWithBodyWithResponse(ctx context.Context, id int, dimensionId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProductDimensionResponse, error)
+
+	UpdateProductDimensionWithResponse(ctx context.Context, id int, dimensionId int, body UpdateProductDimensionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProductDimensionResponse, error)
+
+	// GetProductSalesTypeOverridesWithResponse request
+	GetProductSalesTypeOverridesWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*GetProductSalesTypeOverridesResponse, error)
+
+	// DeleteProductSalesTypeOverrideWithResponse request
+	DeleteProductSalesTypeOverrideWithResponse(ctx context.Context, id int, salesTypeId int, reqEditors ...RequestEditorFn) (*DeleteProductSalesTypeOverrideResponse, error)
+
+	// PutProductSalesTypeOverrideWithBodyWithResponse request with any body
+	PutProductSalesTypeOverrideWithBodyWithResponse(ctx context.Context, id int, salesTypeId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutProductSalesTypeOverrideResponse, error)
+
+	PutProductSalesTypeOverrideWithResponse(ctx context.Context, id int, salesTypeId int, body PutProductSalesTypeOverrideJSONRequestBody, reqEditors ...RequestEditorFn) (*PutProductSalesTypeOverrideResponse, error)
 
 	// GetUnitsWithResponse request
 	GetUnitsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetUnitsResponse, error)
@@ -7498,6 +8968,11 @@ type ClientWithResponsesInterface interface {
 
 	// GetTransactionlinesIdWithResponse request
 	GetTransactionlinesIdWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetTransactionlinesIdResponse, error)
+
+	// PostTransactionsWithBodyWithResponse request with any body
+	PostTransactionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostTransactionsResponse, error)
+
+	PostTransactionsWithResponse(ctx context.Context, body PostTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*PostTransactionsResponse, error)
 
 	// GetTransactiontypesWithResponse request
 	GetTransactiontypesWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetTransactiontypesResponse, error)
@@ -7811,13 +9286,13 @@ func (r CreateCustomerResponse) StatusCode() int {
 	return 0
 }
 
-type DeleteCustomersIdResponse struct {
+type DeleteCustomersCustomerIdResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 }
 
 // Status returns HTTPResponse.Status
-func (r DeleteCustomersIdResponse) Status() string {
+func (r DeleteCustomersCustomerIdResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -7825,21 +9300,21 @@ func (r DeleteCustomersIdResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r DeleteCustomersIdResponse) StatusCode() int {
+func (r DeleteCustomersCustomerIdResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetCustomersIdResponse struct {
+type GetCustomersCustomerIdResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *CustomerResponse
 }
 
 // Status returns HTTPResponse.Status
-func (r GetCustomersIdResponse) Status() string {
+func (r GetCustomersCustomerIdResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -7847,7 +9322,7 @@ func (r GetCustomersIdResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetCustomersIdResponse) StatusCode() int {
+func (r GetCustomersCustomerIdResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7870,6 +9345,94 @@ func (r UpdateCustomerResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateCustomerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetCustomerBankAccountsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]CustomerBankAccount
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCustomerBankAccountsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCustomerBankAccountsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateCustomerBankAccountResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *CustomerBankAccount
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateCustomerBankAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateCustomerBankAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetCustomerBankAccountResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CustomerBankAccount
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCustomerBankAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCustomerBankAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateCustomerBankAccountResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *CustomerBankAccount
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateCustomerBankAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateCustomerBankAccountResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -7980,6 +9543,50 @@ func (r GetDocumentsDocumentIdResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetDocumentsDocumentIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostFileUploadResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *FileUploadResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r PostFileUploadResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostFileUploadResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetFileUploadStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *FileUploadStatusResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetFileUploadStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetFileUploadStatusResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8178,6 +9785,94 @@ func (r GetOrganizationPeopleIdResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetOrganizationPeopleIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPaymentMethodsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]PaymentMethod
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPaymentMethodsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPaymentMethodsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPricelistsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]Pricelist
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPricelistsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPricelistsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPricelistResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Pricelist
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPricelistResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPricelistResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPricelistPricesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]PricelistPrice
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPricelistPricesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPricelistPricesResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8396,6 +10091,136 @@ func (r UpdateProductResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateProductResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetProductDimensionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProductDimensionsResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetProductDimensionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetProductDimensionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteProductDimensionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteProductDimensionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteProductDimensionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateProductDimensionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProductDimensionsResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateProductDimensionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateProductDimensionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetProductSalesTypeOverridesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProductSalesTypeOverridesResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetProductSalesTypeOverridesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetProductSalesTypeOverridesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteProductSalesTypeOverrideResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteProductSalesTypeOverrideResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteProductSalesTypeOverrideResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PutProductSalesTypeOverrideResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ProductSalesTypeOverride
+}
+
+// Status returns HTTPResponse.Status
+func (r PutProductSalesTypeOverrideResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutProductSalesTypeOverrideResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -8830,6 +10655,28 @@ func (r GetTransactionlinesIdResponse) StatusCode() int {
 	return 0
 }
 
+type PostTransactionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *TransactionCreatedResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r PostTransactionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostTransactionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetTransactiontypesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -9010,39 +10857,91 @@ func (c *ClientWithResponses) CreateCustomerWithResponse(ctx context.Context, bo
 	return ParseCreateCustomerResponse(rsp)
 }
 
-// DeleteCustomersIdWithResponse request returning *DeleteCustomersIdResponse
-func (c *ClientWithResponses) DeleteCustomersIdWithResponse(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*DeleteCustomersIdResponse, error) {
-	rsp, err := c.DeleteCustomersId(ctx, id, reqEditors...)
+// DeleteCustomersCustomerIdWithResponse request returning *DeleteCustomersCustomerIdResponse
+func (c *ClientWithResponses) DeleteCustomersCustomerIdWithResponse(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*DeleteCustomersCustomerIdResponse, error) {
+	rsp, err := c.DeleteCustomersCustomerId(ctx, customerId, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseDeleteCustomersIdResponse(rsp)
+	return ParseDeleteCustomersCustomerIdResponse(rsp)
 }
 
-// GetCustomersIdWithResponse request returning *GetCustomersIdResponse
-func (c *ClientWithResponses) GetCustomersIdWithResponse(ctx context.Context, id Id, reqEditors ...RequestEditorFn) (*GetCustomersIdResponse, error) {
-	rsp, err := c.GetCustomersId(ctx, id, reqEditors...)
+// GetCustomersCustomerIdWithResponse request returning *GetCustomersCustomerIdResponse
+func (c *ClientWithResponses) GetCustomersCustomerIdWithResponse(ctx context.Context, customerId CustomerId, reqEditors ...RequestEditorFn) (*GetCustomersCustomerIdResponse, error) {
+	rsp, err := c.GetCustomersCustomerId(ctx, customerId, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetCustomersIdResponse(rsp)
+	return ParseGetCustomersCustomerIdResponse(rsp)
 }
 
 // UpdateCustomerWithBodyWithResponse request with arbitrary body returning *UpdateCustomerResponse
-func (c *ClientWithResponses) UpdateCustomerWithBodyWithResponse(ctx context.Context, id Id, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error) {
-	rsp, err := c.UpdateCustomerWithBody(ctx, id, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateCustomerWithBodyWithResponse(ctx context.Context, customerId CustomerId, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error) {
+	rsp, err := c.UpdateCustomerWithBody(ctx, customerId, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateCustomerResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateCustomerWithResponse(ctx context.Context, id Id, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error) {
-	rsp, err := c.UpdateCustomer(ctx, id, body, reqEditors...)
+func (c *ClientWithResponses) UpdateCustomerWithResponse(ctx context.Context, customerId CustomerId, body UpdateCustomerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomerResponse, error) {
+	rsp, err := c.UpdateCustomer(ctx, customerId, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateCustomerResponse(rsp)
+}
+
+// GetCustomerBankAccountsWithResponse request returning *GetCustomerBankAccountsResponse
+func (c *ClientWithResponses) GetCustomerBankAccountsWithResponse(ctx context.Context, customerId string, reqEditors ...RequestEditorFn) (*GetCustomerBankAccountsResponse, error) {
+	rsp, err := c.GetCustomerBankAccounts(ctx, customerId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCustomerBankAccountsResponse(rsp)
+}
+
+// CreateCustomerBankAccountWithBodyWithResponse request with arbitrary body returning *CreateCustomerBankAccountResponse
+func (c *ClientWithResponses) CreateCustomerBankAccountWithBodyWithResponse(ctx context.Context, customerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateCustomerBankAccountResponse, error) {
+	rsp, err := c.CreateCustomerBankAccountWithBody(ctx, customerId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCustomerBankAccountResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateCustomerBankAccountWithResponse(ctx context.Context, customerId string, body CreateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateCustomerBankAccountResponse, error) {
+	rsp, err := c.CreateCustomerBankAccount(ctx, customerId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateCustomerBankAccountResponse(rsp)
+}
+
+// GetCustomerBankAccountWithResponse request returning *GetCustomerBankAccountResponse
+func (c *ClientWithResponses) GetCustomerBankAccountWithResponse(ctx context.Context, customerId string, accountNumber string, reqEditors ...RequestEditorFn) (*GetCustomerBankAccountResponse, error) {
+	rsp, err := c.GetCustomerBankAccount(ctx, customerId, accountNumber, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCustomerBankAccountResponse(rsp)
+}
+
+// UpdateCustomerBankAccountWithBodyWithResponse request with arbitrary body returning *UpdateCustomerBankAccountResponse
+func (c *ClientWithResponses) UpdateCustomerBankAccountWithBodyWithResponse(ctx context.Context, customerId string, accountNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateCustomerBankAccountResponse, error) {
+	rsp, err := c.UpdateCustomerBankAccountWithBody(ctx, customerId, accountNumber, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCustomerBankAccountResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateCustomerBankAccountWithResponse(ctx context.Context, customerId string, accountNumber string, body UpdateCustomerBankAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateCustomerBankAccountResponse, error) {
+	rsp, err := c.UpdateCustomerBankAccount(ctx, customerId, accountNumber, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateCustomerBankAccountResponse(rsp)
 }
 
 // GetDimensionsWithResponse request returning *GetDimensionsResponse
@@ -9088,6 +10987,32 @@ func (c *ClientWithResponses) GetDocumentsDocumentIdWithResponse(ctx context.Con
 		return nil, err
 	}
 	return ParseGetDocumentsDocumentIdResponse(rsp)
+}
+
+// PostFileUploadWithBodyWithResponse request with arbitrary body returning *PostFileUploadResponse
+func (c *ClientWithResponses) PostFileUploadWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostFileUploadResponse, error) {
+	rsp, err := c.PostFileUploadWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostFileUploadResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostFileUploadWithResponse(ctx context.Context, body PostFileUploadJSONRequestBody, reqEditors ...RequestEditorFn) (*PostFileUploadResponse, error) {
+	rsp, err := c.PostFileUpload(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostFileUploadResponse(rsp)
+}
+
+// GetFileUploadStatusWithResponse request returning *GetFileUploadStatusResponse
+func (c *ClientWithResponses) GetFileUploadStatusWithResponse(ctx context.Context, fileId string, reqEditors ...RequestEditorFn) (*GetFileUploadStatusResponse, error) {
+	rsp, err := c.GetFileUploadStatus(ctx, fileId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetFileUploadStatusResponse(rsp)
 }
 
 // GetFiscalperiodsWithResponse request returning *GetFiscalperiodsResponse
@@ -9169,6 +11094,42 @@ func (c *ClientWithResponses) GetOrganizationPeopleIdWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseGetOrganizationPeopleIdResponse(rsp)
+}
+
+// GetPaymentMethodsWithResponse request returning *GetPaymentMethodsResponse
+func (c *ClientWithResponses) GetPaymentMethodsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPaymentMethodsResponse, error) {
+	rsp, err := c.GetPaymentMethods(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPaymentMethodsResponse(rsp)
+}
+
+// GetPricelistsWithResponse request returning *GetPricelistsResponse
+func (c *ClientWithResponses) GetPricelistsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPricelistsResponse, error) {
+	rsp, err := c.GetPricelists(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPricelistsResponse(rsp)
+}
+
+// GetPricelistWithResponse request returning *GetPricelistResponse
+func (c *ClientWithResponses) GetPricelistWithResponse(ctx context.Context, listId int, reqEditors ...RequestEditorFn) (*GetPricelistResponse, error) {
+	rsp, err := c.GetPricelist(ctx, listId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPricelistResponse(rsp)
+}
+
+// GetPricelistPricesWithResponse request returning *GetPricelistPricesResponse
+func (c *ClientWithResponses) GetPricelistPricesWithResponse(ctx context.Context, listId int, params *GetPricelistPricesParams, reqEditors ...RequestEditorFn) (*GetPricelistPricesResponse, error) {
+	rsp, err := c.GetPricelistPrices(ctx, listId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPricelistPricesResponse(rsp)
 }
 
 // GetCategoriesWithResponse request returning *GetCategoriesResponse
@@ -9291,6 +11252,76 @@ func (c *ClientWithResponses) UpdateProductWithResponse(ctx context.Context, id 
 		return nil, err
 	}
 	return ParseUpdateProductResponse(rsp)
+}
+
+// GetProductDimensionsWithResponse request returning *GetProductDimensionsResponse
+func (c *ClientWithResponses) GetProductDimensionsWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*GetProductDimensionsResponse, error) {
+	rsp, err := c.GetProductDimensions(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetProductDimensionsResponse(rsp)
+}
+
+// DeleteProductDimensionWithResponse request returning *DeleteProductDimensionResponse
+func (c *ClientWithResponses) DeleteProductDimensionWithResponse(ctx context.Context, id int, dimensionId int, reqEditors ...RequestEditorFn) (*DeleteProductDimensionResponse, error) {
+	rsp, err := c.DeleteProductDimension(ctx, id, dimensionId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteProductDimensionResponse(rsp)
+}
+
+// UpdateProductDimensionWithBodyWithResponse request with arbitrary body returning *UpdateProductDimensionResponse
+func (c *ClientWithResponses) UpdateProductDimensionWithBodyWithResponse(ctx context.Context, id int, dimensionId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProductDimensionResponse, error) {
+	rsp, err := c.UpdateProductDimensionWithBody(ctx, id, dimensionId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateProductDimensionResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateProductDimensionWithResponse(ctx context.Context, id int, dimensionId int, body UpdateProductDimensionJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProductDimensionResponse, error) {
+	rsp, err := c.UpdateProductDimension(ctx, id, dimensionId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateProductDimensionResponse(rsp)
+}
+
+// GetProductSalesTypeOverridesWithResponse request returning *GetProductSalesTypeOverridesResponse
+func (c *ClientWithResponses) GetProductSalesTypeOverridesWithResponse(ctx context.Context, id int, reqEditors ...RequestEditorFn) (*GetProductSalesTypeOverridesResponse, error) {
+	rsp, err := c.GetProductSalesTypeOverrides(ctx, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetProductSalesTypeOverridesResponse(rsp)
+}
+
+// DeleteProductSalesTypeOverrideWithResponse request returning *DeleteProductSalesTypeOverrideResponse
+func (c *ClientWithResponses) DeleteProductSalesTypeOverrideWithResponse(ctx context.Context, id int, salesTypeId int, reqEditors ...RequestEditorFn) (*DeleteProductSalesTypeOverrideResponse, error) {
+	rsp, err := c.DeleteProductSalesTypeOverride(ctx, id, salesTypeId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteProductSalesTypeOverrideResponse(rsp)
+}
+
+// PutProductSalesTypeOverrideWithBodyWithResponse request with arbitrary body returning *PutProductSalesTypeOverrideResponse
+func (c *ClientWithResponses) PutProductSalesTypeOverrideWithBodyWithResponse(ctx context.Context, id int, salesTypeId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutProductSalesTypeOverrideResponse, error) {
+	rsp, err := c.PutProductSalesTypeOverrideWithBody(ctx, id, salesTypeId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutProductSalesTypeOverrideResponse(rsp)
+}
+
+func (c *ClientWithResponses) PutProductSalesTypeOverrideWithResponse(ctx context.Context, id int, salesTypeId int, body PutProductSalesTypeOverrideJSONRequestBody, reqEditors ...RequestEditorFn) (*PutProductSalesTypeOverrideResponse, error) {
+	rsp, err := c.PutProductSalesTypeOverride(ctx, id, salesTypeId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutProductSalesTypeOverrideResponse(rsp)
 }
 
 // GetUnitsWithResponse request returning *GetUnitsResponse
@@ -9494,6 +11525,23 @@ func (c *ClientWithResponses) GetTransactionlinesIdWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetTransactionlinesIdResponse(rsp)
+}
+
+// PostTransactionsWithBodyWithResponse request with arbitrary body returning *PostTransactionsResponse
+func (c *ClientWithResponses) PostTransactionsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostTransactionsResponse, error) {
+	rsp, err := c.PostTransactionsWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostTransactionsResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostTransactionsWithResponse(ctx context.Context, body PostTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*PostTransactionsResponse, error) {
+	rsp, err := c.PostTransactions(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostTransactionsResponse(rsp)
 }
 
 // GetTransactiontypesWithResponse request returning *GetTransactiontypesResponse
@@ -9875,15 +11923,15 @@ func ParseCreateCustomerResponse(rsp *http.Response) (*CreateCustomerResponse, e
 	return response, nil
 }
 
-// ParseDeleteCustomersIdResponse parses an HTTP response from a DeleteCustomersIdWithResponse call
-func ParseDeleteCustomersIdResponse(rsp *http.Response) (*DeleteCustomersIdResponse, error) {
+// ParseDeleteCustomersCustomerIdResponse parses an HTTP response from a DeleteCustomersCustomerIdWithResponse call
+func ParseDeleteCustomersCustomerIdResponse(rsp *http.Response) (*DeleteCustomersCustomerIdResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &DeleteCustomersIdResponse{
+	response := &DeleteCustomersCustomerIdResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -9891,15 +11939,15 @@ func ParseDeleteCustomersIdResponse(rsp *http.Response) (*DeleteCustomersIdRespo
 	return response, nil
 }
 
-// ParseGetCustomersIdResponse parses an HTTP response from a GetCustomersIdWithResponse call
-func ParseGetCustomersIdResponse(rsp *http.Response) (*GetCustomersIdResponse, error) {
+// ParseGetCustomersCustomerIdResponse parses an HTTP response from a GetCustomersCustomerIdWithResponse call
+func ParseGetCustomersCustomerIdResponse(rsp *http.Response) (*GetCustomersCustomerIdResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetCustomersIdResponse{
+	response := &GetCustomersCustomerIdResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -9933,6 +11981,110 @@ func ParseUpdateCustomerResponse(rsp *http.Response) (*UpdateCustomerResponse, e
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest CustomerResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCustomerBankAccountsResponse parses an HTTP response from a GetCustomerBankAccountsWithResponse call
+func ParseGetCustomerBankAccountsResponse(rsp *http.Response) (*GetCustomerBankAccountsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCustomerBankAccountsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []CustomerBankAccount
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateCustomerBankAccountResponse parses an HTTP response from a CreateCustomerBankAccountWithResponse call
+func ParseCreateCustomerBankAccountResponse(rsp *http.Response) (*CreateCustomerBankAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateCustomerBankAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest CustomerBankAccount
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCustomerBankAccountResponse parses an HTTP response from a GetCustomerBankAccountWithResponse call
+func ParseGetCustomerBankAccountResponse(rsp *http.Response) (*GetCustomerBankAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCustomerBankAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CustomerBankAccount
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateCustomerBankAccountResponse parses an HTTP response from a UpdateCustomerBankAccountWithResponse call
+func ParseUpdateCustomerBankAccountResponse(rsp *http.Response) (*UpdateCustomerBankAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateCustomerBankAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CustomerBankAccount
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -10063,6 +12215,58 @@ func ParseGetDocumentsDocumentIdResponse(rsp *http.Response) (*GetDocumentsDocum
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest DocumentInfo
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostFileUploadResponse parses an HTTP response from a PostFileUploadWithResponse call
+func ParsePostFileUploadResponse(rsp *http.Response) (*PostFileUploadResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostFileUploadResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FileUploadResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetFileUploadStatusResponse parses an HTTP response from a GetFileUploadStatusWithResponse call
+func ParseGetFileUploadStatusResponse(rsp *http.Response) (*GetFileUploadStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetFileUploadStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest FileUploadStatusResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -10313,6 +12517,110 @@ func ParseGetOrganizationPeopleIdResponse(rsp *http.Response) (*GetOrganizationP
 	return response, nil
 }
 
+// ParseGetPaymentMethodsResponse parses an HTTP response from a GetPaymentMethodsWithResponse call
+func ParseGetPaymentMethodsResponse(rsp *http.Response) (*GetPaymentMethodsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPaymentMethodsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []PaymentMethod
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPricelistsResponse parses an HTTP response from a GetPricelistsWithResponse call
+func ParseGetPricelistsResponse(rsp *http.Response) (*GetPricelistsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPricelistsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []Pricelist
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPricelistResponse parses an HTTP response from a GetPricelistWithResponse call
+func ParseGetPricelistResponse(rsp *http.Response) (*GetPricelistResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPricelistResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Pricelist
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPricelistPricesResponse parses an HTTP response from a GetPricelistPricesWithResponse call
+func ParseGetPricelistPricesResponse(rsp *http.Response) (*GetPricelistPricesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPricelistPricesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []PricelistPrice
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetCategoriesResponse parses an HTTP response from a GetCategoriesWithResponse call
 func ParseGetCategoriesResponse(rsp *http.Response) (*GetCategoriesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -10543,6 +12851,142 @@ func ParseUpdateProductResponse(rsp *http.Response) (*UpdateProductResponse, err
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ProductResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetProductDimensionsResponse parses an HTTP response from a GetProductDimensionsWithResponse call
+func ParseGetProductDimensionsResponse(rsp *http.Response) (*GetProductDimensionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetProductDimensionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProductDimensionsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteProductDimensionResponse parses an HTTP response from a DeleteProductDimensionWithResponse call
+func ParseDeleteProductDimensionResponse(rsp *http.Response) (*DeleteProductDimensionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteProductDimensionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseUpdateProductDimensionResponse parses an HTTP response from a UpdateProductDimensionWithResponse call
+func ParseUpdateProductDimensionResponse(rsp *http.Response) (*UpdateProductDimensionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateProductDimensionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProductDimensionsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetProductSalesTypeOverridesResponse parses an HTTP response from a GetProductSalesTypeOverridesWithResponse call
+func ParseGetProductSalesTypeOverridesResponse(rsp *http.Response) (*GetProductSalesTypeOverridesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetProductSalesTypeOverridesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProductSalesTypeOverridesResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteProductSalesTypeOverrideResponse parses an HTTP response from a DeleteProductSalesTypeOverrideWithResponse call
+func ParseDeleteProductSalesTypeOverrideResponse(rsp *http.Response) (*DeleteProductSalesTypeOverrideResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteProductSalesTypeOverrideResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParsePutProductSalesTypeOverrideResponse parses an HTTP response from a PutProductSalesTypeOverrideWithResponse call
+func ParsePutProductSalesTypeOverrideResponse(rsp *http.Response) (*PutProductSalesTypeOverrideResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutProductSalesTypeOverrideResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProductSalesTypeOverride
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -11057,6 +13501,32 @@ func ParseGetTransactionlinesIdResponse(rsp *http.Response) (*GetTransactionline
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePostTransactionsResponse parses an HTTP response from a PostTransactionsWithResponse call
+func ParsePostTransactionsResponse(rsp *http.Response) (*PostTransactionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostTransactionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest TransactionCreatedResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
 
 	}
 
