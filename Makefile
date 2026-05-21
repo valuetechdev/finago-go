@@ -20,6 +20,7 @@ api-payday:
 api-rest:
 	@echo "openapi: getting latest Finago Office's REST API"
 	@curl https://rest-api.developer.24sevenoffice.com/doc/v1.yaml > ./api/openapi/rest.yaml
+	@sed -i '' 's/exclusiveMinimum: 0$$/minimum: 0/' ./api/openapi/rest.yaml
 
 .PHONY: api
 api:

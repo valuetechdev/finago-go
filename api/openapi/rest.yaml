@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Finago Office Public API
-  version: 0.47.1
+  version: 0.56.0
 servers:
   - url: https://rest.api.24sevenoffice.com/v1
 paths:
@@ -430,7 +430,7 @@ paths:
         schema:
           type: integer
           format: int32
-          minimum: 1
+          minimum: 0
         example: 1
     get:
       summary: Read a tax code by ID
@@ -643,6 +643,230 @@ paths:
           required: true
           schema:
             type: string
+  /transactions:
+    post:
+      summary: Post a transaction to the general ledger
+      tags:
+        - Transactions
+      security:
+        - tfso:
+            - api.accounting.transaction:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '201':
+          description: The transaction has been posted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionCreatedResponse'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '400':
+          description: The input provided was invalid
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized - Bearer token missing or invalid
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '403':
+          description: Forbidden - User does not have access to post transactions
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      parameters:
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+  /fileUpload:
+    post:
+      summary: Initiate a file upload process
+      tags:
+        - Transactions
+      security:
+        - tfso:
+            - api.accounting.transaction:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        '200':
+          description: Attachment upload initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadResponse'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '400':
+          description: The input provided was invalid
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized - Bearer token missing or invalid
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '403':
+          description: Forbidden - User does not have access to post transactions
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      parameters:
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+  /fileUpload/{fileId}:
+    get:
+      summary: Get the status of a file upload
+      description: Get the status of a file upload. Use this to get the documentId once the upload is completed.
+      operationId: getFileUploadStatus
+      tags:
+        - Documents
+      security:
+        - tfso:
+            - api.accounting.transaction:write
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          description: The ID of the file upload to check.
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File upload status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileUploadStatusResponse'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '400':
+          description: The input provided was invalid
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized - Bearer token missing or invalid
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '403':
+          description: Forbidden - User does not have access to post transactions
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
   /transactiontypes:
     get:
       summary: Read transaction types
@@ -1190,14 +1414,14 @@ paths:
           required: true
           schema:
             type: string
-  /customers/{id}:
+  /customers/{customerId}:
     get:
       summary: Read a customer by ID
       description: Read details of a specific customer identified by its unique ID.
       tags:
         - Customers
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/customerId'
         - in: header
           name: Authorization
           description: Authorization header
@@ -1243,7 +1467,7 @@ paths:
       tags:
         - Customers
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/customerId'
         - in: header
           name: Authorization
           description: Authorization header
@@ -1295,7 +1519,7 @@ paths:
       tags:
         - Customers
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/customerId'
         - in: header
           name: Authorization
           description: Authorization header
@@ -1330,6 +1554,286 @@ paths:
       security:
         - tfso:
             - api.crm.customer:write
+  /customers/{customerId}/bankaccounts:
+    get:
+      summary: Read customer bank accounts
+      description: Retrieve a list of bank accounts associated with a specific customer.
+      tags:
+        - Customers
+      operationId: GetCustomerBankAccounts
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerBankAccount'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized. Missing or invalid bearer token.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.crm.bankdetails:read
+    post:
+      summary: Create customer bank account
+      description: Create a new bank account for a specific customer.
+      tags:
+        - Customers
+      operationId: CreateCustomerBankAccount
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerBankAccount'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBankAccount'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '400':
+          description: Bad Request. Invalid input data.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized. Missing or invalid bearer token.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.crm.bankdetails:write
+  /customers/{customerId}/bankaccounts/{accountNumber}:
+    get:
+      summary: Read specific customer bank account
+      description: Retrieve a specific bank account by account number for a customer.
+      tags:
+        - Customers
+      operationId: GetCustomerBankAccount
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer
+          schema:
+            type: string
+        - name: accountNumber
+          in: path
+          required: true
+          description: The account number of the bank account
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBankAccount'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized. Missing or invalid bearer token.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '404':
+          description: Bank account not found.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.crm.bankdetails:read
+    patch:
+      summary: Update customer bank account
+      description: Update a specific bank account by account number for a customer.
+      tags:
+        - Customers
+      operationId: UpdateCustomerBankAccount
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The unique identifier of the customer
+          schema:
+            type: string
+        - name: accountNumber
+          in: path
+          required: true
+          description: The account number of the bank account
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerBankAccount'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerBankAccount'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '400':
+          description: Bad Request. Invalid input data.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized. Missing or invalid bearer token.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '404':
+          description: Bank account not found.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.crm.bankdetails:write
   /dimensions:
     get:
       description: List all dimension-types. Get a list of all dimension-types in the system. Elements with id below 100 are system dimension-types and will be the same across all clients. Elements with id above 100 are custom dimension-types specific to the client.
@@ -2179,6 +2683,42 @@ paths:
           required: true
           schema:
             type: string
+  /paymentmethods:
+    get:
+      security:
+        - tfso:
+            - api.invoicing.paymentmethod:read
+      summary: List Payment Methods
+      description: Retrieve a list of all payment methods that can be used when creating or updating a sales order in the Finago Office ERP system. This endpoint allows clients to access the available payment methods.
+      tags:
+        - Paymentmethods
+      operationId: getPaymentMethods
+      responses:
+        '200':
+          description: List of payment methods retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentMethod'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      parameters:
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
   /me:
     get:
       summary: Read profile
@@ -2656,6 +3196,191 @@ paths:
       security:
         - tfso:
             - api.organization.person:read
+  /pricelists:
+    get:
+      summary: Read pricelists
+      description: Retrieve a list of all pricelists.
+      tags:
+        - Pricelists
+      operationId: GetPricelists
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pricelist'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized. Missing or invalid bearer token.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.pricelist:read
+      parameters:
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+  /pricelists/{listId}:
+    get:
+      summary: Read specific pricelist
+      description: Retrieve a specific pricelist by ID.
+      tags:
+        - Pricelists
+      operationId: GetPricelist
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          description: The unique identifier of the pricelist
+          schema:
+            type: integer
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pricelist'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized. Missing or invalid bearer token.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '404':
+          description: Pricelist not found.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.pricelist:read
+  /pricelists/{listId}/prices:
+    get:
+      summary: Read pricelist prices
+      description: Retrieve prices for products in a specific pricelist. Optionally filter by product IDs.
+      tags:
+        - Pricelists
+      operationId: GetPricelistPrices
+      parameters:
+        - name: listId
+          in: path
+          required: true
+          description: The unique identifier of the pricelist
+          schema:
+            type: integer
+        - name: productIds
+          in: query
+          required: false
+          description: Comma-separated list of product IDs and/or ranges of product IDs (using .. as separator) to filter prices
+          schema:
+            type: string
+          example: 1..10,20,42,123..137
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricelistPrice'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized. Missing or invalid bearer token.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '404':
+          description: Pricelist not found.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.pricelist:read
   /productcategories:
     get:
       summary: Read product categories
@@ -2919,6 +3644,18 @@ paths:
           description: Perform a search in productNumber, name, and supplier's productNumber and name. Wildcards are allowed using '%'. '%' at the end returns 'starts with'. '%' at the beginning returns 'ends with'. '%' at both ends returns 'contains'.
           schema:
             type: string
+        - name: categoryIds
+          in: query
+          description: Searches for products belonging to specific categories. Multiple category IDs can be provided, separated by commas.
+          example: 12,15,18
+          schema:
+            type: string
+        - name: supplierIds
+          in: query
+          description: Searches for products belonging to specific suppliers. Multiple supplier IDs can be provided, separated by commas.
+          example: 1,3,5
+          schema:
+            type: string
         - in: query
           name: productNumber
           description: Searches for product number.
@@ -3109,6 +3846,290 @@ paths:
           required: true
           schema:
             type: string
+  /products/{id}/dimensions:
+    get:
+      summary: Read product dimensions
+      description: Read the dimensions of a product as set in the system.
+      operationId: getProductDimensions
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          example: 12
+          description: A unique identifier for the product within Finago Office ERP-modules.
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDimensionsResponse'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.dimension:read
+  /products/{id}/dimensions/{dimensionId}:
+    put:
+      summary: Update a product dimension
+      description: Update a specific dimension-association of a product in the system.
+      operationId: updateProductDimension
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          example: 12
+          description: A unique identifier for the product within Finago Office ERP-modules.
+        - name: dimensionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+          description: A unique identifier for the dimension within Finago Office ERP modules.
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDimensionWrite'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDimensionsResponse'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.dimension:write
+    delete:
+      summary: Remove a product dimension
+      description: Delete a specific dimension-association from a product in the system.
+      operationId: deleteProductDimension
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          example: 12
+          description: A unique identifier for the product within Finago Office ERP-modules.
+        - name: dimensionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          example: 1
+          description: A unique identifier for the dimension within Finago Office ERP modules.
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No content - the dimension was successfully deleted from the product.
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.dimension:write
+  /products/{id}/salestypeOverrides:
+    get:
+      summary: Get the sales type overrides for a product
+      operationId: GetProductSalesTypeOverrides
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the product for which to retrieve sales type overrides
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sales type overrides retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSalesTypeOverridesResponse'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.salestype:read
+  /products/{id}/salestypeOverrides/{salesTypeId}:
+    put:
+      summary: Create or update a sales type override for a product
+      operationId: PutProductSalesTypeOverride
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the product for which to create or update a sales type override
+          required: true
+          schema:
+            type: integer
+        - name: salesTypeId
+          in: path
+          description: The ID of the sales type for which to create or update a sales type override
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSalesTypeOverrideRequest'
+      responses:
+        '200':
+          description: Sales type override created or updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSalesTypeOverride'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+        '204':
+          description: Sales type override deleted successfully (or override did not exist)
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.salestype:write
+    delete:
+      summary: Delete a sales type override for a product
+      operationId: DeleteProductSalesTypeOverride
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the product for which to delete a sales type override
+          required: true
+          schema:
+            type: integer
+        - name: salesTypeId
+          in: path
+          description: The ID of the sales type for which to delete a sales type override
+          required: true
+          schema:
+            type: integer
+        - in: header
+          name: Authorization
+          description: Authorization header
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Sales type override deleted successfully (or override did not exist)
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Credentials:
+              schema:
+                type: string
+            X-Trace-Id:
+              schema:
+                type: string
+      security:
+        - tfso:
+            - api.product.salestype:write
   /salestypes:
     get:
       summary: Read sales types
@@ -3274,6 +4295,10 @@ components:
           type: string
           description: The human-readable name that describes the purpose or nature of the account.
           example: Cash, NOK
+        taxId:
+          type: integer
+          description: The id of the tax code (see GET /taxes) associated with the account.
+          example: 0
     Currencies:
       description: List of currencies available within the Finago Office accounting module.
       minItems: 1
@@ -3311,6 +4336,32 @@ components:
           format: uri
           description: URL to download the document, typically a presigned URL with limited validity
           example: https://attachment.api.24sevenoffice.com/download/abc123?signature=xyz
+        pages:
+          type: array
+          description: List of pages in the document, if available. This may be used to display document content in client applications.
+          items:
+            $ref: '#/components/schemas/DocumentPageInfo'
+    DocumentPageInfo:
+      type: object
+      required:
+        - sequenceNumber
+        - thumbnailUrl
+        - previewUrl
+      properties:
+        sequenceNumber:
+          type: integer
+          description: Page number within the document
+          example: 1
+        thumbnailUrl:
+          type: string
+          format: uri
+          description: URL to a thumbnail image of the page suitable for quick display in lists or previews, typically a presigned URL with limited validity
+          example: https://attachment.api.24sevenoffice.com/thumbnail/abc123?page=1&signature=xyz
+        previewUrl:
+          type: string
+          format: uri
+          description: URL to a preview image of the page suitable for display in the main document viewer, typically a presigned URL with limited validity
+          example: https://attachment.api.24sevenoffice.com/preview/abc123?page=1&signature=xyz
     AccountingPeriod:
       type: object
       description: Details of a financial year/accounting period within the Finago Office accounting module.
@@ -3540,6 +4591,218 @@ components:
           description: A timestamp for when one of the properties of a record was last modified, in ISO 8601 format.
           format: date-time
           example: '2023-12-31T18:00:00Z'
+    TransactionInput:
+      type: object
+      required:
+        - transactionTypeNumber
+        - date
+        - lines
+      properties:
+        transactionTypeNumber:
+          type: integer
+          description: Type of transaction (as defined by the accounting system). Only types with number > 0 are allowed (negative numbers are reserved for system transaction types). TransactionType controls which number-series is used for the transaction.
+          example: 1
+          minimum: 1
+        date:
+          type: string
+          format: date
+          description: |
+            Date of the transaction in ISO 8601 format - NB there must be a financial period open for this date. This may be overridden by individual transaction lines.
+          example: '2025-04-09'
+        comment:
+          type: string
+          description: General comment of the transaction. Will be applied to all lines unless overridden at line level.
+          maxLength: 75
+          example: 'Invoice #12345'
+        documentId:
+          type: integer
+          description: Optional identifier (Document number) for a document/attachment associated with this transaction.
+          example: 12345
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionLine'
+          description: List of transaction lines. Each line must have an account number and an amount. All lines must balance to zero per date.
+          maxItems: 1000
+    TransactionLine:
+      type: object
+      required:
+        - accountNumber
+        - amount
+        - tax
+      properties:
+        accountNumber:
+          type: integer
+          example: 1920
+          description: General ledger account number
+        amount:
+          type: number
+          example: 1500
+          description: |
+            Total amount for this line (in stated currency, usually inclusive tax). Positive for debit, negative for credit. When tax-codes 81-89 are used, the amount is typically exclusive of tax (as the tax-amount is to be paid separately).
+        comment:
+          type: string
+          description: Comment for this transaction line. If omitted, the comment from the parent transaction will be used.
+          maxLength: 75
+          example: Payment for services rendered
+        date:
+          type: string
+          format: date
+          description: |
+            Date of the transaction line in ISO 8601 format if different from the parent transaction - NB there must be a financial period open for this date. If omitted, the date from the parent transaction will be used.
+          example: '2025-04-09'
+        periodDate:
+          type: string
+          format: date
+          description: |
+            Tax-Period date for the transaction line in ISO 8601 format, if different from date (usually not)
+          example: '2025-04-01'
+        currency:
+          type: object
+          description: Optional currency information for the transaction line. If not set, the system default currency is used.
+          required:
+            - code
+            - rate
+          properties:
+            code:
+              type: string
+              description: ISO 4217 currency code (e.g. 'USD', 'EUR', 'SEK').
+              pattern: ^[A-Z]{3}$
+              example: USD
+            rate:
+              type: number
+              description: 'Exchange rate to the system base currency.  (Example: System Currency is NOK, line is in USD, rate is 10.50 means 1 USD = 10.50 NOK).'
+              example: 10.5
+              minimum: 0
+        tax:
+          $ref: '#/components/schemas/TransactionTax'
+        dimensions:
+          type: array
+          description: Optional dimensions for the entry. Each dimension must match a predefined key in the system.
+          items:
+            type: object
+            required:
+              - dimensionType
+              - value
+            properties:
+              dimensionType:
+                type: integer
+                description: The identifier for the dimension within 24SevenOffice ERP modules.
+                example: 1
+              value:
+                type: string
+                description: Value of the dimension
+                example: '13'
+          maxItems: 10
+        invoice:
+          $ref: '#/components/schemas/TransactionLineInvoiceProps'
+    TransactionTax:
+      description: Tax information for a transaction line. The tax code number must correspond to a valid tax code in the system (see `GET /taxes`). Use {"code":0} to indicate that no tax.
+      type: object
+      required:
+        - number
+      properties:
+        number:
+          type: integer
+          description: Tax code number as defined in the accounting system (see `GET /taxes`).
+          minimum: 0
+          example: 1
+        amount:
+          type: number
+          description: Tax amount for this line. Positive for debit, negative for credit. If not set, the amount will be inferred based on the tax type.
+          example: 300
+        baseRate:
+          type: integer
+          description: Base rate for the tax calculation. Applicable for partial deduction ("forholdsmessig fradrag"), otherwise don't set.
+          minimum: 0
+          maximum: 100
+          multipleOf: 0.01
+        specificationNumber:
+          type: integer
+          description: Optional specification number for the tax type, if applicable.
+      example:
+        number: 1
+        amount: 300
+    TransactionLineInvoiceProps:
+      type: object
+      description: Details of the invoice associated with the transaction, if applicable.
+      properties:
+        dueDate:
+          type: string
+          format: date
+          description: Due date for the invoice related to the transaction line in ISO 8601 format, if applicable.
+          example: '2025-05-05'
+        number:
+          type: string
+          description: Invoice number for the invoice associated with the transaction line, if applicable.
+          maxLength: 50
+          example: INV-12345
+        remittanceReference:
+          type: string
+          description: The remittance reference (OCR number) for the invoice associated with the transaction line, if applicable.
+          maxLength: 32
+          example: '1234567890'
+        bankAccount:
+          type: string
+          description: Bank account number for the invoice associated with the transaction line, if applicable.
+          maxLength: 50
+          example: 1234.56.78901
+    TransactionCreatedResponse:
+      type: object
+      required:
+        - transactionId
+      properties:
+        transactionId:
+          type: string
+          example: abc123
+          description: Unique identifier assigned to the posted transaction
+    FileUploadRequest:
+      type: object
+      required:
+        - contentType
+      properties:
+        contentType:
+          type: string
+          description: content type (MIME type) of the file being uploaded
+          example: application/pdf
+    FileUploadResponse:
+      type: object
+      required:
+        - uploadMethod
+        - uploadUrl
+        - fileId
+      properties:
+        uploadMethod:
+          type: string
+          description: HTTP method to use for uploading the file
+          example: PUT
+        uploadUrl:
+          type: string
+          format: uri
+          description: Presigned URL to which the file should be uploaded, using {uploadMethod} as HTTP method
+          example: https://attachment.api.24sevenoffice.com/upload/abc123?signature=xyz
+        fileId:
+          type: string
+          description: Identifier for the file to be uploaded in the system
+          example: 67890
+    FileUploadStatusResponse:
+      type: object
+      required:
+        - fileId
+        - status
+      properties:
+        fileId:
+          type: string
+          description: Identifier for the file upload
+          example: 67890
+        status:
+          type: string
+          description: Current status of the file upload (e.g., Pending, Completed, Failed)
+          example: Completed
+        documentId:
+          type: integer
+          description: Identifier of the document associated with the uploaded file, if completed
+          example: 12345
     TransactionTypes:
       description: List of transaction types available within the Finago Office accounting module.
       minItems: 1
@@ -3989,6 +5252,12 @@ components:
           nullable: true
           description: A phone number for contacting the customer.
           example: +47-12345678
+        mobilePhone:
+          type: string
+          nullable: true
+          maxLength: 25
+          description: A mobile phone number for contacting the customer.
+          example: +47-98765432
     CustomerPostRequest:
       description: A new customer to be created in Finago Office CRM, either a company or a private person - decided by the `isCompany` flag.
       oneOf:
@@ -4077,6 +5346,10 @@ components:
           maxLength: 100
           description: An optional field for referencing the customer with an ID from an external system, like an ERP or invoicing system.
           example: EXT-12345
+        pricelistId:
+          type: integer
+          description: The ID of the pricelist associated with this customer for pricing.
+          example: 1
         person:
           type: object
           properties:
@@ -4137,6 +5410,12 @@ components:
           nullable: true
           description: A phone number for contacting the customer.
           example: +47-12345678
+        mobilePhone:
+          type: string
+          nullable: true
+          maxLength: 25
+          description: A mobile phone number for contacting the customer.
+          example: +47-98765432
         createdAt:
           $ref: '#/components/schemas/createdAt'
         modifiedAt:
@@ -4229,6 +5508,51 @@ components:
     SortInput:
       type: string
       pattern: ^(name|createdAt|modifiedAt|organizationNumber|id):(asc|desc)$
+    CustomerBankAccount:
+      type: object
+      required:
+        - number
+        - type
+        - isDefault
+      properties:
+        number:
+          type: string
+          maxLength: 50
+          pattern: ^[A-Z0-9-]+$
+          description: Bank account number (uppercase letters, numbers, or dash only)
+        type:
+          type: string
+          enum:
+            - bban
+            - iban
+            - bankgiro
+            - plusgiro
+          description: Type of bank account
+        isDefault:
+          type: boolean
+          description: Whether this is the default bank account
+        name:
+          type: string
+          maxLength: 50
+          description: Optional name for the bank account
+        countryCode:
+          type: string
+          maxLength: 2
+          description: ISO country code
+        address:
+          type: string
+          maxLength: 490
+          description: Bank address
+        bsc:
+          type: string
+          maxLength: 50
+          pattern: ^[A-Z]{5}[A-Z0-9]{1,12}$|^$
+          description: Bank Sort Code
+        bic:
+          type: string
+          maxLength: 20
+          pattern: ^[A-Z]{6}[A-Z0-9]{2,5}$|^$
+          description: Bank Identifier Code (SWIFT code)
     Dimension:
       type: object
       required:
@@ -4378,6 +5702,17 @@ components:
             id:
               type: number
               description: Identifier of the contact person (candidates provided by `/organization/people` endpoint).
+              example: 123
+        paymentMethod:
+          type: object
+          description: Reference to the payment method used for the sales order. See GET /paymentmethods. Send with id set to null to remove the payment method from the sales order.
+          required:
+            - id
+          properties:
+            id:
+              type: integer
+              nullable: true
+              description: Identifier of the payment method. (Set to null to remove the payment method from the sales order).
               example: 123
         referenceNumber:
           type: string
@@ -4713,6 +6048,13 @@ components:
           type: number
           description: The price of a single unit of the product in the line item.
           example: 49.99
+        costPrice:
+          type: number
+          nullable: true
+          description: The cost of buying a single unit of the product from the supplier.
+          example: 50
+          multipleOf: 0.0001
+          maximum: 999999999999.9999
         discountRate:
           type: number
           minimum: 0
@@ -4918,6 +6260,24 @@ components:
           type: string
           description: A tracking identifier for the bad request error.
           example: ghi789
+    PaymentMethod:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the payment method
+        name:
+          type: string
+          description: Display name of the payment method
+        account:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Unique identifier for the account associated with the payment method
     ProfileModel:
       type: object
       properties:
@@ -5188,6 +6548,49 @@ components:
           description: A flag variable indicating whether the person has a license.
           example: true
       additionalProperties: false
+    Pricelist:
+      type: object
+      required:
+        - id
+        - name
+        - currencyCode
+        - isInclusiveTax
+      properties:
+        id:
+          type: integer
+          description: Unique identifier of the pricelist
+          example: 2
+        name:
+          type: string
+          description: Name of the pricelist
+          example: Price 2
+        description:
+          type: string
+          nullable: true
+          description: Optional description of the pricelist
+        currencyCode:
+          type: string
+          description: Currency code (e.g., LOCAL, USD, EUR)
+          example: LOCAL
+        isInclusiveTax:
+          type: boolean
+          description: Whether prices include tax
+          example: false
+    PricelistPrice:
+      type: object
+      required:
+        - productId
+        - price
+      properties:
+        productId:
+          type: integer
+          description: Product identifier
+          example: 123
+        price:
+          type: number
+          format: float
+          description: Price for the product in this pricelist
+          example: 99.99
     Categories:
       description: List of product categories
       type: array
@@ -5521,6 +6924,80 @@ components:
       description: A timestamp for when a record was created, in ISO 8601 format.
       example: '2022-01-01 18:00:00.000Z'
       type: string
+    ProductDimensionsResponse:
+      type: array
+      description: A list of dimensions of a product as set in the system
+      items:
+        $ref: '#/components/schemas/ProductDimensionRead'
+    ProductDimensionRead:
+      type: object
+      required:
+        - dimensionType
+        - dimensionTypeName
+        - value
+        - name
+      properties:
+        dimensionType:
+          type: integer
+          description: The unique identifier for the dimension within Finago Office ERP modules.
+          example: 1
+        dimensionTypeName:
+          type: string
+          description: The display name of the dimension.
+          example: Project
+        value:
+          type: string
+          description: The value (ie key) for the dimension.
+          example: '13'
+        name:
+          type: string
+          description: The display name associated with the value of the dimension.
+          example: Project with ID 13
+      additionalProperties: false
+    ProductDimensionWrite:
+      type: object
+      required:
+        - value
+      properties:
+        value:
+          type: string
+          description: The value (ie key) for the dimension.
+          example: '13'
+      additionalProperties: false
+    ProductSalesTypeOverridesResponse:
+      description: List of sales type overrides applied for a product (empty list if no overrides exist)
+      type: array
+      items:
+        $ref: '#/components/schemas/ProductSalesTypeOverride'
+    ProductSalesTypeOverride:
+      type: object
+      description: An override of the default account number for a sales type on a specific product
+      required:
+        - productId
+        - salesTypeId
+        - accountNumber
+      properties:
+        productId:
+          type: integer
+          description: The id of the product for which the override applies (see GET /products/{id})
+        salesTypeId:
+          type: integer
+          description: The id of the sales type for which the override applies (see GET /salestypes/{id})
+        accountNumber:
+          type: integer
+          description: The account number that should be used instead of the default account number for the sales type
+      additionalProperties: false
+    ProductSalesTypeOverrideRequest:
+      type: object
+      description: Request body for creating or updating a product sales type override
+      required:
+        - accountNumber
+      properties:
+        accountNumber:
+          type: integer
+          nullable: true
+          description: The account number that should be used instead of the default account number for the sales type (set to null to remove the override)
+      additionalProperties: false
     SalesType:
       type: object
       properties:
@@ -5541,8 +7018,8 @@ components:
               description: A unique identifier for the account within Finago Office accounting module.
               example: 2000001
   parameters:
-    id:
-      name: id
+    customerId:
+      name: customerId
       in: path
       required: true
       description: A unique identifier for the customer within Finago Office CRM.
@@ -5596,12 +7073,15 @@ components:
         - id: 1000001
           number: 1900
           name: Cash, NOK
+          taxId: 0
         - id: 1000002
           number: 1920
           name: Bank Account
+          taxId: 0
         - id: 2000001
           number: 1500
           name: Accounts Receivable
+          taxId: 0
     CurrenciesReadAllResponseExample:
       summary: Example response for fetching all currencies
       value:
@@ -5613,6 +7093,10 @@ components:
           rate: 1.38
     TaxReadAllResponseExample:
       value:
+        - id: 0
+          number: 0
+          name: No VAT
+          rate: 0
         - id: 1
           number: 1
           name: Standard VAT
@@ -5951,6 +7435,7 @@ components:
             contact: contact@example.com
             billing: billing@example.com
           phone: +47-12345678
+          mobilePhone: +47-98765432
           createdAt: '2022-01-01 18:00:00.000Z'
           modifiedAt: '2023-12-31 18:00:00.000Z'
         - id: 54321
@@ -5974,6 +7459,7 @@ components:
             contact: contact@example.com
             billing: billing@example.com
           phone: +47-87654321
+          mobilePhone: +47-98765432
           createdAt: '2022-01-01 18:00:00.000Z'
           modifiedAt: '2023-12-31 18:00:00.000Z'
         - id: 67890
@@ -5995,6 +7481,7 @@ components:
             contact: contact@example.com
             billing: billing@example.com
           phone: +1 555-123-4567
+          mobilePhone: null
           createdAt: '2022-01-01 18:00:00.000Z'
           modifiedAt: '2023-12-31 18:00:00.000Z'
     CustomerCreateRequestExample:
@@ -6033,6 +7520,7 @@ components:
             contact: contact@example.com
             billing: billing@example.com
           phone: +47-87654321
+          mobilePhone: +47-98765432
           id: 321
     SalesOrdersReadAllResponseExample:
       value:
