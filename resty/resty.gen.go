@@ -3947,7 +3947,7 @@ type GetDimensionsDimensionTypeElementsParams struct {
 	// Limit The maximum number of elements to retrieve.
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 
-	// ContinuationToken A token for continuing the retrieval of sales orders. This is used for pagination and is prepopulated from the Link-header with rel=next from a previous request.
+	// ContinuationToken A token for continuing the retrieval of dimension elements. This is used for pagination and is prepopulated from the Link-header with rel=next from a previous request.
 	ContinuationToken *string `form:"continuationToken,omitempty" json:"continuationToken,omitempty"`
 }
 
@@ -4121,8 +4121,11 @@ type GetTransactionlinesParams struct {
 	// Deprecated: this property has been marked as deprecated upstream, but no `x-deprecated-reason` was set
 	ModifiedAfter *time.Time `form:"modifiedAfter,omitempty" json:"modifiedAfter,omitempty"`
 
-	// TransactionNumber The unique number representing the transaction.
-	TransactionNumber *float32 `form:"transactionNumber,omitempty" json:"transactionNumber,omitempty"`
+	// TransactionId Filter on the unique identifier representing the transaction (returned as transaction.id).
+	TransactionId *openapi_types.UUID `form:"transactionId,omitempty" json:"transactionId,omitempty"`
+
+	// TransactionNumber Filter on the transaction number (returned as transaction.number).
+	TransactionNumber *int `form:"transactionNumber,omitempty" json:"transactionNumber,omitempty"`
 
 	// TransactionTypeId ID representing the type of transaction.
 	TransactionTypeId *int `form:"transactionTypeId,omitempty" json:"transactionTypeId,omitempty"`
@@ -11005,9 +11008,21 @@ func NewGetTransactionlinesRequest(server string, params *GetTransactionlinesPar
 
 		}
 
+		if params.TransactionId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "transactionId", *params.TransactionId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: "uuid"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
 		if params.TransactionNumber != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "transactionNumber", *params.TransactionNumber, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "number", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "transactionNumber", *params.TransactionNumber, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
