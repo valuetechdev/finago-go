@@ -30,14 +30,20 @@ func getClient() *RestyClient {
 	return cachedClient
 }
 
+// requireOnline skips tests that talk to the live Finago REST API. `go test
+// -short` must pass offline and without credentials.
+func requireOnline(t *testing.T) {
+	t.Helper()
+	if testing.Short() {
+		t.Skip("skipping test that requires the Finago REST API")
+	}
+}
+
 func TestClientInitialization(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
-	c := New(&Credentials{
-		ClientId:       os.Getenv("TFSO_REST_APP_ID"),
-		ClientSecret:   os.Getenv("TFSO_REST_SECRET"),
-		OrganizationId: orgId,
-	})
+	c := getClient()
 
 	// Token is fetched automatically on first request, but we can also get it directly
 	token, err := c.Token()
@@ -76,6 +82,7 @@ func TestClientTokenManagement(t *testing.T) {
 }
 
 func TestCreatePrivateCustomer(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()
@@ -111,6 +118,7 @@ func TestCreatePrivateCustomer(t *testing.T) {
 }
 
 func TestCreateCompanyCustomer(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()
@@ -144,6 +152,7 @@ func TestCreateCompanyCustomer(t *testing.T) {
 }
 
 func TestRetrieveProductUnits(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 	c := getClient()
 	res, err := c.GetUnitsWithResponse(t.Context())
@@ -152,6 +161,7 @@ func TestRetrieveProductUnits(t *testing.T) {
 }
 
 func TestCreateProduct(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()
@@ -204,6 +214,7 @@ func TestCreateProduct(t *testing.T) {
 }
 
 func TestCreateOrder(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()

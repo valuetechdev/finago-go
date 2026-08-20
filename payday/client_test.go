@@ -8,7 +8,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// requireOnline skips tests that talk to the live Payday API. `go test -short`
+// must pass offline and without credentials.
+func requireOnline(t *testing.T) {
+	t.Helper()
+	if testing.Short() {
+		t.Skip("skipping test that requires the Payday API")
+	}
+}
+
 func TestClient(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := New(os.Getenv("TFSO_PAYROLL_SECRET"))
