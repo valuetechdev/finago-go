@@ -669,3 +669,32 @@ actions:
     description: Ensure that nullable fields, results in omitempty
     update:
       x-omitempty: true
+
+  # oapi-codegen refuses to auto-rename schemas whose Go type names collide.
+  # `createdAt`/`CreatedAt` and `modifiedAt`/`ModifiedAt` are identical definitions,
+  # so repoint the lowercase references and drop the lowercase duplicates.
+  - target: "$.components.schemas.CustomerProperties.properties.createdAt"
+    description: Use the PascalCase CreatedAt schema
+    update:
+      $ref: "#/components/schemas/CreatedAt"
+
+  - target: "$.components.schemas.CustomerProperties.properties.modifiedAt"
+    description: Use the PascalCase ModifiedAt schema
+    update:
+      $ref: "#/components/schemas/ModifiedAt"
+
+  - target: "$.components.schemas.createdAt"
+    description: Remove duplicate lowercase createdAt schema
+    remove: true
+
+  - target: "$.components.schemas.modifiedAt"
+    description: Remove duplicate lowercase modifiedAt schema
+    remove: true
+
+  # `isCompany` is a boolean, but OpenAPI requires a discriminator property to be
+  # a string. oapi-codegen honours that and stamps the mapping key as a JSON
+  # string (`{"isCompany":"true"}`), which the API rejects with a 400. Drop the
+  # discriminator; the variant schemas still require the boolean `isCompany`.
+  - target: "$.components.schemas.CustomerPostRequest.discriminator"
+    description: Remove invalid non-string discriminator
+    remove: true

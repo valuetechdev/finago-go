@@ -193,7 +193,7 @@ func TestCreateProduct(t *testing.T) {
 	require.NotNil(resCustomer.JSON200, "no customer was created")
 
 	pPostRequest := ProductRequestPost{
-		Name:         u.R("Badeball"),
+		Name:         "Badeball",
 		Number:       u.R(u.RandSeq(10)),
 		Type:         u.R(Default),
 		Status:       u.R(ProductStatusEnumActive),
@@ -206,7 +206,7 @@ func TestCreateProduct(t *testing.T) {
 			Quantity:  u.R(float32(129)),
 			Location:  u.R("B-301"),
 		},
-		Category: &CategoryRequest{Id: u.R(-1)},
+		Category: CategoryRequest{Id: u.R(-1)},
 	}
 	resProduct, err := c.CreateProductWithResponse(t.Context(), pPostRequest)
 	require.NoError(err)
@@ -220,7 +220,7 @@ func TestCreateOrder(t *testing.T) {
 	c := getClient()
 
 	pPostRequest := ProductRequestPost{
-		Name:         u.R("Badeball"),
+		Name:         "Badeball",
 		Number:       u.R(u.RandSeq(10)),
 		Type:         u.R(Default),
 		Status:       u.R(ProductStatusEnumActive),
@@ -233,7 +233,7 @@ func TestCreateOrder(t *testing.T) {
 			Quantity:  u.R(float32(129)),
 			Location:  u.R("B-301"),
 		},
-		Category: &CategoryRequest{Id: u.R(-1)},
+		Category: CategoryRequest{Id: u.R(-1)},
 	}
 	resProduct, err := c.CreateProductWithResponse(t.Context(), pPostRequest)
 	require.NoError(err)
