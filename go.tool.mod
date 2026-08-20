@@ -1,6 +1,6 @@
 module github.com/valuetechdev/24sevenoffice-go
 
-go 1.24.4
+go 1.27.0
 
 tool (
 	git.sr.ht/~timharek/git-bump/cmd/git-bump
