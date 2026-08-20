@@ -4,8 +4,8 @@ go 1.27.0
 
 require (
 	github.com/hooklift/gowsdl v0.5.0
-	github.com/oapi-codegen/runtime v1.1.1
-	github.com/stretchr/testify v1.10.0
+	github.com/oapi-codegen/runtime v1.7.0
+	github.com/stretchr/testify v1.11.1
 	golang.org/x/oauth2 v0.30.0
 )
 
