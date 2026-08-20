@@ -55,13 +55,742 @@
         "security": []
       }
     },
+    "/absence/v2": {
+      "get": {
+        "tags": [
+          "Absence (fravær)"
+        ],
+        "summary": "Get all absence",
+        "description": "Get all registered absence data for all employees in the company. Result can be limited with the search filter criteria.\n\n<b>Filter</b>\nFilters can be added as query parameters by adding a question mark (?) at the end of the URL and then separate different filters with ampersands (&). Available filters can be found below in the Parameters-section.\n<u>Example</u>: payroll.24sevenoffice.com/api/absence/v2?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1\n\nDescription of fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
+        "parameters": [
+          {
+            "name": "serialNo",
+            "in": "query",
+            "description": "Internal ID of an absence",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "datefrom",
+            "in": "query",
+            "description": "Start date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateto",
+            "in": "query",
+            "description": "End date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all absence periods registered in the company.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "1",
+                      "serialNo": "161",
+                      "startDate": "2024-01-01 00:00:00",
+                      "endDate": "2024-01-03 00:00:00",
+                      "comment": "",
+                      "requestDate": "2024-01-03 15:39:31",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "02",
+                      "description": "Sykt barn",
+                      "childId": "102701",
+                      "numberOfDays": "",
+                      "permisjonId": "",
+                      "startdateParental": "",
+                      "lastChanged": "",
+                      "externalId": ""
+                    },
+                    {
+                      "empId": "1",
+                      "serialNo": "10",
+                      "startDate": "2023-05-01 00:00:00",
+                      "endDate": "2023-06-01 00:00:00",
+                      "comment": "",
+                      "requestDate": "",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "12",
+                      "description": "Andre permisjoner - lovfestet",
+                      "childId": "",
+                      "numberOfDays": "",
+                      "permisjonId": "10",
+                      "startdateParental": "",
+                      "lastChanged": "2024-03-08 11:29:11",
+                      "externalId": ""
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Absence (fravær)"
+        ],
+        "summary": "Add new absence or update existing",
+        "description": "empId is mandatory to include in the body. To update an existing absence you need to add the serialNo of the absence period.\n\nAn absence period must have an absenceType.\n\nPost fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for permission-type absence (alphabetical absence types). Format YYYY-MM-DD</li><li><b>comment</b> comment field</li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) code specifying type of absence. List of available absence types and corresponding code can be retrieved from the absencetypes-endpoint</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Mandatory with absencetype category 'sick_child'</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absencetype category vacation</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Mandatory with absencetype with leave_of_absence_type 'permisjonMedForeldrepenger'. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "empId": 1,
+                  "absenceType": "04",
+                  "startDate": "2022-03-01",
+                  "endDate": "2022-03-15",
+                  "numberOfDays": 7,
+                  "comment": "Travel to Oslo",
+                  "childId": "",
+                  "serialNo": "73",
+                  "percent": "100",
+                  "permisjonId": "",
+                  "startdateParental": "",
+                  "externalId": "1a"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/absence/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Absence (fravær)"
+        ],
+        "summary": "Get all absence for an employee",
+        "description": "Get all registered absence data for an employee. Result can be limited with the search filter criteria.\n\n<b>Filter</b>\nFilters can be added as query parameters by adding a question mark (?) at the end of the URL and then separate different filters with ampersands (&). Available filters can be found below in the Parameters-section.\n<u>Example</u>: payroll.24sevenoffice.com/api/absence/v2/1?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1\n\nDescription of fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Numeric employee number of the person to get absence for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "serialNo",
+            "in": "query",
+            "description": "Internal ID of an absence",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "datefrom",
+            "in": "query",
+            "description": "Start date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateto",
+            "in": "query",
+            "description": "End date of the search interval. Format YYYY-MM-DD.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all absence periods of the specified employee.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "1",
+                      "serialNo": "161",
+                      "startDate": "2024-01-01 00:00:00",
+                      "endDate": "2024-01-03 00:00:00",
+                      "comment": "",
+                      "requestDate": "2024-01-03 15:39:31",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "02",
+                      "description": "Sykt barn",
+                      "childId": "102701",
+                      "numberOfDays": "",
+                      "permisjonId": "",
+                      "startdateParental": "",
+                      "lastChanged": "",
+                      "externalId": ""
+                    },
+                    {
+                      "empId": "1",
+                      "serialNo": "10",
+                      "startDate": "2023-05-01 00:00:00",
+                      "endDate": "2023-06-01 00:00:00",
+                      "comment": "",
+                      "requestDate": "",
+                      "requestMotivation": "",
+                      "approved": "",
+                      "percent": "100",
+                      "absenceType": "12",
+                      "description": "Andre permisjoner - lovfestet",
+                      "childId": "",
+                      "numberOfDays": "",
+                      "permisjonId": "10",
+                      "startdateParental": "",
+                      "lastChanged": "2024-03-08 11:29:11",
+                      "externalId": ""
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/absencetypes/v2": {
+      "get": {
+        "tags": [
+          "Absencetypes (fraværstyper)"
+        ],
+        "summary": "Get all available absence types",
+        "description": "Returns an array with all available absence types for this company. The code is used to identify absence type in the absence-endpoint.\n\nDescription of fields:<ul><li><b>description</b> text description of absenceType</li><li><b>code</b></li><li><b>inntektsmelding_type</b> (Inntektsmelding ytelse) type reported in Digital Inntektsmelding</li><li><b>permisjonId</b> boolean value. Describes if absence periods with this absence type should be reported with permisjonId or not.</li><li><b>leave_of_absence_type</b> (permisjonstype)</li><li><b>percentage</b> boolean value. Describes if absence periods with this absence type can be reported with percentage or not.</li><li><b>comment_mandatory</b> boolean value. Describes if comment is mandatory for absence periods with this absence type.</li><li><b>category</b> absence type category. Available values are:<ul><li>sickness</li><li>sick_child</li><li>self_report</li><li>vacation</li><li>leave_of_absence</li></ul></li></ul>",
+        "responses": {
+          "200": {
+            "description": "List of absence types JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "description": "Sykt barn",
+                      "code": "02",
+                      "inntektsmelding_type": "",
+                      "permisjonId": "0",
+                      "leave_of_absence_type": "",
+                      "percentage": "1",
+                      "comment_mandatory": "0",
+                      "category": "sick_child"
+                    },
+                    {
+                      "description": "Egenmelding",
+                      "code": "03",
+                      "inntektsmelding_type": "",
+                      "permisjonId": "0",
+                      "leave_of_absence_type": "",
+                      "percentage": "1",
+                      "comment_mandatory": "0",
+                      "category": "self_report"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absencetypes/v2/{code}": {
+      "get": {
+        "tags": [
+          "Absencetypes (fraværstyper)"
+        ],
+        "summary": "Get a specific absence types",
+        "description": "Returns an object with the properties of the specified absence type. The code is used to identify absence type in the absence-endpoint.\n\nDescription of fields:<ul><li><b>description</b> text description of absenceType</li><li><b>code</b></li><li><b>inntektsmelding_type</b> (Inntektsmelding ytelse) type reported in Digital Inntektsmelding</li><li><b>permisjonId</b> boolean value. Describes if absence periods with this absence type should be reported with permisjonId or not.</li><li><b>leave_of_absence_type</b> (permisjonstype)</li><li><b>percentage</b> boolean value. Describes if absence periods with this absence type can be reported with percentage or not.</li><li><b>comment_mandatory</b> boolean value. Describes if comment is mandatory for absence periods with this absence type.</li><li><b>category</b> absence type category. Available values are:<ul><li>sickness</li><li>sick_child</li><li>self_report</li><li>vacation</li><li>leave_of_absence</li></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "Code of the absence type to get properties for.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of absence types JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "description": "Sykt barn",
+                      "code": "02",
+                      "inntektsmelding_type": "",
+                      "permisjonId": "0",
+                      "leave_of_absence_type": "",
+                      "percentage": "1",
+                      "comment_mandatory": "0",
+                      "category": "sick_child"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounting/v2/{payrollrunId}": {
+      "get": {
+        "tags": [
+          "Accounting (bokføring)"
+        ],
+        "summary": "Get accounting rows for a payroll run or term",
+        "description": "Get accounting/bookkeeping rows for a specific payroll run or term. If you want to get accounting rows for a term, you specify the type as 'term' and provide a the payrollrunId of a payroll run with payment date within that term.\n\nDescription of fields:<ul><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run</li><li><b>date</b> accounting date. Format YYYY-MM-DD</li><li><b>empId</b> (ansattnr) employee number. Only included when group_by_person is true.</li><li><b>account</b> (konto) account number</li><li><b>vat_code</b> (momskode) VAT code. Only included for accounts 4000 and above.</li><li><b>vat_percentage</b> (momsprosent) VAT percentage. Only included for accounts 4000 and above.</li><li><b>dimid_{ID}</b> dimension value for each exported dimension. The ID corresponds to the dimension ID from /dimension endpoint.</li><li><b>department</b> (avdeling) department dimension value. Convenience field that will have the same value as the department dimid_{ID} field.</li><li><b>project</b> (prosjekt) project dimension value. Convenience field that will have the same value as the project dimid_{ID} field.</li><li><b>amount</b> (beløp) accounting amount.</li></ul>",
+        "parameters": [
+          {
+            "name": "payrollrunId",
+            "in": "path",
+            "description": "ID of the payroll run to get accounting rows for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of accounting. Available values are:<ul><li><b>period</b> (default) - accounting rows for the payroll period</li><li><b>term</b> - accounting rows for the tax term</li></ul>",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group_by_person",
+            "in": "query",
+            "description": "Group accounting rows by employee. If true, the employee field will be included in the response.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "vat_rows",
+            "in": "query",
+            "description": "Include separate VAT rows in the response.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of accounting rows for the payroll run.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "payrollrunId": "44",
+                      "date": "2024-01-31",
+                      "account": "5000",
+                      "dimid_1": "10",
+                      "dimid_2": "",
+                      "department": "10",
+                      "project": "",
+                      "amount": "50000.00"
+                    },
+                    {
+                      "payrollrunId": "44",
+                      "date": "2024-01-31",
+                      "account": "2770",
+                      "dimid_1": "",
+                      "dimid_2": "",
+                      "department": "",
+                      "project": "",
+                      "amount": "-50000.00"
+                    },
+                    {
+                      "payrollrunId": "44",
+                      "date": "2024-01-31",
+                      "account": "7140",
+                      "vat_code": "3",
+                      "vat_percentage": "25.00",
+                      "dimid_1": "10",
+                      "dimid_2": "100",
+                      "department": "10",
+                      "project": "100",
+                      "amount": "1200.00"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/child/v2": {
+      "post": {
+        "tags": [
+          "Child (barn)"
+        ],
+        "summary": "Add new or update existing child",
+        "description": "Updates existing child or add a new one connected to employee specified in the body.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number of the parent of the child</li><li><b>childId</b> internal ID of a child. Mandatory if an existing child should be updated. Can be retrieved via get-method.</li><li><b>firstname</b> firstname of the child</li><li><b>lastname</b> lastname of the child</li><li><b>birthdate</b> (fødselsdato) birthdate of the child. Format YYYY-MM-DD</li></ul>",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{empId=23, childId=1, firstname=Kalle, lastname=Anka, birthdate=2021-03-12}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid input, object invalid",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/child/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Child (barn)"
+        ],
+        "summary": "Get children of employee",
+        "description": "Returns an array of all the children connected to an employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number of the parent of the child</li><li><b>childId</b> internal ID of a child. Mandatory if an existing child should be updated. Can be retrieved via get-method.</li><li><b>firstname</b> firstname of the child</li><li><b>lastname</b> lastname of the child</li><li><b>birthdate</b> (fødselsdato) birthdate of the child. Format YYYY-MM-DD</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employee Id of person to get the children for",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of children JSON",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "firstname": "Carl",
+                      "lastname": "Eriksson",
+                      "childId": "102701",
+                      "birthdate": "1999-12-01"
+                    },
+                    {
+                      "firstname": "Peter",
+                      "lastname": "Andersson",
+                      "childId": "102704",
+                      "birthdate": "2001-03-04"
+                    },
+                    {
+                      "firstname": "Erik",
+                      "lastname": "Larsson",
+                      "childId": "102711",
+                      "birthdate": "2004-08-08"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/dimension/v2": {
+      "get": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Get all dimensions",
+        "description": "Get all available dimensions in the company.\n\nDescription of fields:\n<ul><li><b>dimid</b> id of the dimension</li><li><b>name</b> name of the dimension</li></ul>",
+        "responses": {
+          "200": {
+            "description": "Array of all absence periods registered in the company.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "dimid": "1",
+                      "name": "Department"
+                    },
+                    {
+                      "dimid": "2",
+                      "name": "Project"
+                    },
+                    {
+                      "dimid": "3",
+                      "name": "Produkter"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/dimension/v2/{dimid}": {
+      "get": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Get all dimension values for the dimension with the specified dimid",
+        "description": "Get all dimension values for the dimension with the specified dimid.\n\nDescription of fields:\n<ul><li><b>value</b> dimension value</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not</li></ul>",
+        "parameters": [
+          {
+            "name": "dimid",
+            "in": "path",
+            "description": "Numeric id of the dimension to get values for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all dimension values for the dimension with the specified dimid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "value": "1",
+                      "name": "Dimension value 1",
+                      "active": "1"
+                    },
+                    {
+                      "value": "10",
+                      "name": "Dimension value 10",
+                      "active": "1"
+                    },
+                    {
+                      "value": "1000",
+                      "name": "Dimension value 1000",
+                      "active": "0"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Add a new dimension value or update an existing dimension value for the dimension with the specified dimid",
+        "description": "Add a new dimension value or update an existing dimension value for the dimension with the specified dimid. Value is mandatory and if the value exist the dimension value will be updated. Otherwise a new dimension value is created.\n\nPost fields:\n<ul><li><b>value</b> dimension value. Mandatory field.</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not. Available values:<ul><li><b>1</b> active</li><li><b>0</b> inactive</li></ul></li></ul>",
+        "parameters": [
+          {
+            "name": "dimid",
+            "in": "path",
+            "description": "Numeric id of the dimension to get values for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{value=1002, name=New dimension value, active=1}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! Item created returned",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/dimension/v2/{dimid}/{value}": {
+      "get": {
+        "tags": [
+          "Dimension (dimensjoner)"
+        ],
+        "summary": "Get a specific dimension value",
+        "description": "Get a specific dimension value.\n\nDescription of fields:\n<ul><li><b>value</b> dimension value</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not</li></ul>",
+        "parameters": [
+          {
+            "name": "dimid",
+            "in": "path",
+            "description": "Numeric id of the dimension to get values for.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "description": "Value of the dimension value to get.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array with the dimension value object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "value": "1",
+                      "name": "Dimension value 1",
+                      "active": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
     "/employee/v2": {
       "get": {
         "tags": [
           "Employee (ansatt)"
         ],
         "summary": "Get all employee information",
-        "description": "Get all employee information for the company.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "description": "Get all employee information for the company.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
         "responses": {
           "200": {
             "description": "Array of all employee information for the company.",
@@ -203,7 +932,7 @@
           "Employee (ansatt)"
         ],
         "summary": "Add new employee",
-        "description": "Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "description": "Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
         "requestBody": {
           "content": {
             "application/json": {
@@ -246,7 +975,7 @@
           "Employee (ansatt)"
         ],
         "summary": "Get employee information for an employee",
-        "description": "Get all employee information for a specific employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "description": "Get all employee information for a specific employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
         "parameters": [
           {
             "name": "empId",
@@ -354,7 +1083,7 @@
           "Employee (ansatt)"
         ],
         "summary": "Update existing employee in the company.",
-        "description": "Update an existing employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
+        "description": "Update an existing employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is \"passnummer\". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>",
         "parameters": [
           {
             "name": "empId",
@@ -687,6 +1416,112 @@
         "x-codegen-request-body-name": "body"
       }
     },
+    "/organization/v2": {
+      "get": {
+        "tags": [
+          "Organization and sites (selskap og virksomheter)"
+        ],
+        "summary": "Get company and company sites details",
+        "description": "Returns details about the company and the company sites.\n\nDescription of fields:<ul><li><b>name</b> company name</li><li><b>orgno</b> organization number</li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>address</b> company address</li><li><b>zipcode</b> company zipcode</li><li><b>tax_zone</b> (avgiftssone) available values are:<ul><li><b>1</b> &nbsp;&nbsp;&nbsp;(14,1 %)</li><li><b>1a</b> &nbsp;(14,1 %)</li><li><b>2</b> &nbsp;&nbsp;&nbsp;(10,6 %)</li><li><b>3</b> &nbsp;&nbsp;&nbsp;(6,4 %)</li><li><b>4</b> &nbsp;&nbsp;&nbsp;(5,1 %)</li><li><b>4a</b> &nbsp;(7,9 %)</li><li><b>5</b> &nbsp;&nbsp;&nbsp;(0 %)</li></ul></li><li><b>bank_account</b> company bank account number</li><li><b>tax_account</b> (skattetrekkskonto) company tax account number</li><li><b>industry</b> (næring) type of industry of the company. Available values are:<ul><b><li>ordinarie</li><li>godstransport</li><li>lantbruk</li><li>sektorunntatt</li></b></ul></li><li><b>tax_rule</b> (skatte- og avgiftsregel) available values are:<ul><b><li>standard</li><li>skattefriOrganisasjon</li></b></ul></li><li><b>retirement_age</b> (pensjonsalder) default is 67</li><li><b>country_code</b> (landkode) country code of the client. Available values are:<ul><li><b>NO</b></li><li><b>SE</b></li></ul></li><li><b>sites</b> (virksomheter / underenheter) array of sites connected to this organization. Site model:<ul><li><b>id</b> internal id of site</li><li><b>name</b></li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>tax_zone</b> (avgiftssone) tax zone can be empty for sites</li></ul></li></ul>",
+        "responses": {
+          "200": {
+            "description": "Company details JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "name": "Herand",
+                    "orgno": "911010441",
+                    "enterprise_number": "911010445",
+                    "address": "Inkognitogata 33",
+                    "zipcode": "54142",
+                    "tax_zone": "1a",
+                    "bank_account": "12345678909",
+                    "tax_account": "11993123299",
+                    "industry": "ordinarie",
+                    "tax_rule": "standard",
+                    "retirement_age": "67",
+                    "sites": [
+                      {
+                        "id": "3",
+                        "name": "Virksomhet A",
+                        "enterprise_number": "811010472",
+                        "tax_zone": "1"
+                      },
+                      {
+                        "id": "4",
+                        "name": "Virksomhet B",
+                        "enterprise_number": "217733234",
+                        "tax_zone": "3"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Organization and sites (selskap og virksomheter)"
+        ],
+        "summary": "Updates company and company sites",
+        "description": "Update details about the company and the company sites. Add a site object without ID to create a new site. If ID is provided in the site object, the existing site corresponding to that ID will be updated. \n\nDescription of fields:<ul><li><b>name</b> company name</li><li><b>orgno</b> organization number</li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>address</b> company address</li><li><b>zipcode</b> company zipcode</li><li><b>tax_zone</b> (avgiftssone) available values are:<ul><li><b>1</b> &nbsp;&nbsp;&nbsp;(14,1 %)</li><li><b>1a</b> &nbsp;(14,1 %)</li><li><b>2</b> &nbsp;&nbsp;&nbsp;(10,6 %)</li><li><b>3</b> &nbsp;&nbsp;&nbsp;(6,4 %)</li><li><b>4</b> &nbsp;&nbsp;&nbsp;(5,1 %)</li><li><b>4a</b> &nbsp;(7,9 %)</li><li><b>5</b> &nbsp;&nbsp;&nbsp;(0 %)</li></ul></li><li><b>bank_account</b> company bank account number</li><li><b>tax_account</b> (skattetrekkskonto) company tax account number</li><li><b>industry</b> (næring) type of industry of the company. Available values are:<ul><b><li>ordinarie</li><li>godstransport</li><li>lantbruk</li><li>sektorunntatt</li></b></ul></li><li><b>tax_rule</b> (skatte- og avgiftsregel) available values are:<ul><b><li>standard</li><li>skattefriOrganisasjon</li></b></ul></li><li><b>retirement_age</b> (pensjonsalder) default is 67</li><li><b>sites</b> (virksomheter / underenheter) array of sites connected to this organization. Site model:<ul><li><b>id</b> internal id of site</li><li><b>name</b></li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>tax_zone</b> (avgiftssone) tax zone can be empty for sites</li></ul></li></ul>",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "name": "Herand",
+                  "orgno": "911010441",
+                  "enterprise_number": "911010445",
+                  "address": "Inkognitogata 33",
+                  "zipcode": "54142",
+                  "tax_zone": "1a",
+                  "bank_account": "12345678909",
+                  "tax_account": "11993123299",
+                  "industry": "ordinarie",
+                  "tax_rule": "standard",
+                  "retirement_age": "67",
+                  "sites": [
+                    {
+                      "name": "Virksomhet C",
+                      "enterprise_number": "311010472",
+                      "tax_zone": "1"
+                    },
+                    {
+                      "id": "3",
+                      "name": "Virksomhet A",
+                      "enterprise_number": "811010472",
+                      "tax_zone": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Company object as JSON",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
     "/payrollrun/v2/": {
       "get": {
         "tags": [
@@ -795,66 +1630,6 @@
                       "limitDate": "",
                       "payrollGroup": "",
                       "payslips": "1"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/payslips/v2/{empId}": {
-      "get": {
-        "tags": [
-          "Payslips (lønnsslipper)"
-        ],
-        "summary": "Get list of available payslips for employee",
-        "description": "Get a JSON-encoded list of available payslips for an employee.\n\nDescription of fields:<ul><li><b>text</b> text representation of the period of the payslip</li><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run which the payslip is connected to</li><li><b>startDate</b> (periode fra) start date of the period of the payslip</li><li><b>endDate</b> (periode til) end date of the period of the payslip</li></ul>",
-        "parameters": [
-          {
-            "name": "empId",
-            "in": "path",
-            "description": "Employment Id (ansattnr) of the person to get payslips for.",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Array of all available payslips for the employee.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "text": "Mai  2023",
-                      "payrollrunId": "41",
-                      "startDate": "01.05.2023",
-                      "endDate": "31.05.2023"
-                    },
-                    {
-                      "text": "April  2023",
-                      "payrollrunId": "40",
-                      "startDate": "01.04.2023",
-                      "endDate": "30.04.2023"
-                    },
-                    {
-                      "text": "27.04.2023 - 27.04.2023",
-                      "payrollrunId": "39",
-                      "startDate": "27.04.2023",
-                      "endDate": "27.04.2023"
                     }
                   ]
                 }
@@ -1390,421 +2165,49 @@
         }
       }
     },
-    "/dimension/v2": {
+    "/payslips/v2/{empId}": {
       "get": {
         "tags": [
-          "Dimension (dimensjoner)"
+          "Payslips (lønnsslipper)"
         ],
-        "summary": "Get all dimensions",
-        "description": "Get all available dimensions in the company.\n\nDescription of fields:\n<ul><li><b>dimid</b> id of the dimension</li><li><b>name</b> name of the dimension</li></ul>",
-        "responses": {
-          "200": {
-            "description": "Array of all absence periods registered in the company.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "dimid": "1",
-                      "name": "Department"
-                    },
-                    {
-                      "dimid": "2",
-                      "name": "Project"
-                    },
-                    {
-                      "dimid": "3",
-                      "name": "Produkter"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/dimension/v2/{dimid}": {
-      "get": {
-        "tags": [
-          "Dimension (dimensjoner)"
-        ],
-        "summary": "Get all dimension values for the dimension with the specified dimid",
-        "description": "Get all dimension values for the dimension with the specified dimid.\n\nDescription of fields:\n<ul><li><b>value</b> dimension value</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not</li></ul>",
-        "parameters": [
-          {
-            "name": "dimid",
-            "in": "path",
-            "description": "Numeric id of the dimension to get values for.",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Array of all dimension values for the dimension with the specified dimid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "value": "1",
-                      "name": "Dimension value 1",
-                      "active": "1"
-                    },
-                    {
-                      "value": "10",
-                      "name": "Dimension value 10",
-                      "active": "1"
-                    },
-                    {
-                      "value": "1000",
-                      "name": "Dimension value 1000",
-                      "active": "0"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Dimension (dimensjoner)"
-        ],
-        "summary": "Add a new dimension value or update an existing dimension value for the dimension with the specified dimid",
-        "description": "Add a new dimension value or update an existing dimension value for the dimension with the specified dimid. Value is mandatory and if the value exist the dimension value will be updated. Otherwise a new dimension value is created.\n\nPost fields:\n<ul><li><b>value</b> dimension value. Mandatory field.</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not. Available values:<ul><li><b>1</b> active</li><li><b>0</b> inactive</li></ul></li></ul>",
-        "parameters": [
-          {
-            "name": "dimid",
-            "in": "path",
-            "description": "Numeric id of the dimension to get values for.",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "text/html": {
-              "schema": {
-                "type": "string",
-                "example": "{value=1002, name=New dimension value, active=1}"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success! Item created returned",
-            "content": {}
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        },
-        "x-codegen-request-body-name": "body"
-      }
-    },
-    "/dimension/v2/{dimid}/{value}": {
-      "get": {
-        "tags": [
-          "Dimension (dimensjoner)"
-        ],
-        "summary": "Get a specific dimension value",
-        "description": "Get a specific dimension value.\n\nDescription of fields:\n<ul><li><b>value</b> dimension value</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not</li></ul>",
-        "parameters": [
-          {
-            "name": "dimid",
-            "in": "path",
-            "description": "Numeric id of the dimension to get values for.",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "value",
-            "in": "path",
-            "description": "Value of the dimension value to get.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Array with the dimension value object.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "value": "1",
-                      "name": "Dimension value 1",
-                      "active": "1"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/absence/v2": {
-      "get": {
-        "tags": [
-          "Absence (fravær)"
-        ],
-        "summary": "Get all absence",
-        "description": "Get all registered absence data for all employees in the company. Result can be limited with the search filter criteria.\n\n<b>Filter</b>\nFilters can be added as query parameters by adding a question mark (?) at the end of the URL and then separate different filters with ampersands (&). Available filters can be found below in the Parameters-section.\n<u>Example</u>: payroll.24sevenoffice.com/api/absence/v2?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1\n\nDescription of fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
-        "parameters": [
-          {
-            "name": "serialNo",
-            "in": "query",
-            "description": "Internal ID of an absence",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "datefrom",
-            "in": "query",
-            "description": "Start date of the search interval. Format YYYY-MM-DD.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateto",
-            "in": "query",
-            "description": "End date of the search interval. Format YYYY-MM-DD.",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Array of all absence periods registered in the company.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "empId": "1",
-                      "serialNo": "161",
-                      "startDate": "2024-01-01 00:00:00",
-                      "endDate": "2024-01-03 00:00:00",
-                      "comment": "",
-                      "requestDate": "2024-01-03 15:39:31",
-                      "requestMotivation": "",
-                      "approved": "",
-                      "percent": "100",
-                      "absenceType": "02",
-                      "description": "Sykt barn",
-                      "childId": "102701",
-                      "numberOfDays": "",
-                      "permisjonId": "",
-                      "startdateParental": "",
-                      "lastChanged": "",
-                      "externalId": ""
-                    },
-                    {
-                      "empId": "1",
-                      "serialNo": "10",
-                      "startDate": "2023-05-01 00:00:00",
-                      "endDate": "2023-06-01 00:00:00",
-                      "comment": "",
-                      "requestDate": "",
-                      "requestMotivation": "",
-                      "approved": "",
-                      "percent": "100",
-                      "absenceType": "12",
-                      "description": "Andre permisjoner - lovfestet",
-                      "childId": "",
-                      "numberOfDays": "",
-                      "permisjonId": "10",
-                      "startdateParental": "",
-                      "lastChanged": "2024-03-08 11:29:11",
-                      "externalId": ""
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Absence (fravær)"
-        ],
-        "summary": "Add new absence or update existing",
-        "description": "empId is mandatory to include in the body. To update an existing absence you need to add the serialNo of the absence period.\n\nAn absence period must have an absenceType.\n\nPost fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for permission-type absence (alphabetical absence types). Format YYYY-MM-DD</li><li><b>comment</b> comment field</li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) code specifying type of absence. List of available absence types and corresponding code can be retrieved from the absencetypes-endpoint</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Mandatory with absencetype category 'sick_child'</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absencetype category vacation</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Mandatory with absencetype with leave_of_absence_type 'permisjonMedForeldrepenger'. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
-        "requestBody": {
-          "content": {
-            "text/html": {
-              "schema": {
-                "type": "string",
-                "example": "{empId=1, absenceType=04, startDate=2022-03-01, endDate=2022-03-15, numberOfDays=7, comment=Travel to Oslo, childId=, serialNo=73, percent=100, permisjonId=, startdateParental=, externalId=1a}"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success! Item created returned",
-            "content": {}
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        },
-        "x-codegen-request-body-name": "body"
-      }
-    },
-    "/absence/v2/{empId}": {
-      "get": {
-        "tags": [
-          "Absence (fravær)"
-        ],
-        "summary": "Get all absence for an employee",
-        "description": "Get all registered absence data for an employee. Result can be limited with the search filter criteria.\n\n<b>Filter</b>\nFilters can be added as query parameters by adding a question mark (?) at the end of the URL and then separate different filters with ampersands (&). Available filters can be found below in the Parameters-section.\n<u>Example</u>: payroll.24sevenoffice.com/api/absence/v2/1?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1\n\nDescription of fields:\n<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>",
+        "summary": "Get list of available payslips for employee",
+        "description": "Get a JSON-encoded list of available payslips for an employee.\n\nDescription of fields:<ul><li><b>text</b> text representation of the period of the payslip</li><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run which the payslip is connected to</li><li><b>startDate</b> (periode fra) start date of the period of the payslip</li><li><b>endDate</b> (periode til) end date of the period of the payslip</li></ul>",
         "parameters": [
           {
             "name": "empId",
             "in": "path",
-            "description": "Numeric employee number of the person to get absence for.",
+            "description": "Employment Id (ansattnr) of the person to get payslips for.",
             "required": true,
             "schema": {
               "type": "integer"
-            }
-          },
-          {
-            "name": "serialNo",
-            "in": "query",
-            "description": "Internal ID of an absence",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "datefrom",
-            "in": "query",
-            "description": "Start date of the search interval. Format YYYY-MM-DD.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateto",
-            "in": "query",
-            "description": "End date of the search interval. Format YYYY-MM-DD.",
-            "schema": {
-              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Array of all absence periods of the specified employee.",
+            "description": "Array of all available payslips for the employee.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "example": [
                     {
-                      "empId": "1",
-                      "serialNo": "161",
-                      "startDate": "2024-01-01 00:00:00",
-                      "endDate": "2024-01-03 00:00:00",
-                      "comment": "",
-                      "requestDate": "2024-01-03 15:39:31",
-                      "requestMotivation": "",
-                      "approved": "",
-                      "percent": "100",
-                      "absenceType": "02",
-                      "description": "Sykt barn",
-                      "childId": "102701",
-                      "numberOfDays": "",
-                      "permisjonId": "",
-                      "startdateParental": "",
-                      "lastChanged": "",
-                      "externalId": ""
+                      "text": "Mai  2023",
+                      "payrollrunId": "41",
+                      "startDate": "01.05.2023",
+                      "endDate": "31.05.2023"
                     },
                     {
-                      "empId": "1",
-                      "serialNo": "10",
-                      "startDate": "2023-05-01 00:00:00",
-                      "endDate": "2023-06-01 00:00:00",
-                      "comment": "",
-                      "requestDate": "",
-                      "requestMotivation": "",
-                      "approved": "",
-                      "percent": "100",
-                      "absenceType": "12",
-                      "description": "Andre permisjoner - lovfestet",
-                      "childId": "",
-                      "numberOfDays": "",
-                      "permisjonId": "10",
-                      "startdateParental": "",
-                      "lastChanged": "2024-03-08 11:29:11",
-                      "externalId": ""
+                      "text": "April  2023",
+                      "payrollrunId": "40",
+                      "startDate": "01.04.2023",
+                      "endDate": "30.04.2023"
+                    },
+                    {
+                      "text": "27.04.2023 - 27.04.2023",
+                      "payrollrunId": "39",
+                      "startDate": "27.04.2023",
+                      "endDate": "27.04.2023"
                     }
                   ]
                 }
@@ -1820,192 +2223,6 @@
             "content": {}
           }
         }
-      }
-    },
-    "/absencetypes/v2": {
-      "get": {
-        "tags": [
-          "Absencetypes (fraværstyper)"
-        ],
-        "summary": "Get all available absence types",
-        "description": "Returns an array with all available absence types for this company. The code is used to identify absence type in the absence-endpoint.\n\nDescription of fields:<ul><li><b>description</b> text description of absenceType</li><li><b>code</b></li><li><b>inntektsmelding_type</b> (Inntektsmelding ytelse) type reported in Digital Inntektsmelding</li><li><b>permisjonId</b> boolean value. Describes if absence periods with this absence type should be reported with permisjonId or not.</li><li><b>leave_of_absence_type</b> (permisjonstype)</li><li><b>percentage</b> boolean value. Describes if absence periods with this absence type can be reported with percentage or not.</li><li><b>comment_mandatory</b> boolean value. Describes if comment is mandatory for absence periods with this absence type.</li><li><b>category</b> absence type category. Available values are:<ul><li>sickness</li><li>sick_child</li><li>self_report</li><li>vacation</li><li>leave_of_absence</li></ul></li></ul>",
-        "responses": {
-          "200": {
-            "description": "List of absence types JSON",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "description": "Sykt barn",
-                      "code": "02",
-                      "inntektsmelding_type": "",
-                      "permisjonId": "0",
-                      "leave_of_absence_type": "",
-                      "percentage": "1",
-                      "comment_mandatory": "0",
-                      "category": "sick_child"
-                    },
-                    {
-                      "description": "Egenmelding",
-                      "code": "03",
-                      "inntektsmelding_type": "",
-                      "permisjonId": "0",
-                      "leave_of_absence_type": "",
-                      "percentage": "1",
-                      "comment_mandatory": "0",
-                      "category": "self_report"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/absencetypes/v2/{code}": {
-      "get": {
-        "tags": [
-          "Absencetypes (fraværstyper)"
-        ],
-        "summary": "Get a specific absence types",
-        "description": "Returns an object with the properties of the specified absence type. The code is used to identify absence type in the absence-endpoint.\n\nDescription of fields:<ul><li><b>description</b> text description of absenceType</li><li><b>code</b></li><li><b>inntektsmelding_type</b> (Inntektsmelding ytelse) type reported in Digital Inntektsmelding</li><li><b>permisjonId</b> boolean value. Describes if absence periods with this absence type should be reported with permisjonId or not.</li><li><b>leave_of_absence_type</b> (permisjonstype)</li><li><b>percentage</b> boolean value. Describes if absence periods with this absence type can be reported with percentage or not.</li><li><b>comment_mandatory</b> boolean value. Describes if comment is mandatory for absence periods with this absence type.</li><li><b>category</b> absence type category. Available values are:<ul><li>sickness</li><li>sick_child</li><li>self_report</li><li>vacation</li><li>leave_of_absence</li></ul></li></ul>",
-        "parameters": [
-          {
-            "name": "code",
-            "in": "path",
-            "description": "Code of the absence type to get properties for.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of absence types JSON",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "description": "Sykt barn",
-                      "code": "02",
-                      "inntektsmelding_type": "",
-                      "permisjonId": "0",
-                      "leave_of_absence_type": "",
-                      "percentage": "1",
-                      "comment_mandatory": "0",
-                      "category": "sick_child"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/child/v2/{empId}": {
-      "get": {
-        "tags": [
-          "Child (barn)"
-        ],
-        "summary": "Get children of employee",
-        "description": "Returns an array of all the children connected to an employee.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number of the parent of the child</li><li><b>childId</b> internal ID of a child. Mandatory if an existing child should be updated. Can be retrieved via get-method.</li><li><b>firstname</b> firstname of the child</li><li><b>lastname</b> lastname of the child</li><li><b>birthdate</b> (fødselsdato) birthdate of the child. Format YYYY-MM-DD</li></ul>",
-        "parameters": [
-          {
-            "name": "empId",
-            "in": "path",
-            "description": "Employee Id of person to get the children for",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of children JSON",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "example": [
-                    {
-                      "firstnamn": "Carl",
-                      "surname": "Eriksson",
-                      "childId": "102701",
-                      "birthdate": "1999-12-01"
-                    },
-                    {
-                      "firstnamn": "Peter",
-                      "surname": "Andersson",
-                      "childId": "102704",
-                      "birthdate": "2001-03-04"
-                    },
-                    {
-                      "firstnamn": "Erik",
-                      "surname": "Larsson",
-                      "childId": "102711",
-                      "birthdate": "2004-08-08"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/child/v2": {
-      "post": {
-        "tags": [
-          "Child (barn)"
-        ],
-        "summary": "Add new or update existing child",
-        "description": "Updates existing child or add a new one connected to employee specified in the body.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number of the parent of the child</li><li><b>childId</b> internal ID of a child. Mandatory if an existing child should be updated. Can be retrieved via get-method.</li><li><b>firstname</b> firstname of the child</li><li><b>lastname</b> lastname of the child</li><li><b>birthdate</b> (fødselsdato) birthdate of the child. Format YYYY-MM-DD</li></ul>",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string",
-                "example": "{empId=23, childId=1, firstname=Kalle, lastname=Anka, birthdate=2021-03-12}"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Success! Item created returned",
-            "content": {}
-          },
-          "400": {
-            "description": "Invalid input, object invalid",
-            "content": {}
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        },
-        "x-codegen-request-body-name": "body"
       }
     },
     "/transaction/v2": {
@@ -2224,6 +2441,287 @@
         "x-codegen-request-body-name": "body"
       }
     },
+    "/vehicle/v2": {
+      "get": {
+        "tags": [
+          "Vehicle (kjøretøy)"
+        ],
+        "summary": "Get all vehicles for the client",
+        "description": "Returns an array of all vehicles registered on all employees of the client. Only available for Norwegian clients.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle. Mandatory if an existing vehicle should be updated. Can be retrieved via the get-method.</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>",
+        "responses": {
+          "200": {
+            "description": "Array of all vehicles registered on the client.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "23",
+                      "vehicleId": "1",
+                      "regno": "AB12345",
+                      "make": "Volvo",
+                      "model": "V70",
+                      "yearModel": "2018",
+                      "vehicleType": "1",
+                      "fuelType": "2",
+                      "autopass": "1"
+                    },
+                    {
+                      "empId": "23",
+                      "vehicleId": "2",
+                      "regno": "CD67890",
+                      "make": "Tesla",
+                      "model": "Model 3",
+                      "yearModel": "2022",
+                      "vehicleType": "1",
+                      "fuelType": "3",
+                      "autopass": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/vehicle/v2/{empId}": {
+      "get": {
+        "tags": [
+          "Vehicle (kjøretøy)"
+        ],
+        "summary": "Get all vehicles of an employee",
+        "description": "Returns an array of all vehicles registered on the specified employee. Only available for Norwegian clients.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employee id of the person to get vehicles for",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of all vehicles registered on the employee.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "23",
+                      "vehicleId": "1",
+                      "regno": "AB12345",
+                      "make": "Volvo",
+                      "model": "V70",
+                      "yearModel": "2018",
+                      "vehicleType": "1",
+                      "fuelType": "2",
+                      "autopass": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vehicle (kjøretøy)"
+        ],
+        "summary": "Add a new vehicle for the specified employee",
+        "description": "Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.\n\nDescription of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employee id of the person to add/update a vehicle for",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{regno=AB12345, make=Volvo, model=V70, yearModel=2018, vehicleType=1, fuelType=2, autopass=1}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! The created or updated vehicle is returned as JSON.",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid input, object invalid",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/vehicle/v2/{empId}/{vehicleId}": {
+      "get": {
+        "tags": [
+          "Vehicle (kjøretøy)"
+        ],
+        "summary": "Get a specific vehicle for the specified employee",
+        "description": "Returns the specified vehicle for the specified employee. Only available for Norwegian clients.\n\nDescription of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employee id of the person the vehicle belongs to",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "description": "Internal id of the vehicle",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The specified vehicle returned as JSON.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": [
+                    {
+                      "empId": "23",
+                      "vehicleId": "1",
+                      "regno": "AB12345",
+                      "make": "Volvo",
+                      "model": "V70",
+                      "yearModel": "2018",
+                      "vehicleType": "1",
+                      "fuelType": "2",
+                      "autopass": "1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "404": {
+            "description": "Vehicle not found for the specified employee",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vehicle (kjøretøy)"
+        ],
+        "summary": "Update an existing vehicle for the specified employee",
+        "description": "Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.\n\nDescription of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>",
+        "parameters": [
+          {
+            "name": "empId",
+            "in": "path",
+            "description": "Employee id of the person the vehicle belongs to",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "description": "Internal id of the vehicle to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "example": "{regno=AB12345, make=Volvo, model=V70, yearModel=2018, vehicleType=1, fuelType=2, autopass=1}"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success! The updated vehicle is returned as JSON.",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid input, object invalid",
+            "content": {}
+          },
+          "401": {
+            "description": "Error, bad input parameter",
+            "content": {}
+          },
+          "404": {
+            "description": "Vehicle not found for the specified employee",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal server error. Contact support for more info.",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
     "/wagetypes/v2": {
       "get": {
         "tags": [
@@ -2361,112 +2859,6 @@
             "content": {}
           }
         }
-      }
-    },
-    "/organization/v2": {
-      "get": {
-        "tags": [
-          "Organization and sites (selskap og virksomheter)"
-        ],
-        "summary": "Get company and company sites details",
-        "description": "Returns details about the company and the company sites.\n\nDescription of fields:<ul><li><b>name</b> company name</li><li><b>orgno</b> organization number</li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>address</b> company address</li><li><b>zipcode</b> company zipcode</li><li><b>tax_zone</b> (avgiftssone) available values are:<ul><li><b>1</b> &nbsp;&nbsp;&nbsp;(14,1 %)</li><li><b>1a</b> &nbsp;(14,1 %)</li><li><b>2</b> &nbsp;&nbsp;&nbsp;(10,6 %)</li><li><b>3</b> &nbsp;&nbsp;&nbsp;(6,4 %)</li><li><b>4</b> &nbsp;&nbsp;&nbsp;(5,1 %)</li><li><b>4a</b> &nbsp;(7,9 %)</li><li><b>5</b> &nbsp;&nbsp;&nbsp;(0 %)</li></ul></li><li><b>bank_account</b> company bank account number</li><li><b>tax_account</b> (skattetrekkskonto) company tax account number</li><li><b>industry</b> (næring) type of industry of the company. Available values are:<ul><b><li>ordinarie</li><li>godstransport</li><li>lantbruk</li><li>sektorunntatt</li></b></ul></li><li><b>tax_rule</b> (skatte- og avgiftsregel) available values are:<ul><b><li>standard</li><li>skattefriOrganisasjon</li></b></ul></li><li><b>retirement_age</b> (pensjonsalder) default is 67</li><li><b>country_code</b> (landkode) country code of the client. Available values are:<ul><li><b>NO</b></li><li><b>SE</b></li></ul></li><li><b>sites</b> (virksomheter / underenheter) array of sites connected to this organization. Site model:<ul><li><b>id</b> internal id of site</li><li><b>name</b></li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>tax_zone</b> (avgiftssone) tax zone can be empty for sites</li></ul></li></ul>",
-        "responses": {
-          "200": {
-            "description": "Company details JSON",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": {
-                    "name": "Herand",
-                    "orgno": "911010441",
-                    "enterprise_number": "911010445",
-                    "address": "Inkognitogata 33",
-                    "zipcode": "54142",
-                    "tax_zone": "1a",
-                    "bank_account": "12345678909",
-                    "tax_account": "11993123299",
-                    "industry": "ordinarie",
-                    "tax_rule": "standard",
-                    "retirement_age": "67",
-                    "sites": [
-                      {
-                        "id": "3",
-                        "name": "Virksomhet A",
-                        "enterprise_number": "811010472",
-                        "tax_zone": "1"
-                      },
-                      {
-                        "id": "4",
-                        "name": "Virksomhet B",
-                        "enterprise_number": "217733234",
-                        "tax_zone": "3"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Organization and sites (selskap og virksomheter)"
-        ],
-        "summary": "Updates company and company sites",
-        "description": "Update details about the company and the company sites. Add a site object without ID to create a new site. If ID is provided in the site object, the existing site corresponding to that ID will be updated. \n\nDescription of fields:<ul><li><b>name</b> company name</li><li><b>orgno</b> organization number</li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>address</b> company address</li><li><b>zipcode</b> company zipcode</li><li><b>tax_zone</b> (avgiftssone) available values are:<ul><li><b>1</b> &nbsp;&nbsp;&nbsp;(14,1 %)</li><li><b>1a</b> &nbsp;(14,1 %)</li><li><b>2</b> &nbsp;&nbsp;&nbsp;(10,6 %)</li><li><b>3</b> &nbsp;&nbsp;&nbsp;(6,4 %)</li><li><b>4</b> &nbsp;&nbsp;&nbsp;(5,1 %)</li><li><b>4a</b> &nbsp;(7,9 %)</li><li><b>5</b> &nbsp;&nbsp;&nbsp;(0 %)</li></ul></li><li><b>bank_account</b> company bank account number</li><li><b>tax_account</b> (skattetrekkskonto) company tax account number</li><li><b>industry</b> (næring) type of industry of the company. Available values are:<ul><b><li>ordinarie</li><li>godstransport</li><li>lantbruk</li><li>sektorunntatt</li></b></ul></li><li><b>tax_rule</b> (skatte- og avgiftsregel) available values are:<ul><b><li>standard</li><li>skattefriOrganisasjon</li></b></ul></li><li><b>retirement_age</b> (pensjonsalder) default is 67</li><li><b>sites</b> (virksomheter / underenheter) array of sites connected to this organization. Site model:<ul><li><b>id</b> internal id of site</li><li><b>name</b></li><li><b>enterprise_number</b> (virksomhetsnummer)</li><li><b>tax_zone</b> (avgiftssone) tax zone can be empty for sites</li></ul></li></ul>",
-        "requestBody": {
-          "content": {
-            "*/*": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "name": "Herand",
-                  "orgno": "911010441",
-                  "enterprise_number": "911010445",
-                  "address": "Inkognitogata 33",
-                  "zipcode": "54142",
-                  "tax_zone": "1a",
-                  "bank_account": "12345678909",
-                  "tax_account": "11993123299",
-                  "industry": "ordinarie",
-                  "tax_rule": "standard",
-                  "retirement_age": "67",
-                  "sites": [
-                    {
-                      "name": "Virksomhet C",
-                      "enterprise_number": "311010472",
-                      "tax_zone": "1"
-                    },
-                    {
-                      "id": "3",
-                      "name": "Virksomhet A",
-                      "enterprise_number": "811010472",
-                      "tax_zone": "1"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Company object as JSON",
-            "content": {}
-          },
-          "401": {
-            "description": "Error, bad input parameter",
-            "content": {}
-          },
-          "500": {
-            "description": "Internal server error. Contact support for more info.",
-            "content": {}
-          }
-        },
-        "x-codegen-request-body-name": "body"
       }
     }
   },

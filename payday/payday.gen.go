@@ -800,6 +800,9 @@ type GetAbsenceV2Params struct {
 	Dateto *string `form:"dateto,omitempty" json:"dateto,omitempty"`
 }
 
+// PostAbsenceV2JSONBody defines parameters for PostAbsenceV2.
+type PostAbsenceV2JSONBody = map[string]interface{}
+
 // GetAbsenceV2EmpIdParams defines parameters for GetAbsenceV2EmpId.
 type GetAbsenceV2EmpIdParams struct {
 	// SerialNo Internal ID of an absence
@@ -812,6 +815,18 @@ type GetAbsenceV2EmpIdParams struct {
 	Dateto *string `form:"dateto,omitempty" json:"dateto,omitempty"`
 }
 
+// GetAccountingV2PayrollrunIdParams defines parameters for GetAccountingV2PayrollrunId.
+type GetAccountingV2PayrollrunIdParams struct {
+	// Type Type of accounting. Available values are:<ul><li><b>period</b> (default) - accounting rows for the payroll period</li><li><b>term</b> - accounting rows for the tax term</li></ul>
+	Type *string `form:"type,omitempty" json:"type,omitempty"`
+
+	// GroupByPerson Group accounting rows by employee. If true, the employee field will be included in the response.
+	GroupByPerson *bool `form:"group_by_person,omitempty" json:"group_by_person,omitempty"`
+
+	// VatRows Include separate VAT rows in the response.
+	VatRows *bool `form:"vat_rows,omitempty" json:"vat_rows,omitempty"`
+}
+
 // GetAuthParams defines parameters for GetAuth.
 type GetAuthParams struct {
 	// Token persistent token
@@ -820,6 +835,9 @@ type GetAuthParams struct {
 
 // PostChildV2JSONBody defines parameters for PostChildV2.
 type PostChildV2JSONBody = string
+
+// PostDimensionV2DimidJSONBody defines parameters for PostDimensionV2Dimid.
+type PostDimensionV2DimidJSONBody = string
 
 // PostEmployeeV2JSONBody defines parameters for PostEmployeeV2.
 type PostEmployeeV2JSONBody = string
@@ -875,8 +893,20 @@ type GetTransactionV2Params struct {
 // PostTransactionV2JSONBody defines parameters for PostTransactionV2.
 type PostTransactionV2JSONBody = string
 
+// PostVehicleV2EmpIdJSONBody defines parameters for PostVehicleV2EmpId.
+type PostVehicleV2EmpIdJSONBody = string
+
+// PostVehicleV2EmpIdVehicleIdJSONBody defines parameters for PostVehicleV2EmpIdVehicleId.
+type PostVehicleV2EmpIdVehicleIdJSONBody = string
+
+// PostAbsenceV2JSONRequestBody defines body for PostAbsenceV2 for application/json ContentType.
+type PostAbsenceV2JSONRequestBody = PostAbsenceV2JSONBody
+
 // PostChildV2JSONRequestBody defines body for PostChildV2 for application/json ContentType.
 type PostChildV2JSONRequestBody = PostChildV2JSONBody
+
+// PostDimensionV2DimidJSONRequestBody defines body for PostDimensionV2Dimid for application/json ContentType.
+type PostDimensionV2DimidJSONRequestBody = PostDimensionV2DimidJSONBody
 
 // PostEmployeeV2JSONRequestBody defines body for PostEmployeeV2 for application/json ContentType.
 type PostEmployeeV2JSONRequestBody = PostEmployeeV2JSONBody
@@ -895,6 +925,12 @@ type PostEmploymentV2EmpIdJSONRequestBody = PostEmploymentV2EmpIdJSONBody
 
 // PostTransactionV2JSONRequestBody defines body for PostTransactionV2 for application/json ContentType.
 type PostTransactionV2JSONRequestBody = PostTransactionV2JSONBody
+
+// PostVehicleV2EmpIdJSONRequestBody defines body for PostVehicleV2EmpId for application/json ContentType.
+type PostVehicleV2EmpIdJSONRequestBody = PostVehicleV2EmpIdJSONBody
+
+// PostVehicleV2EmpIdVehicleIdJSONRequestBody defines body for PostVehicleV2EmpIdVehicleId for application/json ContentType.
+type PostVehicleV2EmpIdVehicleIdJSONRequestBody = PostVehicleV2EmpIdVehicleIdJSONBody
 
 // Getter for additional properties for EmployeeDTO. Returns the specified
 // element and whether it was found
@@ -1790,7 +1826,7 @@ type ClientInterface interface {
 	// <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 	//
 	// Description of fields:
-	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 	//
 	// Corresponds with GET /absence/v2 (the `GetAbsenceV2` operationId).
 	GetAbsenceV2(ctx context.Context, params *GetAbsenceV2Params, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1809,6 +1845,20 @@ type ClientInterface interface {
 	// Corresponds with POST /absence/v2 (the `PostAbsenceV2` operationId).
 	PostAbsenceV2WithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// PostAbsenceV2 Add new absence or update existing
+	//
+	// empId is mandatory to include in the body. To update an existing absence you need to add the serialNo of the absence period.
+	//
+	// An absence period must have an absenceType.
+	//
+	// Post fields:
+	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for permission-type absence (alphabetical absence types). Format YYYY-MM-DD</li><li><b>comment</b> comment field</li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) code specifying type of absence. List of available absence types and corresponding code can be retrieved from the absencetypes-endpoint</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Mandatory with absencetype category 'sick_child'</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absencetype category vacation</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Mandatory with absencetype with leave_of_absence_type 'permisjonMedForeldrepenger'. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /absence/v2 (the `PostAbsenceV2` operationId).
+	PostAbsenceV2(ctx context.Context, body PostAbsenceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetAbsenceV2EmpId Get all absence for an employee
 	//
 	// Get all registered absence data for an employee. Result can be limited with the search filter criteria.
@@ -1818,7 +1868,7 @@ type ClientInterface interface {
 	// <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2/1?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 	//
 	// Description of fields:
-	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 	//
 	// Corresponds with GET /absence/v2/{empId} (the `GetAbsenceV2EmpId` operationId).
 	GetAbsenceV2EmpId(ctx context.Context, empId int, params *GetAbsenceV2EmpIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1840,6 +1890,15 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /absencetypes/v2/{code} (the `GetAbsencetypesV2Code` operationId).
 	GetAbsencetypesV2Code(ctx context.Context, code string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetAccountingV2PayrollrunId Get accounting rows for a payroll run or term
+	//
+	// Get accounting/bookkeeping rows for a specific payroll run or term. If you want to get accounting rows for a term, you specify the type as 'term' and provide a the payrollrunId of a payroll run with payment date within that term.
+	//
+	// Description of fields:<ul><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run</li><li><b>date</b> accounting date. Format YYYY-MM-DD</li><li><b>empId</b> (ansattnr) employee number. Only included when group_by_person is true.</li><li><b>account</b> (konto) account number</li><li><b>vat_code</b> (momskode) VAT code. Only included for accounts 4000 and above.</li><li><b>vat_percentage</b> (momsprosent) VAT percentage. Only included for accounts 4000 and above.</li><li><b>dimid_{ID}</b> dimension value for each exported dimension. The ID corresponds to the dimension ID from /dimension endpoint.</li><li><b>department</b> (avdeling) department dimension value. Convenience field that will have the same value as the department dimid_{ID} field.</li><li><b>project</b> (prosjekt) project dimension value. Convenience field that will have the same value as the project dimid_{ID} field.</li><li><b>amount</b> (beløp) accounting amount.</li></ul>
+	//
+	// Corresponds with GET /accounting/v2/{payrollrunId} (the `GetAccountingV2PayrollrunId` operationId).
+	GetAccountingV2PayrollrunId(ctx context.Context, payrollrunId int, params *GetAccountingV2PayrollrunIdParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAuth Obtain auth token
 	//
@@ -1911,6 +1970,18 @@ type ClientInterface interface {
 	// Corresponds with POST /dimension/v2/{dimid} (the `PostDimensionV2Dimid` operationId).
 	PostDimensionV2DimidWithBody(ctx context.Context, dimid int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// PostDimensionV2Dimid Add a new dimension value or update an existing dimension value for the dimension with the specified dimid
+	//
+	// Add a new dimension value or update an existing dimension value for the dimension with the specified dimid. Value is mandatory and if the value exist the dimension value will be updated. Otherwise a new dimension value is created.
+	//
+	// Post fields:
+	// <ul><li><b>value</b> dimension value. Mandatory field.</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not. Available values:<ul><li><b>1</b> active</li><li><b>0</b> inactive</li></ul></li></ul>
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /dimension/v2/{dimid} (the `PostDimensionV2Dimid` operationId).
+	PostDimensionV2Dimid(ctx context.Context, dimid int, body PostDimensionV2DimidJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetDimensionV2DimidValue Get a specific dimension value
 	//
 	// Get a specific dimension value.
@@ -1925,7 +1996,7 @@ type ClientInterface interface {
 	//
 	// Get all employee information for the company.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Corresponds with GET /employee/v2 (the `GetEmployeeV2` operationId).
 	GetEmployeeV2(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1934,7 +2005,7 @@ type ClientInterface interface {
 	//
 	// Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -1945,7 +2016,7 @@ type ClientInterface interface {
 	//
 	// Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -1956,7 +2027,7 @@ type ClientInterface interface {
 	//
 	// Get all employee information for a specific employee.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Corresponds with GET /employee/v2/{empId} (the `GetEmployeeV2EmpId` operationId).
 	GetEmployeeV2EmpId(ctx context.Context, empId int, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -1965,7 +2036,7 @@ type ClientInterface interface {
 	//
 	// Update an existing employee.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes any type of body and a specified content type.
 	//
@@ -1976,7 +2047,7 @@ type ClientInterface interface {
 	//
 	// Update an existing employee.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -2206,6 +2277,77 @@ type ClientInterface interface {
 	// Corresponds with POST /transaction/v2 (the `PostTransactionV2` operationId).
 	PostTransactionV2(ctx context.Context, body PostTransactionV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetVehicleV2 Get all vehicles for the client
+	//
+	// Returns an array of all vehicles registered on all employees of the client. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle. Mandatory if an existing vehicle should be updated. Can be retrieved via the get-method.</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Corresponds with GET /vehicle/v2 (the `GetVehicleV2` operationId).
+	GetVehicleV2(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetVehicleV2EmpId Get all vehicles of an employee
+	//
+	// Returns an array of all vehicles registered on the specified employee. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Corresponds with GET /vehicle/v2/{empId} (the `GetVehicleV2EmpId` operationId).
+	GetVehicleV2EmpId(ctx context.Context, empId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostVehicleV2EmpIdWithBody Add a new vehicle for the specified employee
+	//
+	// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+	PostVehicleV2EmpIdWithBody(ctx context.Context, empId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostVehicleV2EmpId Add a new vehicle for the specified employee
+	//
+	// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+	PostVehicleV2EmpId(ctx context.Context, empId int, body PostVehicleV2EmpIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetVehicleV2EmpIdVehicleId Get a specific vehicle for the specified employee
+	//
+	// Returns the specified vehicle for the specified employee. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Corresponds with GET /vehicle/v2/{empId}/{vehicleId} (the `GetVehicleV2EmpIdVehicleId` operationId).
+	GetVehicleV2EmpIdVehicleId(ctx context.Context, empId int, vehicleId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostVehicleV2EmpIdVehicleIdWithBody Update an existing vehicle for the specified employee
+	//
+	// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+	PostVehicleV2EmpIdVehicleIdWithBody(ctx context.Context, empId int, vehicleId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostVehicleV2EmpIdVehicleId Update an existing vehicle for the specified employee
+	//
+	// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+	PostVehicleV2EmpIdVehicleId(ctx context.Context, empId int, vehicleId int, body PostVehicleV2EmpIdVehicleIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetWagetypesV2 Get all wage types
 	//
 	// Get all available wage types for the company.
@@ -2234,7 +2376,7 @@ type ClientInterface interface {
 // <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 //
 // Description of fields:
-// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 //
 // Corresponds with GET /absence/v2 (the `GetAbsenceV2` operationId).
 func (c *WriteClient) GetAbsenceV2(ctx context.Context, params *GetAbsenceV2Params, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -2273,6 +2415,30 @@ func (c *WriteClient) PostAbsenceV2WithBody(ctx context.Context, contentType str
 	return c.Client.Do(req)
 }
 
+// PostAbsenceV2 Add new absence or update existing
+//
+// empId is mandatory to include in the body. To update an existing absence you need to add the serialNo of the absence period.
+//
+// An absence period must have an absenceType.
+//
+// Post fields:
+// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for permission-type absence (alphabetical absence types). Format YYYY-MM-DD</li><li><b>comment</b> comment field</li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) code specifying type of absence. List of available absence types and corresponding code can be retrieved from the absencetypes-endpoint</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Mandatory with absencetype category 'sick_child'</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absencetype category vacation</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Mandatory with absencetype with leave_of_absence_type 'permisjonMedForeldrepenger'. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /absence/v2 (the `PostAbsenceV2` operationId).
+func (c *WriteClient) PostAbsenceV2(ctx context.Context, body PostAbsenceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAbsenceV2Request(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetAbsenceV2EmpId Get all absence for an employee
 //
 // Get all registered absence data for an employee. Result can be limited with the search filter criteria.
@@ -2282,7 +2448,7 @@ func (c *WriteClient) PostAbsenceV2WithBody(ctx context.Context, contentType str
 // <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2/1?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 //
 // Description of fields:
-// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 //
 // Corresponds with GET /absence/v2/{empId} (the `GetAbsenceV2EmpId` operationId).
 func (c *WriteClient) GetAbsenceV2EmpId(ctx context.Context, empId int, params *GetAbsenceV2EmpIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -2325,6 +2491,25 @@ func (c *WriteClient) GetAbsencetypesV2(ctx context.Context, reqEditors ...Reque
 // Corresponds with GET /absencetypes/v2/{code} (the `GetAbsencetypesV2Code` operationId).
 func (c *WriteClient) GetAbsencetypesV2Code(ctx context.Context, code string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetAbsencetypesV2CodeRequest(c.Server, code)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetAccountingV2PayrollrunId Get accounting rows for a payroll run or term
+//
+// Get accounting/bookkeeping rows for a specific payroll run or term. If you want to get accounting rows for a term, you specify the type as 'term' and provide a the payrollrunId of a payroll run with payment date within that term.
+//
+// Description of fields:<ul><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run</li><li><b>date</b> accounting date. Format YYYY-MM-DD</li><li><b>empId</b> (ansattnr) employee number. Only included when group_by_person is true.</li><li><b>account</b> (konto) account number</li><li><b>vat_code</b> (momskode) VAT code. Only included for accounts 4000 and above.</li><li><b>vat_percentage</b> (momsprosent) VAT percentage. Only included for accounts 4000 and above.</li><li><b>dimid_{ID}</b> dimension value for each exported dimension. The ID corresponds to the dimension ID from /dimension endpoint.</li><li><b>department</b> (avdeling) department dimension value. Convenience field that will have the same value as the department dimid_{ID} field.</li><li><b>project</b> (prosjekt) project dimension value. Convenience field that will have the same value as the project dimid_{ID} field.</li><li><b>amount</b> (beløp) accounting amount.</li></ul>
+//
+// Corresponds with GET /accounting/v2/{payrollrunId} (the `GetAccountingV2PayrollrunId` operationId).
+func (c *WriteClient) GetAccountingV2PayrollrunId(ctx context.Context, payrollrunId int, params *GetAccountingV2PayrollrunIdParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAccountingV2PayrollrunIdRequest(c.Server, payrollrunId, params)
 	if err != nil {
 		return nil, err
 	}
@@ -2475,6 +2660,28 @@ func (c *WriteClient) PostDimensionV2DimidWithBody(ctx context.Context, dimid in
 	return c.Client.Do(req)
 }
 
+// PostDimensionV2Dimid Add a new dimension value or update an existing dimension value for the dimension with the specified dimid
+//
+// Add a new dimension value or update an existing dimension value for the dimension with the specified dimid. Value is mandatory and if the value exist the dimension value will be updated. Otherwise a new dimension value is created.
+//
+// Post fields:
+// <ul><li><b>value</b> dimension value. Mandatory field.</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not. Available values:<ul><li><b>1</b> active</li><li><b>0</b> inactive</li></ul></li></ul>
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /dimension/v2/{dimid} (the `PostDimensionV2Dimid` operationId).
+func (c *WriteClient) PostDimensionV2Dimid(ctx context.Context, dimid int, body PostDimensionV2DimidJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostDimensionV2DimidRequest(c.Server, dimid, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetDimensionV2DimidValue Get a specific dimension value
 //
 // Get a specific dimension value.
@@ -2499,7 +2706,7 @@ func (c *WriteClient) GetDimensionV2DimidValue(ctx context.Context, dimid int, v
 //
 // Get all employee information for the company.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Corresponds with GET /employee/v2 (the `GetEmployeeV2` operationId).
 func (c *WriteClient) GetEmployeeV2(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -2518,7 +2725,7 @@ func (c *WriteClient) GetEmployeeV2(ctx context.Context, reqEditors ...RequestEd
 //
 // Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes any type of body and a specified content type.
 //
@@ -2539,7 +2746,7 @@ func (c *WriteClient) PostEmployeeV2WithBody(ctx context.Context, contentType st
 //
 // Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes a body of the `application/json` content type.
 //
@@ -2560,7 +2767,7 @@ func (c *WriteClient) PostEmployeeV2(ctx context.Context, body PostEmployeeV2JSO
 //
 // Get all employee information for a specific employee.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Corresponds with GET /employee/v2/{empId} (the `GetEmployeeV2EmpId` operationId).
 func (c *WriteClient) GetEmployeeV2EmpId(ctx context.Context, empId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -2579,7 +2786,7 @@ func (c *WriteClient) GetEmployeeV2EmpId(ctx context.Context, empId int, reqEdit
 //
 // Update an existing employee.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes any type of body and a specified content type.
 //
@@ -2600,7 +2807,7 @@ func (c *WriteClient) PostEmployeeV2EmpIdWithBody(ctx context.Context, empId int
 //
 // Update an existing employee.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes a body of the `application/json` content type.
 //
@@ -3050,6 +3257,147 @@ func (c *WriteClient) PostTransactionV2(ctx context.Context, body PostTransactio
 	return c.Client.Do(req)
 }
 
+// GetVehicleV2 Get all vehicles for the client
+//
+// Returns an array of all vehicles registered on all employees of the client. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle. Mandatory if an existing vehicle should be updated. Can be retrieved via the get-method.</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Corresponds with GET /vehicle/v2 (the `GetVehicleV2` operationId).
+func (c *WriteClient) GetVehicleV2(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetVehicleV2Request(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetVehicleV2EmpId Get all vehicles of an employee
+//
+// Returns an array of all vehicles registered on the specified employee. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Corresponds with GET /vehicle/v2/{empId} (the `GetVehicleV2EmpId` operationId).
+func (c *WriteClient) GetVehicleV2EmpId(ctx context.Context, empId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetVehicleV2EmpIdRequest(c.Server, empId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostVehicleV2EmpIdWithBody Add a new vehicle for the specified employee
+//
+// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+func (c *WriteClient) PostVehicleV2EmpIdWithBody(ctx context.Context, empId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostVehicleV2EmpIdRequestWithBody(c.Server, empId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostVehicleV2EmpId Add a new vehicle for the specified employee
+//
+// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+func (c *WriteClient) PostVehicleV2EmpId(ctx context.Context, empId int, body PostVehicleV2EmpIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostVehicleV2EmpIdRequest(c.Server, empId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetVehicleV2EmpIdVehicleId Get a specific vehicle for the specified employee
+//
+// Returns the specified vehicle for the specified employee. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Corresponds with GET /vehicle/v2/{empId}/{vehicleId} (the `GetVehicleV2EmpIdVehicleId` operationId).
+func (c *WriteClient) GetVehicleV2EmpIdVehicleId(ctx context.Context, empId int, vehicleId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetVehicleV2EmpIdVehicleIdRequest(c.Server, empId, vehicleId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostVehicleV2EmpIdVehicleIdWithBody Update an existing vehicle for the specified employee
+//
+// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+func (c *WriteClient) PostVehicleV2EmpIdVehicleIdWithBody(ctx context.Context, empId int, vehicleId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostVehicleV2EmpIdVehicleIdRequestWithBody(c.Server, empId, vehicleId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PostVehicleV2EmpIdVehicleId Update an existing vehicle for the specified employee
+//
+// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+func (c *WriteClient) PostVehicleV2EmpIdVehicleId(ctx context.Context, empId int, vehicleId int, body PostVehicleV2EmpIdVehicleIdJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostVehicleV2EmpIdVehicleIdRequest(c.Server, empId, vehicleId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetWagetypesV2 Get all wage types
 //
 // Get all available wage types for the company.
@@ -3164,6 +3512,17 @@ func NewGetAbsenceV2Request(server string, params *GetAbsenceV2Params) (*http.Re
 	}
 
 	return req, nil
+}
+
+// NewPostAbsenceV2Request calls the generic PostAbsenceV2 builder with application/json body
+func NewPostAbsenceV2Request(server string, body PostAbsenceV2JSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostAbsenceV2RequestWithBody(server, "application/json", bodyReader)
 }
 
 // NewPostAbsenceV2RequestWithBody constructs an http.Request for the PostAbsenceV2 method, with any body, and a specified content type
@@ -3331,6 +3690,91 @@ func NewGetAbsencetypesV2CodeRequest(server string, code string) (*http.Request,
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetAccountingV2PayrollrunIdRequest constructs an http.Request for the GetAccountingV2PayrollrunId method
+func NewGetAccountingV2PayrollrunIdRequest(server string, payrollrunId int, params *GetAccountingV2PayrollrunIdParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "payrollrunId", payrollrunId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/accounting/v2/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Type != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "type", *params.Type, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.GroupByPerson != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "group_by_person", *params.GroupByPerson, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.VatRows != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "vat_rows", *params.VatRows, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -3524,6 +3968,17 @@ func NewGetDimensionV2DimidRequest(server string, dimid int) (*http.Request, err
 	}
 
 	return req, nil
+}
+
+// NewPostDimensionV2DimidRequest calls the generic PostDimensionV2Dimid builder with application/json body
+func NewPostDimensionV2DimidRequest(server string, dimid int, body PostDimensionV2DimidJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostDimensionV2DimidRequestWithBody(server, dimid, "application/json", bodyReader)
 }
 
 // NewPostDimensionV2DimidRequestWithBody constructs an http.Request for the PostDimensionV2Dimid method, with any body, and a specified content type
@@ -4495,6 +4950,209 @@ func NewPostTransactionV2RequestWithBody(server string, contentType string, body
 	return req, nil
 }
 
+// NewGetVehicleV2Request constructs an http.Request for the GetVehicleV2 method
+func NewGetVehicleV2Request(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vehicle/v2")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetVehicleV2EmpIdRequest constructs an http.Request for the GetVehicleV2EmpId method
+func NewGetVehicleV2EmpIdRequest(server string, empId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "empId", empId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vehicle/v2/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostVehicleV2EmpIdRequest calls the generic PostVehicleV2EmpId builder with application/json body
+func NewPostVehicleV2EmpIdRequest(server string, empId int, body PostVehicleV2EmpIdJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostVehicleV2EmpIdRequestWithBody(server, empId, "application/json", bodyReader)
+}
+
+// NewPostVehicleV2EmpIdRequestWithBody constructs an http.Request for the PostVehicleV2EmpId method, with any body, and a specified content type
+func NewPostVehicleV2EmpIdRequestWithBody(server string, empId int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "empId", empId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vehicle/v2/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetVehicleV2EmpIdVehicleIdRequest constructs an http.Request for the GetVehicleV2EmpIdVehicleId method
+func NewGetVehicleV2EmpIdVehicleIdRequest(server string, empId int, vehicleId int) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "empId", empId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "vehicleId", vehicleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vehicle/v2/%s/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostVehicleV2EmpIdVehicleIdRequest calls the generic PostVehicleV2EmpIdVehicleId builder with application/json body
+func NewPostVehicleV2EmpIdVehicleIdRequest(server string, empId int, vehicleId int, body PostVehicleV2EmpIdVehicleIdJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostVehicleV2EmpIdVehicleIdRequestWithBody(server, empId, vehicleId, "application/json", bodyReader)
+}
+
+// NewPostVehicleV2EmpIdVehicleIdRequestWithBody constructs an http.Request for the PostVehicleV2EmpIdVehicleId method, with any body, and a specified content type
+func NewPostVehicleV2EmpIdVehicleIdRequestWithBody(server string, empId int, vehicleId int, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "empId", empId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "vehicleId", vehicleId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "integer", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/vehicle/v2/%s/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetWagetypesV2Request constructs an http.Request for the GetWagetypesV2 method
 func NewGetWagetypesV2Request(server string) (*http.Request, error) {
 	var err error
@@ -4609,7 +5267,7 @@ type ClientWithResponsesInterface interface {
 	// <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 	//
 	// Description of fields:
-	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -4630,6 +5288,20 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /absence/v2 (the `PostAbsenceV2` operationId).
 	PostAbsenceV2WithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAbsenceV2Response, error)
 
+	// PostAbsenceV2WithResponse Add new absence or update existing
+	//
+	// empId is mandatory to include in the body. To update an existing absence you need to add the serialNo of the absence period.
+	//
+	// An absence period must have an absenceType.
+	//
+	// Post fields:
+	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for permission-type absence (alphabetical absence types). Format YYYY-MM-DD</li><li><b>comment</b> comment field</li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) code specifying type of absence. List of available absence types and corresponding code can be retrieved from the absencetypes-endpoint</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Mandatory with absencetype category 'sick_child'</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absencetype category vacation</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Mandatory with absencetype with leave_of_absence_type 'permisjonMedForeldrepenger'. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /absence/v2 (the `PostAbsenceV2` operationId).
+	PostAbsenceV2WithResponse(ctx context.Context, body PostAbsenceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*PostAbsenceV2Response, error)
+
 	// GetAbsenceV2EmpIdWithResponse Get all absence for an employee
 	//
 	// Get all registered absence data for an employee. Result can be limited with the search filter criteria.
@@ -4639,7 +5311,7 @@ type ClientWithResponsesInterface interface {
 	// <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2/1?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 	//
 	// Description of fields:
-	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+	// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -4667,6 +5339,17 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /absencetypes/v2/{code} (the `GetAbsencetypesV2Code` operationId).
 	GetAbsencetypesV2CodeWithResponse(ctx context.Context, code string, reqEditors ...RequestEditorFn) (*GetAbsencetypesV2CodeResponse, error)
+
+	// GetAccountingV2PayrollrunIdWithResponse Get accounting rows for a payroll run or term
+	//
+	// Get accounting/bookkeeping rows for a specific payroll run or term. If you want to get accounting rows for a term, you specify the type as 'term' and provide a the payrollrunId of a payroll run with payment date within that term.
+	//
+	// Description of fields:<ul><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run</li><li><b>date</b> accounting date. Format YYYY-MM-DD</li><li><b>empId</b> (ansattnr) employee number. Only included when group_by_person is true.</li><li><b>account</b> (konto) account number</li><li><b>vat_code</b> (momskode) VAT code. Only included for accounts 4000 and above.</li><li><b>vat_percentage</b> (momsprosent) VAT percentage. Only included for accounts 4000 and above.</li><li><b>dimid_{ID}</b> dimension value for each exported dimension. The ID corresponds to the dimension ID from /dimension endpoint.</li><li><b>department</b> (avdeling) department dimension value. Convenience field that will have the same value as the department dimid_{ID} field.</li><li><b>project</b> (prosjekt) project dimension value. Convenience field that will have the same value as the project dimid_{ID} field.</li><li><b>amount</b> (beløp) accounting amount.</li></ul>
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /accounting/v2/{payrollrunId} (the `GetAccountingV2PayrollrunId` operationId).
+	GetAccountingV2PayrollrunIdWithResponse(ctx context.Context, payrollrunId int, params *GetAccountingV2PayrollrunIdParams, reqEditors ...RequestEditorFn) (*GetAccountingV2PayrollrunIdResponse, error)
 
 	// GetAuthWithResponse Obtain auth token
 	//
@@ -4746,6 +5429,18 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /dimension/v2/{dimid} (the `PostDimensionV2Dimid` operationId).
 	PostDimensionV2DimidWithBodyWithResponse(ctx context.Context, dimid int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostDimensionV2DimidResponse, error)
 
+	// PostDimensionV2DimidWithResponse Add a new dimension value or update an existing dimension value for the dimension with the specified dimid
+	//
+	// Add a new dimension value or update an existing dimension value for the dimension with the specified dimid. Value is mandatory and if the value exist the dimension value will be updated. Otherwise a new dimension value is created.
+	//
+	// Post fields:
+	// <ul><li><b>value</b> dimension value. Mandatory field.</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not. Available values:<ul><li><b>1</b> active</li><li><b>0</b> inactive</li></ul></li></ul>
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /dimension/v2/{dimid} (the `PostDimensionV2Dimid` operationId).
+	PostDimensionV2DimidWithResponse(ctx context.Context, dimid int, body PostDimensionV2DimidJSONRequestBody, reqEditors ...RequestEditorFn) (*PostDimensionV2DimidResponse, error)
+
 	// GetDimensionV2DimidValueWithResponse Get a specific dimension value
 	//
 	// Get a specific dimension value.
@@ -4762,7 +5457,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Get all employee information for the company.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -4773,7 +5468,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -4784,7 +5479,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -4795,7 +5490,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Get all employee information for a specific employee.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
@@ -4806,7 +5501,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Update an existing employee.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -4817,7 +5512,7 @@ type ClientWithResponsesInterface interface {
 	//
 	// Update an existing employee.
 	//
-	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -5071,6 +5766,83 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /transaction/v2 (the `PostTransactionV2` operationId).
 	PostTransactionV2WithResponse(ctx context.Context, body PostTransactionV2JSONRequestBody, reqEditors ...RequestEditorFn) (*PostTransactionV2Response, error)
 
+	// GetVehicleV2WithResponse Get all vehicles for the client
+	//
+	// Returns an array of all vehicles registered on all employees of the client. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle. Mandatory if an existing vehicle should be updated. Can be retrieved via the get-method.</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vehicle/v2 (the `GetVehicleV2` operationId).
+	GetVehicleV2WithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVehicleV2Response, error)
+
+	// GetVehicleV2EmpIdWithResponse Get all vehicles of an employee
+	//
+	// Returns an array of all vehicles registered on the specified employee. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vehicle/v2/{empId} (the `GetVehicleV2EmpId` operationId).
+	GetVehicleV2EmpIdWithResponse(ctx context.Context, empId int, reqEditors ...RequestEditorFn) (*GetVehicleV2EmpIdResponse, error)
+
+	// PostVehicleV2EmpIdWithBodyWithResponse Add a new vehicle for the specified employee
+	//
+	// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+	PostVehicleV2EmpIdWithBodyWithResponse(ctx context.Context, empId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdResponse, error)
+
+	// PostVehicleV2EmpIdWithResponse Add a new vehicle for the specified employee
+	//
+	// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+	PostVehicleV2EmpIdWithResponse(ctx context.Context, empId int, body PostVehicleV2EmpIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdResponse, error)
+
+	// GetVehicleV2EmpIdVehicleIdWithResponse Get a specific vehicle for the specified employee
+	//
+	// Returns the specified vehicle for the specified employee. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /vehicle/v2/{empId}/{vehicleId} (the `GetVehicleV2EmpIdVehicleId` operationId).
+	GetVehicleV2EmpIdVehicleIdWithResponse(ctx context.Context, empId int, vehicleId int, reqEditors ...RequestEditorFn) (*GetVehicleV2EmpIdVehicleIdResponse, error)
+
+	// PostVehicleV2EmpIdVehicleIdWithBodyWithResponse Update an existing vehicle for the specified employee
+	//
+	// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+	PostVehicleV2EmpIdVehicleIdWithBodyWithResponse(ctx context.Context, empId int, vehicleId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdVehicleIdResponse, error)
+
+	// PostVehicleV2EmpIdVehicleIdWithResponse Update an existing vehicle for the specified employee
+	//
+	// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+	//
+	// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+	PostVehicleV2EmpIdVehicleIdWithResponse(ctx context.Context, empId int, vehicleId int, body PostVehicleV2EmpIdVehicleIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdVehicleIdResponse, error)
+
 	// GetWagetypesV2WithResponse Get all wage types
 	//
 	// Get all available wage types for the company.
@@ -5286,6 +6058,47 @@ func (r GetAbsencetypesV2CodeResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetAbsencetypesV2CodeResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetAccountingV2PayrollrunIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *map[string]interface{}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetAccountingV2PayrollrunIdResponse) GetJSON200() *map[string]interface{} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetAccountingV2PayrollrunIdResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetAccountingV2PayrollrunIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetAccountingV2PayrollrunIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetAccountingV2PayrollrunIdResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -6356,6 +7169,197 @@ func (r PostTransactionV2Response) ContentType() string {
 	return ""
 }
 
+type GetVehicleV2Response struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *map[string]interface{}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetVehicleV2Response) GetJSON200() *map[string]interface{} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetVehicleV2Response) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetVehicleV2Response) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetVehicleV2Response) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetVehicleV2Response) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetVehicleV2EmpIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *map[string]interface{}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetVehicleV2EmpIdResponse) GetJSON200() *map[string]interface{} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetVehicleV2EmpIdResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetVehicleV2EmpIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetVehicleV2EmpIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetVehicleV2EmpIdResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PostVehicleV2EmpIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// GetBody returns the raw response body bytes
+func (r PostVehicleV2EmpIdResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostVehicleV2EmpIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostVehicleV2EmpIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostVehicleV2EmpIdResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetVehicleV2EmpIdVehicleIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *map[string]interface{}
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetVehicleV2EmpIdVehicleIdResponse) GetJSON200() *map[string]interface{} {
+	return r.JSON200
+}
+
+// GetBody returns the raw response body bytes
+func (r GetVehicleV2EmpIdVehicleIdResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetVehicleV2EmpIdVehicleIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetVehicleV2EmpIdVehicleIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetVehicleV2EmpIdVehicleIdResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PostVehicleV2EmpIdVehicleIdResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// GetBody returns the raw response body bytes
+func (r PostVehicleV2EmpIdVehicleIdResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PostVehicleV2EmpIdVehicleIdResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostVehicleV2EmpIdVehicleIdResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PostVehicleV2EmpIdVehicleIdResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetWagetypesV2Response struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -6447,7 +7451,7 @@ func (r GetWagetypesV2PayrollcodeResponse) ContentType() string {
 // <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 //
 // Description of fields:
-// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -6480,6 +7484,26 @@ func (c *ClientWithResponses) PostAbsenceV2WithBodyWithResponse(ctx context.Cont
 	return ParsePostAbsenceV2Response(rsp)
 }
 
+// PostAbsenceV2WithResponse Add new absence or update existing
+//
+// empId is mandatory to include in the body. To update an existing absence you need to add the serialNo of the absence period.
+//
+// An absence period must have an absenceType.
+//
+// Post fields:
+// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for permission-type absence (alphabetical absence types). Format YYYY-MM-DD</li><li><b>comment</b> comment field</li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) code specifying type of absence. List of available absence types and corresponding code can be retrieved from the absencetypes-endpoint</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Mandatory with absencetype category 'sick_child'</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absencetype category vacation</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Mandatory with absencetype with leave_of_absence_type 'permisjonMedForeldrepenger'. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /absence/v2 (the `PostAbsenceV2` operationId).
+func (c *ClientWithResponses) PostAbsenceV2WithResponse(ctx context.Context, body PostAbsenceV2JSONRequestBody, reqEditors ...RequestEditorFn) (*PostAbsenceV2Response, error) {
+	rsp, err := c.PostAbsenceV2(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostAbsenceV2Response(rsp)
+}
+
 // GetAbsenceV2EmpIdWithResponse Get all absence for an employee
 //
 // Get all registered absence data for an employee. Result can be limited with the search filter criteria.
@@ -6489,7 +7513,7 @@ func (c *ClientWithResponses) PostAbsenceV2WithBodyWithResponse(ctx context.Cont
 // <u>Example</u>: payroll.24sevenoffice.com/api/absence/v2/1?datefrom=2025-01-01&dateto=2025-01-31&serialNo=1
 //
 // Description of fields:
-// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
+// <ul><li><b>empId</b> (ansattnr) employee number</li><li><b>serialNo</b> (løpenr) serial number of the absence. Required if you wish to post an update to an existing absence</li><li><b>startDate</b> (startdato) start date of the absence. Format YYYY-MM-DD</li><li><b>endDate</b> (sluttdato) end date of the absence. Can be empty for absence type category 'leave_of_absence'. Format YYYY-MM-DD</li><li><b>comment</b></li><li><b>approved</b> (godkjent) approved-status. Available values:<ul><li><b>1</b> approved</li><li><b>2</b> rejected</li></ul></li><li><b>percent</b> (fravær prosent) absence percentage</li><li><b>absenceType</b> (fraværstype) type of absence. List of available absence types can be retrieved from the absencetypes-endpoint</li><li><b>description</b> (beskrivelse) absenceType description</li><li><b>childId</b> (barnId) internal ID of the child registered on this absence. Only used together with absence type 2 (sick child)</li><li><b>numberOfDays</b> (antall dager) number of days of absence. Only used together with absence type 4 (vacation)</li><li><b>permisjonId</b> ID of permisjon (leave of absence). Will be automatically generated if not provided for absenceTypes with property permisjonId.</li><li><b>startdateParental</b> (startdato foreldrepengeperioden) start date of parental leave. Only used together with absence type permisjonMedForeldrepenger. Format YYYY-MM-DD</li><li><b>externalId</b> can be used via API to keep track of absence periods</li></ul>
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -6534,6 +7558,23 @@ func (c *ClientWithResponses) GetAbsencetypesV2CodeWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseGetAbsencetypesV2CodeResponse(rsp)
+}
+
+// GetAccountingV2PayrollrunIdWithResponse Get accounting rows for a payroll run or term
+//
+// Get accounting/bookkeeping rows for a specific payroll run or term. If you want to get accounting rows for a term, you specify the type as 'term' and provide a the payrollrunId of a payroll run with payment date within that term.
+//
+// Description of fields:<ul><li><b>payrollrunId</b> (lønnskjøringsnummer) ID of the payroll run</li><li><b>date</b> accounting date. Format YYYY-MM-DD</li><li><b>empId</b> (ansattnr) employee number. Only included when group_by_person is true.</li><li><b>account</b> (konto) account number</li><li><b>vat_code</b> (momskode) VAT code. Only included for accounts 4000 and above.</li><li><b>vat_percentage</b> (momsprosent) VAT percentage. Only included for accounts 4000 and above.</li><li><b>dimid_{ID}</b> dimension value for each exported dimension. The ID corresponds to the dimension ID from /dimension endpoint.</li><li><b>department</b> (avdeling) department dimension value. Convenience field that will have the same value as the department dimid_{ID} field.</li><li><b>project</b> (prosjekt) project dimension value. Convenience field that will have the same value as the project dimid_{ID} field.</li><li><b>amount</b> (beløp) accounting amount.</li></ul>
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /accounting/v2/{payrollrunId} (the `GetAccountingV2PayrollrunId` operationId).
+func (c *ClientWithResponses) GetAccountingV2PayrollrunIdWithResponse(ctx context.Context, payrollrunId int, params *GetAccountingV2PayrollrunIdParams, reqEditors ...RequestEditorFn) (*GetAccountingV2PayrollrunIdResponse, error) {
+	rsp, err := c.GetAccountingV2PayrollrunId(ctx, payrollrunId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetAccountingV2PayrollrunIdResponse(rsp)
 }
 
 // GetAuthWithResponse Obtain auth token
@@ -6656,6 +7697,24 @@ func (c *ClientWithResponses) PostDimensionV2DimidWithBodyWithResponse(ctx conte
 	return ParsePostDimensionV2DimidResponse(rsp)
 }
 
+// PostDimensionV2DimidWithResponse Add a new dimension value or update an existing dimension value for the dimension with the specified dimid
+//
+// Add a new dimension value or update an existing dimension value for the dimension with the specified dimid. Value is mandatory and if the value exist the dimension value will be updated. Otherwise a new dimension value is created.
+//
+// Post fields:
+// <ul><li><b>value</b> dimension value. Mandatory field.</li><li><b>name</b> name of the dimension value</li><li><b>active</b> boolean value describing if the dimension value is active or not. Available values:<ul><li><b>1</b> active</li><li><b>0</b> inactive</li></ul></li></ul>
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /dimension/v2/{dimid} (the `PostDimensionV2Dimid` operationId).
+func (c *ClientWithResponses) PostDimensionV2DimidWithResponse(ctx context.Context, dimid int, body PostDimensionV2DimidJSONRequestBody, reqEditors ...RequestEditorFn) (*PostDimensionV2DimidResponse, error) {
+	rsp, err := c.PostDimensionV2Dimid(ctx, dimid, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostDimensionV2DimidResponse(rsp)
+}
+
 // GetDimensionV2DimidValueWithResponse Get a specific dimension value
 //
 // Get a specific dimension value.
@@ -6678,7 +7737,7 @@ func (c *ClientWithResponses) GetDimensionV2DimidValueWithResponse(ctx context.C
 //
 // Get all employee information for the company.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -6695,7 +7754,7 @@ func (c *ClientWithResponses) GetEmployeeV2WithResponse(ctx context.Context, req
 //
 // Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -6712,7 +7771,7 @@ func (c *ClientWithResponses) PostEmployeeV2WithBodyWithResponse(ctx context.Con
 //
 // Add a new employee to the company. It is not allowed to create a new employee with an already existing empId.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -6729,7 +7788,7 @@ func (c *ClientWithResponses) PostEmployeeV2WithResponse(ctx context.Context, bo
 //
 // Get all employee information for a specific employee.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) employee is hidden. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Returns a wrapper object for the known response body format(s).
 //
@@ -6746,7 +7805,7 @@ func (c *ClientWithResponses) GetEmployeeV2EmpIdWithResponse(ctx context.Context
 //
 // Update an existing employee.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -6763,7 +7822,7 @@ func (c *ClientWithResponses) PostEmployeeV2EmpIdWithBodyWithResponse(ctx contex
 //
 // Update an existing employee.
 //
-// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary</b> (lønn) if salary_type is monthly this value is salary per month. If salary_type is hourly this value is salary per hour.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number</li><li><b>email</b></li><li><b>email_copy</b> emails are also sent to this email address</li><li><b>firstname</b></li><li><b>lastname</b></li><li><b>postaddress</b></li><li><b>zipcode</b></li><li><b>city</b></li><li><b>countryCode</b></li><li><b>clearingno</b> bank account clearing number</li><li><b>account</b> (bankkonto) bank account number. Can be IBAN or standard BBAN-format.</li><li><b>bic</b> BIC/SWIFT code identifying the bank of the employee</li><li><b>employee_date</b> (ansettelsesdato) start date of employment. Format YYYY-MM-DD</li><li><b>telefon</b></li><li><b>personnr</b> can also be d-number for foreign workers or just birth date.</li><li><b>internationalID</b> (Internasjonal ID) to identify an employee without a personnr or d-number<ul><li><b>countryCode</b></li><li><b>ID</b></li><li><b>type</b> type of identifier. Default is "passnummer". Available values are:<ul><li><b>passnummer</b></li><li><b>socialSecurityNumber</b></li><li><b>taxIdentificationNumber</b></li><li><b>valueAddedTaxNumber</b></li></ul></li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li></ul></li><li><b>salary_type</b> type of salary. Availble values are:<ul><li><b>monthly</b> (månedslønn)</li><li><b>hourly</b> (timelønn)</li><li><b>yearly</b> (årslønn) - <u>only available for norwegian clients</u></li></ul></li><li><b>salary</b> (lønn) if salary_type is 'monthly' this value is salary per month. If salary_type is 'hourly' this value is salary per hour. If salary_type is 'yearly' then this is the yearly salary.</li><li><b>salary_valid_from</b> (gjelder fra) start date of current salary. Format YYYY-MM-DD</li><li><b>taxtable</b> (trekktabell)</li><li><b>employment_rate</b> (stillingsprosent)</li><li><b>employment_rate_valid_from</b> (gjelder fra) start date of current employment rate. Format YYYY-MM-DD<li><b>hours_per_week</b> (timer pr. uke) hours worked per week. Default is 37.5</li><li><b>hours_per_week_valid_from</b> (gjelder fra) start date of current hours_per_week. Format YYYY-MM-DD</li><li><b>vacation_percent</b> (ferieprosent)</li><li><b>vacation_percent_valid_from</b> (gjelder fra) start date of current vacation percent. Format YYYY-MM-DD</li><li><b>vacation_days</b> (feriedager) starting balance of vacation days per year</li><li><b>hidden</b> (skjult) hide employee. Cannot be changed when employee has open transactions. Available values are:<ul><li><b>0</b> (hidden)</li><li><b>1</b> (not hidden)</li></ul></li><li><b>percentage_tax_main_employer</b> (prosentsats, hovedarbeidsgiver) default is 50</li><li><b>percentage_tax_bi_employer</b> (prosentsats, biarbeidsgiver)</li><li><b>tax_resident_country</b> (skattemessig bosatt land) available values are valid 2 letter country codes</li><li><b>continental_shelf</b> (Kontinentalsokkel) available values are:<ul><li><b>1</b> (yes)</li><li><b>-1</b> (no)</li></ul></li><li><b>taxexemption</b> only relevant for swedish clients, will be nulled for others<ul><li><b>percentage</b></li><li><b>amount</b></li></ul></li><li><b>accounting</b> (kontering) the standard accounting of the employee. Array of different distributions. Percentages cannot be more than 100% in total.<ul><li><b>percentage</b> percentage of this distribution</li><li><b>dimensions</b> array of dimensions of this distribution<ul><li><b>dimid</b> accessible via /dimensions</li><li><b>value</b> dimension value. Need to be an existing value for this dimension</li></ul></li></ul></li><li><b>employee_field_{ID}</b> (egendefinert ansatt felt) custom employee field. The ID is the ID of the employee field. Get all custom employee fields, IDs and available values from endpoint /employee_field</li></ul>
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -7149,6 +8208,125 @@ func (c *ClientWithResponses) PostTransactionV2WithResponse(ctx context.Context,
 	return ParsePostTransactionV2Response(rsp)
 }
 
+// GetVehicleV2WithResponse Get all vehicles for the client
+//
+// Returns an array of all vehicles registered on all employees of the client. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle. Mandatory if an existing vehicle should be updated. Can be retrieved via the get-method.</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vehicle/v2 (the `GetVehicleV2` operationId).
+func (c *ClientWithResponses) GetVehicleV2WithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetVehicleV2Response, error) {
+	rsp, err := c.GetVehicleV2(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetVehicleV2Response(rsp)
+}
+
+// GetVehicleV2EmpIdWithResponse Get all vehicles of an employee
+//
+// Returns an array of all vehicles registered on the specified employee. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vehicle/v2/{empId} (the `GetVehicleV2EmpId` operationId).
+func (c *ClientWithResponses) GetVehicleV2EmpIdWithResponse(ctx context.Context, empId int, reqEditors ...RequestEditorFn) (*GetVehicleV2EmpIdResponse, error) {
+	rsp, err := c.GetVehicleV2EmpId(ctx, empId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetVehicleV2EmpIdResponse(rsp)
+}
+
+// PostVehicleV2EmpIdWithBodyWithResponse Add a new vehicle for the specified employee
+//
+// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+func (c *ClientWithResponses) PostVehicleV2EmpIdWithBodyWithResponse(ctx context.Context, empId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdResponse, error) {
+	rsp, err := c.PostVehicleV2EmpIdWithBody(ctx, empId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostVehicleV2EmpIdResponse(rsp)
+}
+
+// PostVehicleV2EmpIdWithResponse Add a new vehicle for the specified employee
+//
+// Creates a new vehicle for the specified employee. To update a specific vehicle, use <code>POST /vehicle/v2/{empId}/{vehicleId}</code>. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle.</li><li><b>make</b> (merke) make of the vehicle, e.g. Volvo</li><li><b>model</b> (modell) model of the vehicle, e.g. V70</li><li><b>yearModel</b> (årsmodell) year model of the vehicle, e.g. 2018</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vehicle/v2/{empId} (the `PostVehicleV2EmpId` operationId).
+func (c *ClientWithResponses) PostVehicleV2EmpIdWithResponse(ctx context.Context, empId int, body PostVehicleV2EmpIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdResponse, error) {
+	rsp, err := c.PostVehicleV2EmpId(ctx, empId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostVehicleV2EmpIdResponse(rsp)
+}
+
+// GetVehicleV2EmpIdVehicleIdWithResponse Get a specific vehicle for the specified employee
+//
+// Returns the specified vehicle for the specified employee. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>empId</b> (ansattnr) employee number the vehicle belongs to</li><li><b>vehicleId</b> (fordonsid) internal id of the vehicle</li><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /vehicle/v2/{empId}/{vehicleId} (the `GetVehicleV2EmpIdVehicleId` operationId).
+func (c *ClientWithResponses) GetVehicleV2EmpIdVehicleIdWithResponse(ctx context.Context, empId int, vehicleId int, reqEditors ...RequestEditorFn) (*GetVehicleV2EmpIdVehicleIdResponse, error) {
+	rsp, err := c.GetVehicleV2EmpIdVehicleId(ctx, empId, vehicleId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetVehicleV2EmpIdVehicleIdResponse(rsp)
+}
+
+// PostVehicleV2EmpIdVehicleIdWithBodyWithResponse Update an existing vehicle for the specified employee
+//
+// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+func (c *ClientWithResponses) PostVehicleV2EmpIdVehicleIdWithBodyWithResponse(ctx context.Context, empId int, vehicleId int, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdVehicleIdResponse, error) {
+	rsp, err := c.PostVehicleV2EmpIdVehicleIdWithBody(ctx, empId, vehicleId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostVehicleV2EmpIdVehicleIdResponse(rsp)
+}
+
+// PostVehicleV2EmpIdVehicleIdWithResponse Update an existing vehicle for the specified employee
+//
+// Updates the vehicle with the specified <b>vehicleId</b> for the specified employee. Returns 404 if the vehicle does not exist. Only available for Norwegian clients.
+//
+// Description of fields:<ul><li><b>regno</b> (registreringsnummer) registration number of the vehicle</li><li><b>make</b> (merke) make of the vehicle</li><li><b>model</b> (modell) model of the vehicle</li><li><b>yearModel</b> (årsmodell) year model of the vehicle</li><li><b>vehicleType</b> (kjøretøytype) vehicle type. Available values:<ul><li><b>1</b> Car (Bil)</li><li><b>2</b> Boat with motor (Båt med motor)</li><li><b>3</b> Moped</li><li><b>4</b> Motorbike (Motorsykkel)</li><li><b>5</b> Snowmobile/ATV (Snøscooter/ATV)</li></ul></li><li><b>fuelType</b> (drivstoff) type of fuel. Available values:<ul><li><b>1</b> Bensin (petrol)</li><li><b>2</b> Diesel</li><li><b>3</b> Elektrisk (electric)</li><li><b>4</b> Hybrid</li></ul></li><li><b>autopass</b> (bompengeautopass) boolean value (0/1) describing if the vehicle has AutoPASS for tolls.</li></ul>
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /vehicle/v2/{empId}/{vehicleId} (the `PostVehicleV2EmpIdVehicleId` operationId).
+func (c *ClientWithResponses) PostVehicleV2EmpIdVehicleIdWithResponse(ctx context.Context, empId int, vehicleId int, body PostVehicleV2EmpIdVehicleIdJSONRequestBody, reqEditors ...RequestEditorFn) (*PostVehicleV2EmpIdVehicleIdResponse, error) {
+	rsp, err := c.PostVehicleV2EmpIdVehicleId(ctx, empId, vehicleId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostVehicleV2EmpIdVehicleIdResponse(rsp)
+}
+
 // GetWagetypesV2WithResponse Get all wage types
 //
 // Get all available wage types for the company.
@@ -7309,6 +8487,38 @@ func ParseGetAbsencetypesV2CodeResponse(rsp *http.Response) (*GetAbsencetypesV2C
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetAccountingV2PayrollrunIdResponse parses an HTTP response from a GetAccountingV2PayrollrunIdWithResponse call
+func ParseGetAccountingV2PayrollrunIdResponse(rsp *http.Response) (*GetAccountingV2PayrollrunIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetAccountingV2PayrollrunIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 500:
+		break // No content-type
 
 	}
 
@@ -8018,6 +9228,137 @@ func ParsePostTransactionV2Response(rsp *http.Response) (*PostTransactionV2Respo
 	}
 
 	response := &PostTransactionV2Response{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseGetVehicleV2Response parses an HTTP response from a GetVehicleV2WithResponse call
+func ParseGetVehicleV2Response(rsp *http.Response) (*GetVehicleV2Response, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetVehicleV2Response{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 500:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParseGetVehicleV2EmpIdResponse parses an HTTP response from a GetVehicleV2EmpIdWithResponse call
+func ParseGetVehicleV2EmpIdResponse(rsp *http.Response) (*GetVehicleV2EmpIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetVehicleV2EmpIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 500:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParsePostVehicleV2EmpIdResponse parses an HTTP response from a PostVehicleV2EmpIdWithResponse call
+func ParsePostVehicleV2EmpIdResponse(rsp *http.Response) (*PostVehicleV2EmpIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostVehicleV2EmpIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParseGetVehicleV2EmpIdVehicleIdResponse parses an HTTP response from a GetVehicleV2EmpIdVehicleIdWithResponse call
+func ParseGetVehicleV2EmpIdVehicleIdResponse(rsp *http.Response) (*GetVehicleV2EmpIdVehicleIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetVehicleV2EmpIdVehicleIdResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest map[string]interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case rsp.StatusCode == 401:
+		break // No content-type
+
+	case rsp.StatusCode == 404:
+		break // No content-type
+
+	case rsp.StatusCode == 500:
+		break // No content-type
+
+	}
+
+	return response, nil
+}
+
+// ParsePostVehicleV2EmpIdVehicleIdResponse parses an HTTP response from a PostVehicleV2EmpIdVehicleIdWithResponse call
+func ParsePostVehicleV2EmpIdVehicleIdResponse(rsp *http.Response) (*PostVehicleV2EmpIdVehicleIdResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostVehicleV2EmpIdVehicleIdResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
