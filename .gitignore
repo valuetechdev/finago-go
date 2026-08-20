@@ -1,3 +1,6 @@
 .helix
 .env
 .vscode
+.DS_Store
+fnox.local.toml
+mise.local.toml

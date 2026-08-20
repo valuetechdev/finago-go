@@ -7,3 +7,15 @@ enable = ["bodyclose", "gosec", "nilnil", "sloglint","unused","unconvert","white
 [[linters.exclusions.rules]]
 linters = [ "errcheck" ]
 source = "^\\s*defer\\s+"
+
+[[linters.exclusions.rules]]
+# gosec reads the public OAuth token endpoint as a hardcoded credential.
+linters = [ "gosec" ]
+path = "resty/client.go"
+text = "G101"
+
+[[linters.exclusions.rules]]
+# The host is a constant; only the query token is interpolated.
+linters = [ "gosec" ]
+path = "payday/auth.go"
+text = "G704"
