@@ -2599,6 +2599,12 @@ type GetCustomersParams struct {
 	// IsSupplier A flag variable to filter customers by being a supplier or not.
 	IsSupplier *bool `form:"isSupplier,omitempty" json:"isSupplier,omitempty"`
 
+	// Email Filter customers by email address.
+	Email *string `form:"email,omitempty" json:"email,omitempty"`
+
+	// ExternalReference Filter customers by external reference.
+	ExternalReference *string `form:"externalReference,omitempty" json:"externalReference,omitempty"`
+
 	// ModifiedFrom Filter customers by date of last modification. Compares dates by greater or equal and accepts dates in ISO8601 format
 	ModifiedFrom *string `form:"modifiedFrom,omitempty" json:"modifiedFrom,omitempty"`
 
@@ -2617,7 +2623,7 @@ type GetDimensionsDimensionTypeElementsParams struct {
 	// Limit The maximum number of elements to retrieve.
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 
-	// ContinuationToken A token for continuing the retrieval of sales orders. This is used for pagination and is prepopulated from the Link-header with rel=next from a previous request.
+	// ContinuationToken A token for continuing the retrieval of dimension elements. This is used for pagination and is prepopulated from the Link-header with rel=next from a previous request.
 	ContinuationToken *string `form:"continuationToken,omitempty" json:"continuationToken,omitempty"`
 }
 
@@ -2769,8 +2775,11 @@ type GetTransactionlinesParams struct {
 	// ModifiedAfter Deprecated - use `modifiedFrom` instead.
 	ModifiedAfter *time.Time `form:"modifiedAfter,omitempty" json:"modifiedAfter,omitempty"`
 
-	// TransactionNumber The unique number representing the transaction.
-	TransactionNumber *float32 `form:"transactionNumber,omitempty" json:"transactionNumber,omitempty"`
+	// TransactionId Filter on the unique identifier representing the transaction (returned as transaction.id).
+	TransactionId *openapi_types.UUID `form:"transactionId,omitempty" json:"transactionId,omitempty"`
+
+	// TransactionNumber Filter on the transaction number (returned as transaction.number).
+	TransactionNumber *int `form:"transactionNumber,omitempty" json:"transactionNumber,omitempty"`
 
 	// TransactionTypeId ID representing the type of transaction.
 	TransactionTypeId *int `form:"transactionTypeId,omitempty" json:"transactionTypeId,omitempty"`
@@ -5411,6 +5420,38 @@ func NewGetCustomersRequest(server string, params *GetCustomersParams) (*http.Re
 		if params.IsSupplier != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "isSupplier", runtime.ParamLocationQuery, *params.IsSupplier); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Email != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "email", runtime.ParamLocationQuery, *params.Email); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.ExternalReference != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "externalReference", runtime.ParamLocationQuery, *params.ExternalReference); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -8377,6 +8418,22 @@ func NewGetTransactionlinesRequest(server string, params *GetTransactionlinesPar
 		if params.ModifiedAfter != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "modifiedAfter", runtime.ParamLocationQuery, *params.ModifiedAfter); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.TransactionId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "transactionId", runtime.ParamLocationQuery, *params.TransactionId); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
