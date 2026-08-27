@@ -32,8 +32,6 @@ description = "Run go generate and patch up generated code"
 run = [
   "go generate ./...",
   "sed -i '' 's/int \\[\\]/Int \\[\\]/g' ./soapy/**/*.gen.go",
-  "sed -i '' 's/IsCompany = \"true\"/IsCompany = true/g' ./resty/resty.gen.go",
-  "sed -i '' 's/IsCompany = \"false\"/IsCompany = false/g' ./resty/resty.gen.go",
 ]
 depends_post = ["fmt"]
 
