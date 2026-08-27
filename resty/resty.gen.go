@@ -3929,6 +3929,12 @@ type GetCustomersParams struct {
 	// IsSupplier A flag variable to filter customers by being a supplier or not.
 	IsSupplier *bool `form:"isSupplier,omitempty" json:"isSupplier,omitempty"`
 
+	// Email Filter customers by email address.
+	Email *string `form:"email,omitempty" json:"email,omitempty"`
+
+	// ExternalReference Filter customers by external reference.
+	ExternalReference *string `form:"externalReference,omitempty" json:"externalReference,omitempty"`
+
 	// ModifiedFrom Filter customers by date of last modification. Compares dates by greater or equal and accepts dates in ISO8601 format
 	ModifiedFrom *string `form:"modifiedFrom,omitempty" json:"modifiedFrom,omitempty"`
 
@@ -8098,6 +8104,30 @@ func NewGetCustomersRequest(server string, params *GetCustomersParams) (*http.Re
 		if params.IsSupplier != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "isSupplier", *params.IsSupplier, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Email != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "email", *params.Email, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ExternalReference != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "externalReference", *params.ExternalReference, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {

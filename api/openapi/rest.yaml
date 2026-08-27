@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Finago Office Public API
-  version: 0.57.2
+  version: 0.58.0
 servers:
   - url: https://rest.api.24sevenoffice.com/v1
 paths:
@@ -1295,6 +1295,16 @@ paths:
           description: A flag variable to filter customers by being a supplier or not.
           schema:
             type: boolean
+        - name: email
+          in: query
+          description: Filter customers by email address.
+          schema:
+            type: string
+        - name: externalReference
+          in: query
+          description: Filter customers by external reference.
+          schema:
+            type: string
         - name: modifiedFrom
           in: query
           description: Filter customers by date of last modification. Compares dates by greater or equal and accepts dates in ISO8601 format
