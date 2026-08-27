@@ -1,4 +1,4 @@
-module github.com/valuetechdev/24sevenoffice-go
+module github.com/valuetechdev/finago-go
 
 go 1.27.0
 
@@ -11,7 +11,6 @@ require (
 	github.com/hooklift/gowsdl v0.5.0
 	github.com/oapi-codegen/runtime v1.7.0
 	github.com/stretchr/testify v1.11.1
-	github.com/valuetechdev/finago-go v1.0.8
 	golang.org/x/oauth2 v0.30.0
 )
 
