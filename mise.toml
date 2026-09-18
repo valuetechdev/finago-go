@@ -1,6 +1,6 @@
 [tools]
 fnox = "1.32.0"
-go = "1.27.0"
+go = "1.27.1"
 golangci-lint = "2.13.0"
 hk = "1.54.1"
 op = "2.34.1"
@@ -72,5 +72,4 @@ run = "hk fix"
 
 [tasks.bump]
 description = "Bump next version"
-confirm = "Are you sure you want to bump to next version?"
 run = "go tool -modfile={{vars.tool_modfile}} git-bump"
