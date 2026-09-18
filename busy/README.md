@@ -38,6 +38,27 @@ client := busy.New("your-demo-token", busy.WithDemo())
 
 `busy.WithURL` points the client at any other host.
 
+### Rate limiting
+
+Busy throttles with a **429** and tells you how long to wait. `busy.WithRetry`
+retries those requests for you, reading the wait from `Retry-After`, then
+`RateLimit-Reset`, then falling back to exponential backoff:
+
+```go
+client := busy.New(token, busy.WithRetry())
+```
+
+It is off by default, since it makes a call block for as long as the limiter
+asks. Only 429 is retried — other failures, 5xx included, come back untouched —
+and the wait is abandoned if the request's context is cancelled. Tune it with
+`busy.WithRetryAttempts` (default 3) and `busy.WithRetryMaxWait` (default 60s);
+a throttling window longer than the cap is handed back as a 429 rather than
+slept through.
+
+`WithRetry` wraps the transport of the client from `WithHttpClient`, so the two
+compose in either order, and neither your client nor `http.DefaultClient` is
+modified.
+
 ### Custom HTTP client
 
 ```go
@@ -57,6 +78,7 @@ client := busy.New(token, busy.WithHttpClient(httpClient))
   host (`https://api.busy.no`).
 - The API is rate limited. Responses carry `RateLimit-Limit`,
   `RateLimit-Remaining` and `RateLimit-Reset`; a **429** also carries
-  `Retry-After`. Back off for at least `RateLimit-Reset` seconds when throttled.
+  `Retry-After`. `busy.WithRetry` handles the backoff; without it, back off for
+  at least `RateLimit-Reset` seconds when throttled.
 - List endpoints are paginated with `limit`/`offset`. For syncs, order ascending
   by `updatedAt` and filter on `updatedFrom`.

@@ -27,6 +27,7 @@ type BusyClient struct {
 
 	httpClient   *http.Client
 	interceptors []RequestEditorFn
+	retry        *retryTransport
 
 	*ClientWithResponses
 }
@@ -73,6 +74,15 @@ func New(token string, options ...Option) *BusyClient {
 
 	for _, option := range options {
 		option(client)
+	}
+
+	// Layer retrying over whatever transport the caller ended up with, so
+	// WithRetry and WithHttpClient compose in either order.
+	if client.retry != nil {
+		httpClient := *client.httpClient
+		client.retry.base = httpClient.Transport
+		httpClient.Transport = client.retry
+		client.httpClient = &httpClient
 	}
 
 	clientOptions := []ClientOption{
