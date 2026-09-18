@@ -17,7 +17,7 @@ go get github.com/valuetechdev/finago-go
 ## Development
 
 Tooling is managed by [mise](https://mise.jdx.dev), secrets by
-[fnox](https://github.com/jdx/fnox) and linting by [hk](https://hk.jdx.dev).
+[fnox](https://fnox.jdx.dev/) and linting by [hk](https://hk.jdx.dev).
 
 ```bash
 mise install # installs tools, verifies secrets and installs git hooks
@@ -57,11 +57,8 @@ REST credentials need access to it.
 
 ### Configuring secrets
 
-There is no checked-in `fnox.toml`; secrets live in a git-ignored
-`fnox.local.toml` that each developer owns. fnox picks it up automatically, so
-no `-c` flag or profile is needed.
-
-If you have access to the shared 1Password vault, this is the config to use:
+Use [fnox](https://fnox.jdx.dev/), and set up a `fnox.loca.toml`. If you use
+1Password, it can look like this:
 
 ```toml
 default_provider = "onepass"

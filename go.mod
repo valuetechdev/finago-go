@@ -1,6 +1,6 @@
 module github.com/valuetechdev/finago-go
 
-go 1.27.0
+go 1.27.1
 
 require (
 	github.com/hooklift/gowsdl v0.5.0
