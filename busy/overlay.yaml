@@ -7,34 +7,35 @@ actions:
   # openapi_types.Email. That type runs every value through net/mail.ParseAddress
   # on both marshal and unmarshal, and Busy returns "" for users without an
   # e-mail address (invited-but-not-registered users, for instance), which fails
-  # to parse and breaks decoding of the whole response. Generate plain strings
-  # instead and leave e-mail validation to the caller.
+  # to parse and breaks decoding of the whole response. Use the package's own
+  # Email type instead, which validates the same way but accepts "". See
+  # types.go.
   - target: "$.components.schemas.User.properties.email"
-    description: Decode e-mail as a plain string, empty values are valid
+    description: Decode e-mail with the empty-tolerant Email type
     update:
-      x-go-type: string
+      x-go-type: Email
 
   - target: "$.components.schemas.UserCreate.properties.email"
-    description: Decode e-mail as a plain string, empty values are valid
+    description: Decode e-mail with the empty-tolerant Email type
     update:
-      x-go-type: string
+      x-go-type: Email
 
   - target: "$.components.schemas.UserInvitation.properties.email"
-    description: Decode e-mail as a plain string, empty values are valid
+    description: Decode e-mail with the empty-tolerant Email type
     update:
-      x-go-type: string
+      x-go-type: Email
 
   - target: "$.components.schemas.GroupUser.allOf[1].properties.email"
-    description: Decode e-mail as a plain string, empty values are valid
+    description: Decode e-mail with the empty-tolerant Email type
     update:
-      x-go-type: string
+      x-go-type: Email
 
   - target: "$.components.schemas.ProjectUser.allOf[1].properties.email"
-    description: Decode e-mail as a plain string, empty values are valid
+    description: Decode e-mail with the empty-tolerant Email type
     update:
-      x-go-type: string
+      x-go-type: Email
 
   - target: "$.components.schemas.ProjectTagUser.allOf[1].properties.email"
-    description: Decode e-mail as a plain string, empty values are valid
+    description: Decode e-mail with the empty-tolerant Email type
     update:
-      x-go-type: string
+      x-go-type: Email

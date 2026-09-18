@@ -36,7 +36,7 @@ host and vice versa. Grab a demo workspace and token from
 client := busy.New("your-demo-token", busy.WithDemo())
 ```
 
-`busy.WithBaseUrl` points the client at any other host.
+`busy.WithURL` points the client at any other host.
 
 ### Custom HTTP client
 
@@ -47,11 +47,12 @@ client := busy.New(token, busy.WithHttpClient(httpClient))
 
 ## Things to know
 
-- The schema is OpenAPI 3.1 and is generated from as-published, apart from
-  `overlay.yaml`, which turns the `format: email` fields into plain strings.
-  Busy returns `""` for users without an e-mail address, and the
-  `openapi_types.Email` those fields would otherwise generate rejects that,
-  failing the decode of the entire response.
+- The schema is OpenAPI 3.1 and is generated as published, apart from
+  `overlay.yaml`, which maps the `format: email` fields onto this package's own
+  `busy.Email` type. Busy returns `""` for users without an e-mail address, and
+  the `openapi_types.Email` those fields would otherwise generate rejects that,
+  failing the decode of the entire response. `busy.Email` validates every
+  non-empty value the same way and accepts `""`.
 - The paths in the schema include the `/v2` prefix, so the base URL is the bare
   host (`https://api.busy.no`).
 - The API is rate limited. Responses carry `RateLimit-Limit`,

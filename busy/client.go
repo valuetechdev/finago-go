@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	// ProdBaseUrl is the production environment.
-	ProdBaseUrl = "https://api.busy.no"
-	// DemoBaseUrl is the demo/test environment. Get a demo workspace and a
+	// ProdBaseURL is the production environment.
+	ProdBaseURL = "https://api.busy.no"
+	// DemoBaseURL is the demo/test environment. Get a demo workspace and a
 	// token at https://demo.busy.no/demo/api.
-	DemoBaseUrl = "https://api.demo.busy.no"
+	DemoBaseURL = "https://api.demo.busy.no"
 )
 
 // BusyClient is a client for the Finago Busy v2 REST API.
@@ -23,7 +23,7 @@ const (
 // token on every request.
 type BusyClient struct {
 	token   string
-	baseUrl string
+	baseURL string
 
 	httpClient   *http.Client
 	interceptors []RequestEditorFn
@@ -41,16 +41,16 @@ func WithHttpClient(client *http.Client) Option {
 	}
 }
 
-// WithBaseUrl overrides the API base URL. Defaults to [ProdBaseUrl].
-func WithBaseUrl(baseUrl string) Option {
+// WithURL overrides the API base URL. Defaults to [ProdBaseURL].
+func WithURL(baseURL string) Option {
 	return func(c *BusyClient) {
-		c.baseUrl = baseUrl
+		c.baseURL = baseURL
 	}
 }
 
-// WithDemo points the client at the demo environment, [DemoBaseUrl].
+// WithDemo points the client at the demo environment, [DemoBaseURL].
 func WithDemo() Option {
-	return WithBaseUrl(DemoBaseUrl)
+	return WithURL(DemoBaseURL)
 }
 
 // WithRequestInterceptor adds a request editor function that will be called
@@ -67,7 +67,7 @@ func WithRequestInterceptor(fn RequestEditorFn) Option {
 func New(token string, options ...Option) *BusyClient {
 	client := &BusyClient{
 		token:      token,
-		baseUrl:    ProdBaseUrl,
+		baseURL:    ProdBaseURL,
 		httpClient: http.DefaultClient,
 	}
 
@@ -84,7 +84,7 @@ func New(token string, options ...Option) *BusyClient {
 		clientOptions = append(clientOptions, WithRequestEditorFn(interceptor))
 	}
 
-	c, err := NewClientWithResponses(client.baseUrl, clientOptions...)
+	c, err := NewClientWithResponses(client.baseURL, clientOptions...)
 	if err != nil {
 		panic(fmt.Errorf("failed to init client: %w", err))
 	}

@@ -24,12 +24,12 @@ func requireOnline(t *testing.T) {
 }
 
 // getClient builds a client from TFSO_BUSY_TOKEN. Busy tokens are bound to one
-// environment, so a demo token needs TFSO_BUSY_BASE_URL set to [DemoBaseUrl];
+// environment, so a demo token needs TFSO_BUSY_BASE_URL set to [DemoBaseURL];
 // without it the tests talk to production. Keep the live tests read-only.
 func getClient() *BusyClient {
 	options := []Option{}
-	if baseUrl := os.Getenv("TFSO_BUSY_BASE_URL"); baseUrl != "" {
-		options = append(options, WithBaseUrl(baseUrl))
+	if baseURL := os.Getenv("TFSO_BUSY_BASE_URL"); baseURL != "" {
+		options = append(options, WithURL(baseURL))
 	}
 	return New(os.Getenv("TFSO_BUSY_TOKEN"), options...)
 }
@@ -39,10 +39,10 @@ func TestClientDefaults(t *testing.T) {
 
 	c := New("test-token")
 	require.NotNil(c)
-	require.Equal(ProdBaseUrl, c.baseUrl, "should default to production")
+	require.Equal(ProdBaseURL, c.baseURL, "should default to production")
 
-	require.Equal(DemoBaseUrl, New("test-token", WithDemo()).baseUrl)
-	require.Equal("https://example.org", New("test-token", WithBaseUrl("https://example.org")).baseUrl)
+	require.Equal(DemoBaseURL, New("test-token", WithDemo()).baseURL)
+	require.Equal("https://example.org", New("test-token", WithURL("https://example.org")).baseURL)
 }
 
 func TestClientSendsBearerToken(t *testing.T) {
@@ -57,7 +57,7 @@ func TestClientSendsBearerToken(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	c := New("test-token", WithBaseUrl(srv.URL))
+	c := New("test-token", WithURL(srv.URL))
 	_, err := c.GetAllUsersWithResponse(t.Context(), &GetAllUsersParams{})
 	require.NoError(err)
 	require.Equal("Bearer test-token", gotAuth, "token should be sent as a bearer token")

@@ -4341,7 +4341,7 @@ type GroupUser struct {
 	// Email The email of the user's account. If the user has been invited, but not yet registered, the email will be the invited email.
 	//
 	// Examples: ola.nordmann@example.com, kari.nordmann@example.com
-	Email string `json:"email"`
+	Email Email `json:"email"`
 
 	// EmployeeCode The employee code used across systems for integrations - e.g. in payroll
 	//
@@ -5494,7 +5494,7 @@ type ProjectTagUser struct {
 	// Email The email of the user's account. If the user has been invited, but not yet registered, the email will be the invited email.
 	//
 	// Examples: ola.nordmann@example.com, kari.nordmann@example.com
-	Email string `json:"email"`
+	Email Email `json:"email"`
 
 	// EmployeeCode The employee code used across systems for integrations - e.g. in payroll
 	//
@@ -5620,7 +5620,7 @@ type ProjectUser struct {
 	// Email The email of the user's account. If the user has been invited, but not yet registered, the email will be the invited email.
 	//
 	// Examples: ola.nordmann@example.com, kari.nordmann@example.com
-	Email string `json:"email"`
+	Email Email `json:"email"`
 
 	// EmployeeCode The employee code used across systems for integrations - e.g. in payroll
 	//
@@ -6198,7 +6198,7 @@ type User struct {
 	DisplayName string `json:"displayName"`
 
 	// Email The email of the user's account. If the user has been invited, but not yet registered, the email will be the invited email.
-	Email string `json:"email"`
+	Email Email `json:"email"`
 
 	// EmployeeCode The employee code used across systems for integrations - e.g. in payroll
 	EmployeeCode *string `json:"employeeCode"`
@@ -6266,7 +6266,7 @@ type UserCreate struct {
 	DisplayName string `json:"displayName"`
 
 	// Email The email of the user's account. If the user has been invited, but not yet registered, the email will be the invited email.
-	Email string `json:"email"`
+	Email Email `json:"email"`
 
 	// EmployeeCode The employee code used across systems for integrations - e.g. in payroll
 	EmployeeCode *string `json:"employeeCode"`
@@ -6336,7 +6336,7 @@ type UserGroup struct {
 // UserInvitation A user invitation to a user.
 type UserInvitation struct {
 	// Email The email of the user's account. If the user has been invited, but not yet registered, the email will be the invited email.
-	Email string `json:"email"`
+	Email Email `json:"email"`
 
 	// ExpiresAt The datetime when the invitation expires
 	ExpiresAt time.Time `json:"expiresAt"`
