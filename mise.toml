@@ -17,7 +17,10 @@ HK_MISE = 1
 tool_modfile = "go.tool.mod"
 
 [hooks]
-postinstall = ["fnox check", "hk install --mise"]
+postinstall = [
+  "test -f fnox.local.toml && fnox check || echo 'no fnox.local.toml: live API tests will be skipped (see README)'",
+  "hk install --mise",
+]
 
 [tasks.tidy]
 description = "Tidy modules and format"
@@ -52,11 +55,11 @@ description = "Get latest specifications for all APIs"
 depends = ["api:payday", "api:rest"]
 
 [tasks.test]
-description = "Run tests"
-run = "fnox exec -- go test -short ./..."
+description = "Run offline tests (no secrets needed)"
+run = "go test -short ./..."
 
 [tasks."test:full"]
-description = "Run tests in full"
+description = "Run tests in full, against the live APIs"
 run = "fnox exec -- go test -v ./..."
 
 [tasks.check]
