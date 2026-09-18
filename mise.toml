@@ -1,0 +1,79 @@
+[tools]
+fnox = "1.32.0"
+go = "1.27.1"
+golangci-lint = "2.13.0"
+hk = "1.54.1"
+jq = "1.8.2"
+op = "2.34.1"
+pkl = "0.31.1"
+
+[settings]
+env_shell_expand = true
+
+[env]
+HK_MISE = 1
+
+[vars]
+tool_modfile = "go.tool.mod"
+
+[hooks]
+postinstall = [
+  "test -f fnox.local.toml && fnox check || echo 'no fnox.local.toml: live API tests will be skipped (see README)'",
+  "hk install --mise",
+]
+
+[tasks.tidy]
+description = "Tidy modules and format"
+run = ["go mod tidy", "go mod tidy -modfile={{vars.tool_modfile}}"]
+depends_post = ["fmt"]
+
+[tasks.fmt]
+description = "Run go's formatter"
+run = ["go fmt ./..."]
+
+[tasks.generate]
+description = "Run go generate and patch up generated code"
+run = [
+  "go generate ./...",
+  "sed -i '' 's/int \\[\\]/Int \\[\\]/g' ./soapy/**/*.gen.go",
+]
+depends_post = ["fmt"]
+
+[tasks."api:payday"]
+description = "Get latest Swagger from Payday and convert to OpenAPI 3"
+run = "curl https://converter.swagger.io/api/convert?url=https://me.24sevenoffice.com/swagger.json | jq > ./api/openapi/payroll.json"
+
+[tasks."api:rest"]
+description = "Get latest Finago Office REST API specification"
+run = [
+  "curl https://rest-api.developer.24sevenoffice.com/doc/v1.yaml > ./api/openapi/rest.yaml",
+  "sed -i '' 's/exclusiveMinimum: 0$/minimum: 0/' ./api/openapi/rest.yaml",
+]
+
+[tasks.api]
+description = "Get latest specifications for all APIs"
+depends = ["api:payday", "api:rest"]
+
+[tasks.test]
+description = "Run offline tests (no secrets needed)"
+run = "go test -short ./..."
+
+[tasks."test:full"]
+description = "Run tests in full, against the live APIs"
+run = "fnox exec -- go test -v ./..."
+
+[tasks.check]
+description = "Check unstaged code"
+run = "hk check"
+
+[tasks."check:all"]
+description = "Check all code"
+run = "hk check --all"
+
+[tasks."check:fix"]
+description = "Check all code and apply quick fixes"
+run = "hk fix"
+
+[tasks.bump]
+description = "Bump next version"
+run = "go tool -modfile={{vars.tool_modfile}} git-bump"

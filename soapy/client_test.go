@@ -24,7 +24,17 @@ var credentials = auth.Credential{
 	Password:      os.Getenv("TFSO_SOAP_PASSWORD"),
 }
 
+// requireOnline skips tests that talk to the live Finago SOAP API. `go test
+// -short` must pass offline and without credentials.
+func requireOnline(t *testing.T) {
+	t.Helper()
+	if testing.Short() {
+		t.Skip("skipping test that requires the Finago SOAP API")
+	}
+}
+
 func TestClientInitialization(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := New(credentials)
@@ -32,6 +42,7 @@ func TestClientInitialization(t *testing.T) {
 }
 
 func TestClientInitializationWithAuthCalledFirst(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := New(credentials)
@@ -42,6 +53,7 @@ func TestClientInitializationWithAuthCalledFirst(t *testing.T) {
 }
 
 func TestServices(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := New(credentials)

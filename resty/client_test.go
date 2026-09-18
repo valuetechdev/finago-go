@@ -30,14 +30,20 @@ func getClient() *RestyClient {
 	return cachedClient
 }
 
+// requireOnline skips tests that talk to the live Finago REST API. `go test
+// -short` must pass offline and without credentials.
+func requireOnline(t *testing.T) {
+	t.Helper()
+	if testing.Short() {
+		t.Skip("skipping test that requires the Finago REST API")
+	}
+}
+
 func TestClientInitialization(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
-	c := New(&Credentials{
-		ClientId:       os.Getenv("TFSO_REST_APP_ID"),
-		ClientSecret:   os.Getenv("TFSO_REST_SECRET"),
-		OrganizationId: orgId,
-	})
+	c := getClient()
 
 	// Token is fetched automatically on first request, but we can also get it directly
 	token, err := c.Token()
@@ -76,6 +82,7 @@ func TestClientTokenManagement(t *testing.T) {
 }
 
 func TestCreatePrivateCustomer(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()
@@ -111,6 +118,7 @@ func TestCreatePrivateCustomer(t *testing.T) {
 }
 
 func TestCreateCompanyCustomer(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()
@@ -144,6 +152,7 @@ func TestCreateCompanyCustomer(t *testing.T) {
 }
 
 func TestRetrieveProductUnits(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 	c := getClient()
 	res, err := c.GetUnitsWithResponse(t.Context())
@@ -152,6 +161,7 @@ func TestRetrieveProductUnits(t *testing.T) {
 }
 
 func TestCreateProduct(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()
@@ -183,7 +193,7 @@ func TestCreateProduct(t *testing.T) {
 	require.NotNil(resCustomer.JSON200, "no customer was created")
 
 	pPostRequest := ProductRequestPost{
-		Name:         u.R("Badeball"),
+		Name:         "Badeball",
 		Number:       u.R(u.RandSeq(10)),
 		Type:         u.R(Default),
 		Status:       u.R(ProductStatusEnumActive),
@@ -196,7 +206,7 @@ func TestCreateProduct(t *testing.T) {
 			Quantity:  u.R(float32(129)),
 			Location:  u.R("B-301"),
 		},
-		Category: &CategoryRequest{Id: u.R(-1)},
+		Category: CategoryRequest{Id: u.R(-1)},
 	}
 	resProduct, err := c.CreateProductWithResponse(t.Context(), pPostRequest)
 	require.NoError(err)
@@ -204,12 +214,13 @@ func TestCreateProduct(t *testing.T) {
 }
 
 func TestCreateOrder(t *testing.T) {
+	requireOnline(t)
 	require := require.New(t)
 
 	c := getClient()
 
 	pPostRequest := ProductRequestPost{
-		Name:         u.R("Badeball"),
+		Name:         "Badeball",
 		Number:       u.R(u.RandSeq(10)),
 		Type:         u.R(Default),
 		Status:       u.R(ProductStatusEnumActive),
@@ -222,7 +233,7 @@ func TestCreateOrder(t *testing.T) {
 			Quantity:  u.R(float32(129)),
 			Location:  u.R("B-301"),
 		},
-		Category: &CategoryRequest{Id: u.R(-1)},
+		Category: CategoryRequest{Id: u.R(-1)},
 	}
 	resProduct, err := c.CreateProductWithResponse(t.Context(), pPostRequest)
 	require.NoError(err)
