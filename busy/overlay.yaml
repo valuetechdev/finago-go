@@ -1,0 +1,40 @@
+overlay: 1.0.0
+info:
+  title: Schema Type Corrections Overlay
+  version: 1.0.0
+actions:
+  # The schema marks these as `format: email`, which oapi-codegen maps to
+  # openapi_types.Email. That type runs every value through net/mail.ParseAddress
+  # on both marshal and unmarshal, and Busy returns "" for users without an
+  # e-mail address (invited-but-not-registered users, for instance), which fails
+  # to parse and breaks decoding of the whole response. Generate plain strings
+  # instead and leave e-mail validation to the caller.
+  - target: "$.components.schemas.User.properties.email"
+    description: Decode e-mail as a plain string, empty values are valid
+    update:
+      x-go-type: string
+
+  - target: "$.components.schemas.UserCreate.properties.email"
+    description: Decode e-mail as a plain string, empty values are valid
+    update:
+      x-go-type: string
+
+  - target: "$.components.schemas.UserInvitation.properties.email"
+    description: Decode e-mail as a plain string, empty values are valid
+    update:
+      x-go-type: string
+
+  - target: "$.components.schemas.GroupUser.allOf[1].properties.email"
+    description: Decode e-mail as a plain string, empty values are valid
+    update:
+      x-go-type: string
+
+  - target: "$.components.schemas.ProjectUser.allOf[1].properties.email"
+    description: Decode e-mail as a plain string, empty values are valid
+    update:
+      x-go-type: string
+
+  - target: "$.components.schemas.ProjectTagUser.allOf[1].properties.email"
+    description: Decode e-mail as a plain string, empty values are valid
+    update:
+      x-go-type: string

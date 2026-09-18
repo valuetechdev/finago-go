@@ -1,0 +1,61 @@
+[![go reference badge](https://pkg.go.dev/badge/github.com/valuetechdev/finago-go.svg)](https://pkg.go.dev/github.com/valuetechdev/finago-go/busy)
+
+# Finago Busy API Client
+
+[Official docs](https://api.busy.no/v2/)
+
+## Usage
+
+```go
+import "github.com/valuetechdev/finago-go/busy"
+
+func yourFunc() (any, error) {
+	client := busy.New("your-api-token")
+
+	res, err := client.GetAllUsersWithResponse(context.Background(), &busy.GetAllUsersParams{})
+	if err != nil {
+		return nil, err
+	}
+
+	return res.JSON200, nil
+}
+```
+
+The API token is created by a workspace admin under the workspace's integration
+settings, and is sent as `Authorization: Bearer <token>` on every request. A
+token is valid for at most a year, so it has to be rotated.
+
+### Demo environment
+
+Busy has a separate demo environment, and **a token is only valid in the
+environment it was created in** — a production token gets a 401 from the demo
+host and vice versa. Grab a demo workspace and token from
+<https://demo.busy.no/demo/api>, then:
+
+```go
+client := busy.New("your-demo-token", busy.WithDemo())
+```
+
+`busy.WithBaseUrl` points the client at any other host.
+
+### Custom HTTP client
+
+```go
+httpClient := &http.Client{Timeout: 30 * time.Second}
+client := busy.New(token, busy.WithHttpClient(httpClient))
+```
+
+## Things to know
+
+- The schema is OpenAPI 3.1 and is generated from as-published, apart from
+  `overlay.yaml`, which turns the `format: email` fields into plain strings.
+  Busy returns `""` for users without an e-mail address, and the
+  `openapi_types.Email` those fields would otherwise generate rejects that,
+  failing the decode of the entire response.
+- The paths in the schema include the `/v2` prefix, so the base URL is the bare
+  host (`https://api.busy.no`).
+- The API is rate limited. Responses carry `RateLimit-Limit`,
+  `RateLimit-Remaining` and `RateLimit-Reset`; a **429** also carries
+  `Retry-After`. Back off for at least `RateLimit-Reset` seconds when throttled.
+- List endpoints are paginated with `limit`/`offset`. For syncs, order ascending
+  by `updatedAt` and filter on `updatedFrom`.

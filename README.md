@@ -7,6 +7,7 @@ This package contains a generated API clients for Finago's APIs.
 - Finago Office SOAP : [`soapy`](soapy/README.md) ([API](https://developer.24sevenoffice.com/docs/))
 - Finago Office REST: [`resty`](resty/README.md) ([API](https://rest-api.developer.24sevenoffice.com/doc/v1/))
 - Finago Payday: [`payday`](payday/README.md) ([API](https://swagger.api.24sevenoffice.com/?url=https://me.24sevenoffice.com/swagger.json))
+- Finago Busy: [`busy`](busy/README.md) ([API](https://api.busy.no/v2/))
 
 ## Usage
 
@@ -51,9 +52,16 @@ variables must resolve:
 | `TFSO_REST_APP_ID`        | `resty`  | REST application ID          |
 | `TFSO_REST_SECRET`        | `resty`  | REST client secret           |
 | `TFSO_PAYROLL_SECRET`     | `payday` | Payday API credential        |
+| `TFSO_BUSY_TOKEN`         | `busy`   | Busy API token               |
 
 The `resty` tests are pinned to the demo organization `543819716587312`, so the
 REST credentials need access to it.
+
+A Busy token is bound to the environment it was created in, and the `busy` tests
+default to production. To run them against Busy's demo environment instead, get
+a workspace and token from <https://demo.busy.no/demo/api> and also set
+`TFSO_BUSY_BASE_URL=https://api.demo.busy.no`. The live Busy tests are
+read-only.
 
 ### Configuring secrets
 
@@ -75,9 +83,11 @@ TFSO_REST_APP_ID = { provider = "onepass", value = "<secret reference>" }
 TFSO_REST_SECRET = { provider = "onepass", value = "<secret reference>" }
 
 TFSO_PAYROLL_SECRET = { provider = "onepass", value = "<secret reference>" }
+
+TFSO_BUSY_TOKEN = { provider = "onepass", value = "<secret reference>" }
 ```
 
-Otherwise point the same six keys at your own tenant with whichever [fnox
+Otherwise point the same seven keys at your own tenant with whichever [fnox
 provider](https://fnox.jdx.dev/reference/providers) you prefer — `fnox init`
 walks you through picking one, and `fnox set TFSO_REST_SECRET` stores a value.
 A provider is mandatory: `fnox check` fails with "No providers configured" if

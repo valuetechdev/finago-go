@@ -1,0 +1,100 @@
+//go:generate go tool -modfile=../go.tool.mod github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen -config cfg.yaml ../api/openapi/busy.json
+
+package busy
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+)
+
+const (
+	// ProdBaseUrl is the production environment.
+	ProdBaseUrl = "https://api.busy.no"
+	// DemoBaseUrl is the demo/test environment. Get a demo workspace and a
+	// token at https://demo.busy.no/demo/api.
+	DemoBaseUrl = "https://api.demo.busy.no"
+)
+
+// BusyClient is a client for the Finago Busy v2 REST API.
+//
+// Busy authenticates with a long-lived API token created by a workspace admin
+// under the workspace's integration settings. The token is sent as a bearer
+// token on every request.
+type BusyClient struct {
+	token   string
+	baseUrl string
+
+	httpClient   *http.Client
+	interceptors []RequestEditorFn
+
+	*ClientWithResponses
+}
+
+// Option configures a [BusyClient].
+type Option func(*BusyClient)
+
+// WithHttpClient sets a custom [http.Client]. Defaults to [http.DefaultClient].
+func WithHttpClient(client *http.Client) Option {
+	return func(c *BusyClient) {
+		c.httpClient = client
+	}
+}
+
+// WithBaseUrl overrides the API base URL. Defaults to [ProdBaseUrl].
+func WithBaseUrl(baseUrl string) Option {
+	return func(c *BusyClient) {
+		c.baseUrl = baseUrl
+	}
+}
+
+// WithDemo points the client at the demo environment, [DemoBaseUrl].
+func WithDemo() Option {
+	return WithBaseUrl(DemoBaseUrl)
+}
+
+// WithRequestInterceptor adds a request editor function that will be called
+// before each request is sent.
+func WithRequestInterceptor(fn RequestEditorFn) Option {
+	return func(c *BusyClient) {
+		c.interceptors = append(c.interceptors, fn)
+	}
+}
+
+// New creates a new [BusyClient] with the given API token.
+//
+// Use [WithDemo] to talk to the demo environment while developing.
+func New(token string, options ...Option) *BusyClient {
+	client := &BusyClient{
+		token:      token,
+		baseUrl:    ProdBaseUrl,
+		httpClient: http.DefaultClient,
+	}
+
+	for _, option := range options {
+		option(client)
+	}
+
+	clientOptions := []ClientOption{
+		WithHTTPClient(client.httpClient),
+		WithRequestEditorFn(client.Intercept),
+	}
+
+	for _, interceptor := range client.interceptors {
+		clientOptions = append(clientOptions, WithRequestEditorFn(interceptor))
+	}
+
+	c, err := NewClientWithResponses(client.baseUrl, clientOptions...)
+	if err != nil {
+		panic(fmt.Errorf("failed to init client: %w", err))
+	}
+	client.ClientWithResponses = c
+	return client
+}
+
+// Intercept sets the "Authorization: Bearer <token>" header on the request.
+func (c *BusyClient) Intercept(ctx context.Context, req *http.Request) error {
+	req.Header.Set("Authorization", "Bearer "+c.token)
+
+	return nil
+}
