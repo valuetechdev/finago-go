@@ -50,9 +50,13 @@ run = [
   "sed -i '' 's/exclusiveMinimum: 0$/minimum: 0/' ./api/openapi/rest.yaml",
 ]
 
+[tasks."api:busy"]
+description = "Get latest Finago Busy specification"
+run = "curl https://api.busy.no/v2/openapi.json | jq > ./api/openapi/busy.json"
+
 [tasks.api]
 description = "Get latest specifications for all APIs"
-depends = ["api:payday", "api:rest"]
+depends = ["api:payday", "api:rest", "api:busy"]
 
 [tasks.test]
 description = "Run offline tests (no secrets needed)"
