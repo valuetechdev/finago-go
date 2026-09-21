@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 type Status struct {
@@ -14,6 +15,10 @@ type Status struct {
 	} `json:"status"`
 }
 
+// statusClient is separate from the API clients: the status page is public, is
+// not versioned with the APIs and must not hang a caller that polls it.
+var statusClient = &http.Client{Timeout: 10 * time.Second}
+
 // Gets status from https://status.24sevenoffice.com/
 func GetStatus() (*Status, error) {
 	req, err := http.NewRequest("GET", "https://status.24sevenoffice.com/", http.NoBody)
@@ -22,7 +27,7 @@ func GetStatus() (*Status, error) {
 	}
 	req.Header.Set("accept", "application/json")
 
-	res, err := http.DefaultClient.Do(req)
+	res, err := statusClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("finago: failed to do request: %w", err)
 	}
